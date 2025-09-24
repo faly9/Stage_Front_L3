@@ -30,6 +30,8 @@ export default function Login() {
 
   const navigate = useNavigate(); 
 console.log(crsftoken)
+console.log(crsftoken)
+
   // Déplacement du curseur -> effet parallax
   const handleMouseMove = (e) => {
     setCursor({
