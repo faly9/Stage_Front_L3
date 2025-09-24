@@ -1,5 +1,6 @@
 import { Home, Brain, Briefcase, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const getCookie = (name) => {
   let cookieValue = null;
@@ -19,23 +20,28 @@ const getCookie = (name) => {
 export default function Navbar({ section, onSectionChange }) {
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    const csrftoken = getCookie("csrftoken");
-    try {
-      const res = await fetch("http://localhost:8001/auth/logout/", {
-        method: "POST",
-        credentials: "include",
-        headers: { "X-CSRFToken": csrftoken },
-      });
-      if (res.ok) {
-        navigate("/"); // redirection vers login
-      } else {
-        console.error("Erreur logout", res.status);
-      }
-    } catch (err) {
-      console.error(err);
+
+const handleLogout = async () => {
+  const csrftoken = getCookie("csrftoken");
+  try {
+    const res = await fetch("http://localhost:8001/auth/logout/", {
+      method: "POST",
+      credentials: "include",
+      headers: { "X-CSRFToken": csrftoken },
+    });
+
+    if (res.ok) {
+      toast.success("✅ Déconnexion réussie", { position: "top-center" });
+      navigate("/"); // redirection vers login
+    } else {
+      toast.error(`❌ Erreur logout (${res.status})`, { position: "top-center" });
+      console.error("Erreur logout", res.status);
     }
-  };
+  } catch (err) {
+    console.error(err);
+    toast.error("❌ Erreur réseau lors du logout", { position: "top-center" });
+  }
+};
 
   const menuItems = [
     { key: "dashboard", label: "Dashboard", icon: <Home className="w-5 h-5" /> },

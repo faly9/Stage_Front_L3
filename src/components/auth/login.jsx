@@ -2,6 +2,9 @@ import { useState } from "react";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
+
 
 function getCookie(name) {
   let cookieValue = null;
@@ -38,6 +41,7 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     let tempErrors = {};
+    console.log("tonga eto" , email , password)
 
     if (!email) tempErrors.email = "L'email est obligatoire";
     if (!password) tempErrors.password = "Le mot de passe est obligatoire";
@@ -54,26 +58,30 @@ export default function Login() {
         },        
         body: JSON.stringify({ email, password }),
       });
-      console.log(email , password)
+      console.log("tongasoa" , email , password)
 
 // Fonction utilitaire pour récupérer un cookie par son nom
 
       const data = await res.json();
 
-      if (res.ok) {
-        setMessage("Connexion réussie !");
-        setEmail("");
-        setPassword("");
-        setErrors({});
-
+if (res.ok) {
+  toast.success("✅ Connexion réussie !", {
+    position: "top-center",
+    autoClose: 1000,
+    onClose: () => {
       if (data.role === "Entreprise") {
-          navigate("/dashboard-entreprise");
-        } else {
-          navigate("/dashboard-freelance"); 
-        }
-
-
+        navigate("/dashboard-entreprise");
       } else {
+        navigate("/dashboard-freelance");
+      }
+    },
+  });
+
+  setEmail("");
+  setPassword("");
+  setErrors({});
+}
+      else {
         if (data.error?.toLowerCase().includes("email")) {
           setErrors({ email: data.error });
         } else if (data.error?.toLowerCase().includes("mot de passe")) {
@@ -224,6 +232,7 @@ export default function Login() {
 </div>        
 </div>
       </motion.div>
+
     </div>
   );
 }
