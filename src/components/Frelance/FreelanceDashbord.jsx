@@ -39,7 +39,6 @@ export default function FreelanceDashboard() {
     fetchFreelance();
   }, []);
 
-  // Charger missions existantes via API REST
 
   // Connexion WebSocket pour le temps réel
 useEffect(() => {
