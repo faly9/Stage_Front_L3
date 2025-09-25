@@ -21,7 +21,7 @@ export default function CardOffre({ offre, onView, onPostuler }) {
       <div className="space-y-2 mb-4">
         <p className="text-sm text-gray-700 flex items-center gap-2">
           <Star className="w-4 h-4 text-yellow-500" />
-          <span className="font-semibold">Compétences :</span> {offre.competences.join(", ")}
+          <span className="font-semibold">Compétences :</span> {offre.competence_requis}
         </p>
         <p className="text-sm text-gray-700 flex items-center gap-2">
           <DollarSign className="w-4 h-4 text-green-500" />

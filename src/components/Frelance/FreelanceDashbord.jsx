@@ -4,12 +4,14 @@ import CardProfil from "./CardProfil";
 import CardOffre from "./OffreDispo";
 import EditProfileFreelance from "./EditProfil";
 import { toast } from "react-toastify";
+import { data } from "react-router-dom";
+import { MdOutlineDoDisturbOff } from "react-icons/md";
 
 export default function FreelanceDashboard() {
   const [activeSection, setActiveSection] = useState("Mon Profil");
   const [editingFreelance, setEditingFreelance] = useState(null);
   const [freelances, setFreelances] = useState([]);
-  const [missions, setMissions] = useState([]); // 🔹 utilisé à la place de offres statiques
+  const [missions, setMissions] = useState([]); // 🔹 missions dynamiques
   const [loading, setLoading] = useState(true);
 
   // Charger profil freelance
@@ -38,24 +40,61 @@ export default function FreelanceDashboard() {
   }, []);
 
   // Charger missions existantes via API REST
-  useEffect(() => {
-    const fetchMissions = async () => {
-      try {
-        const res = await fetch("http://localhost:8001/msn/missions/", {
-          credentials: "include",
+
+  // Connexion WebSocket pour le temps réel
+useEffect(() => {
+  const socket = new WebSocket("ws://localhost:8001/ws/missions/");
+
+  socket.onopen = () => console.log("✅ WS connecté");
+
+  socket.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+    console.log(message)
+    const mission = message.mission;
+    const action = message.action;
+
+    console.log("📩 action reçu :", message.action);
+    
+    console.log("📩 mission reçu :", mission);
+
+    switch (action) {
+      case "created":
+        setMissions((prev) => {
+          // éviter les doublons
+          if (!prev.some((m) => m.id_mission === mission.id_mission)) {
+            return [...prev, mission];
+          }
+          return prev;
         });
+        toast.info(`📢 Nouvelle mission : ${mission.titre}`);
+        break;
 
-        if (res.ok) {
-          const data = await res.json();
-          setMissions(Array.isArray(data) ? data : []);
-        }
-      } catch (error) {
-        console.error("Erreur API missions:", error);
-      }
-    };
+      case "updated":
+        console.log("update")
+        setMissions((prev) =>
+          prev.map((m) => (m.id_mission === mission.id_mission ? mission : m))
+        );
+        toast.info(`✏️ Mission mise à jour : ${mission.titre}`);
+        break;
 
-    fetchMissions();
-  }, []);
+      case "deleted":
+        setMissions((prev) =>
+          prev.filter((m) => m.id_mission !== mission.id_mission)
+        );
+        toast.warn(`🗑️ Mission supprimée`);
+        break;
+
+      default:
+        console.log("ts mande")
+        console.warn("⚠️ Action inconnue :", action);
+        break;
+    }
+  };
+
+  socket.onclose = () => console.log("❌ WS fermé");
+  return () => socket.close();
+}, []);
+
 
 
   const handlePostuler = (offre) => {
@@ -146,7 +185,7 @@ export default function FreelanceDashboard() {
               {missions.length > 0 ? (
                 missions.map((offre) => (
                   <CardOffre
-                    key={offre.id}
+                    key={offre.id_mission}
                     offre={offre}
                     onPostuler={handlePostuler}
                   />
