@@ -4,8 +4,6 @@ import CardProfil from "./CardProfil";
 import CardOffre from "./OffreDispo";
 import EditProfileFreelance from "./EditProfil";
 import { toast } from "react-toastify";
-import { data } from "react-router-dom";
-import { MdOutlineDoDisturbOff } from "react-icons/md";
 
 export default function FreelanceDashboard() {
   const [activeSection, setActiveSection] = useState("Mon Profil");
@@ -39,6 +37,34 @@ export default function FreelanceDashboard() {
     fetchFreelance();
   }, []);
 
+// Charger missions existantes via API REST
+useEffect(() => {
+  const fetchMissions = async () => {
+    try {
+      const res = await fetch("http://localhost:8001/msn/missions/", {
+        method: "GET",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Erreur fetch missions");
+      
+      const data = await res.json();
+      console.log("📩 Données brutes :", data);
+
+      if (Array.isArray(data)) {
+        data.forEach((mission, index) => {
+          console.log(`🔹 Mission ${index + 1}:`, mission);
+        });
+      }
+
+      setMissions(data); // ✅ liste de départ
+    
+    } catch (err) {
+      console.error("❌ Erreur :", err.message);
+    }
+  };
+
+  fetchMissions();
+}, []);
 
   // Connexion WebSocket pour le temps réel
 useEffect(() => {
