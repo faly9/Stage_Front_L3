@@ -18,7 +18,10 @@ export default function CardOffre({ offre, onView, onPostuler }) {
         />
         <div>
           <p className="font-bold text-gray-800">{offre.entreprise_nom }</p>
+          <div className="flex text-gray-500 items-center justify-center gap-1">
+          <p className="text-sm">Secteur : </p>
           <p className="text-sm text-gray-500">{offre.entreprise_secteur}</p>
+          </div>
         </div>
       </div>
 

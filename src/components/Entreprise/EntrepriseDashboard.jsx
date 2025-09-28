@@ -5,6 +5,9 @@ import CardMission from "./Card_mission";
 import ButtonAdd from "./Ajout_mission";
 import EditMissionModal from "./EditMission";
 import { toast } from "react-toastify";
+import CandidatureList from "./Candidature";
+
+
 // 🔹 fonction utilitaire pour lire le cookie CSRF
 const getCookie = (name) => {
   let cookieValue = null;
@@ -327,6 +330,11 @@ return (
                 }
               />
             </div>
+          )}
+          { section == "Candidat" && (
+    <div>
+      <CandidatureList/>
+    </div>
           )}
         </main>
 

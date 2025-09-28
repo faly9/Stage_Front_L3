@@ -162,7 +162,7 @@ const [profile, setProfile] = useState({
 
         {/* Compétences */}
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Compétences</label>
+          <label className="block mb-1 font-medium">Compétences(,)</label>
           <textarea
             name="competence"
             value={profile.competence || ""}
@@ -174,7 +174,7 @@ const [profile, setProfile] = useState({
 
         {/* Expériences */}
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Expériences</label>
+          <label className="block mb-1 font-medium">Expériences(,)</label>
           <textarea
             name="experience"
             value={profile.experience || ""}
@@ -186,7 +186,7 @@ const [profile, setProfile] = useState({
 
         {/* Diplômes */}
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Diplômes</label>
+          <label className="block mb-1 font-medium">Diplômes(,)</label>
           <textarea
             name="formation"
             value={profile.formation || ""}
@@ -198,7 +198,7 @@ const [profile, setProfile] = useState({
 
         {/* Certificats */}
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Certificats</label>
+          <label className="block mb-1 font-medium">Certificats(,)</label>
           <textarea
             name="certificat"
             value={profile.certificat || ""}
@@ -210,7 +210,7 @@ const [profile, setProfile] = useState({
 
         {/* Tarif */}
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Tarif ar/h</label>
+          <label className="block mb-1 font-medium">Tarif E/h</label>
           <input
             type="number"
             name="tarif"
