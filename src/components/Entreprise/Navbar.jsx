@@ -44,9 +44,9 @@ const handleLogout = async () => {
 };
 
   const menuItems = [
-    { key: "dashboard", label: "Dashboard", icon: <Home className="w-5 h-5" /> },
-    { key: "ia", label: "IA", icon: <Brain className="w-5 h-5" /> },
-    { key: "Candidat", label: "Candidat", icon: <User className="w-5 h-5" /> },
+    { key: "dashboard", label: "Missions", icon: <Home className="w-5 h-5" /> },
+    { key: "ia", label: "Proposition IA", icon: <Brain className="w-5 h-5" /> },
+    { key: "Candidat", label: "Candidats", icon: <User className="w-5 h-5" /> },
   ];
 
   return (

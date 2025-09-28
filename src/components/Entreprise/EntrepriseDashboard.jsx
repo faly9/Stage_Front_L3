@@ -271,7 +271,7 @@ return (
       <Navbar onSectionChange={setSection} section={section} />
       <div className="flex-1 flex flex-col">
         <header className="flex justify-between items-center bg-white shadow p-4">
-          <h1 className="text-2xl font-bold">Tableau de bord</h1>
+          <h1 className="text-2xl font-bold">Entreprise</h1>
           <div className="flex items-center gap-4">
             <p>{user.nom || "User"}</p>
             <img

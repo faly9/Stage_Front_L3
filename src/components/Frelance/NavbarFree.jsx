@@ -3,6 +3,7 @@ import React from "react";
 import { User, Briefcase, Cpu, Clock } from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+
 const getCookie = (name) => {
   let cookieValue = null;
   if (document.cookie && document.cookie !== "") {
@@ -18,9 +19,8 @@ const getCookie = (name) => {
   return cookieValue;
 };
 
-
-export default function NavbarFreelance({ user, activeSection, onSectionChange , freelance }) {
-const navigate = useNavigate();
+export default function NavbarFreelance({  activeSection, onSectionChange, freelance, newoffer }) {
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     const csrftoken = getCookie("csrftoken");
@@ -30,7 +30,7 @@ const navigate = useNavigate();
         credentials: "include",
         headers: { "X-CSRFToken": csrftoken },
       });
-  
+
       if (res.ok) {
         toast.success("✅ Déconnexion réussie", { position: "top-center" });
         navigate("/"); // redirection vers login
@@ -43,17 +43,13 @@ const navigate = useNavigate();
       toast.error("❌ Erreur réseau lors du logout", { position: "top-center" });
     }
   };
-  
-  
-    const sections = [
+
+  const sections = [
     { name: "Mon Profil", icon: <User className="w-4 h-4" /> },
     { name: "Offres disponibles", icon: <Briefcase className="w-4 h-4" /> },
     { name: "IA", icon: <Cpu className="w-4 h-4" /> },
     { name: "Historique", icon: <Clock className="w-4 h-4" /> },
   ];
-
-
-
 
   return (
     <nav className="w-64 bg-white shadow flex flex-col justify-between">
@@ -61,8 +57,7 @@ const navigate = useNavigate();
         {/* Profil utilisateur */}
         <div className="flex flex-col items-center">
           <img
-            src={freelance.photo || "/images/profil.png" // ✅ ton image par défaut dans /public
-}
+            src={freelance.photo || "/images/profil.png"}
             alt="Profil"
             className="w-20 h-20 rounded-full border object-cover"
           />
@@ -74,13 +69,20 @@ const navigate = useNavigate();
           {sections.map((sec) => (
             <button
               key={sec.name}
-              className={`flex items-center gap-2 text-left px-3 py-2 rounded hover:bg-gray-200 transition ${
+              className={`relative flex items-center gap-2 text-left px-3 py-2 rounded hover:bg-gray-200 transition ${
                 activeSection === sec.name ? "bg-red-600 text-white font-semibold" : ""
               }`}
               onClick={() => onSectionChange(sec.name)}
             >
               {sec.icon}
               {sec.name}
+
+              {/* ✅ Badge pour les offres disponibles */}
+              {sec.name === "Offres disponibles" && newoffer > 0 && (
+                <span className="absolute right-2 top-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
+                 new {newoffer}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -89,8 +91,9 @@ const navigate = useNavigate();
       {/* Déconnexion */}
       <div className="p-6">
         <button
-        onClick={handleLogout}
-        className="w-full px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+          onClick={handleLogout}
+          className="w-full px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+        >
           Déconnexion
         </button>
       </div>

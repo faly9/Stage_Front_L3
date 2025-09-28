@@ -6,6 +6,16 @@ import EditProfileFreelance from "./EditProfil";
 import { toast } from "react-toastify";
 
 export default function FreelanceDashboard() {
+// Initialiser depuis localStorage
+const [newoffer, setNewoffer] = useState(() => {
+  return parseInt(localStorage.getItem("newoffer")) || 0;
+});
+
+// Mettre à jour localStorage à chaque changement
+useEffect(() => {
+  localStorage.setItem("newoffer", newoffer);
+}, [newoffer]);
+
   const [activeSection, setActiveSection] = useState("Mon Profil");
   const [editingFreelance, setEditingFreelance] = useState(null);
   const [freelances, setFreelances] = useState([]);
@@ -48,13 +58,13 @@ useEffect(() => {
       if (!res.ok) throw new Error("Erreur fetch missions");
       
       const data = await res.json();
-      console.log("📩 Données brutes :", data);
+      // console.log("📩 Données brutes :", data);
 
-      if (Array.isArray(data)) {
-        data.forEach((mission, index) => {
-          console.log(`🔹 Mission ${index + 1}:`, mission);
-        });
-      }
+      // if (Array.isArray(data)) {
+      //   data.forEach((mission, index) => {
+      //     console.log(`🔹 Mission ${index + 1}:`, mission);
+      //   });
+      // }
 
       setMissions(data); // ✅ liste de départ
     
@@ -74,43 +84,39 @@ useEffect(() => {
 
   socket.onmessage = (event) => {
     const message = JSON.parse(event.data);
-    console.log(message)
     const mission = message.mission;
+    console.log("message recu" , mission)
     const action = message.action;
 
-    console.log("📩 action reçu :", message.action);
-    
-    console.log("📩 mission reçu :", mission);
-
     switch (action) {
-      case "created":
-        setMissions((prev) => {
-          // éviter les doublons
-          if (!prev.some((m) => m.id_mission === mission.id_mission)) {
-            return [...prev, mission];
-          }
-          return prev;
+      case "created": {
+        setMissions(prev => {
+          // si mission déjà existante, on retourne prev
+          if (prev.some(m => m.id_mission === mission.id_mission)) return prev;
+          return [...prev, mission];
         });
+
+        // ✅ hors setMissions : compteur et toast
+        setNewoffer(count => count + 1);
         toast.info(`📢 Nouvelle mission : ${mission.titre}`);
         break;
+      }
 
       case "updated":
-        console.log("update")
-        setMissions((prev) =>
-          prev.map((m) => (m.id_mission === mission.id_mission ? mission : m))
+        setMissions(prev =>
+          prev.map(m => (m.id_mission === mission.id_mission ? mission : m))
         );
         toast.info(`✏️ Mission mise à jour : ${mission.titre}`);
         break;
 
       case "deleted":
-        setMissions((prev) =>
-          prev.filter((m) => m.id_mission !== mission.id_mission)
+        setMissions(prev =>
+          prev.filter(m => m.id_mission !== mission.id_mission)
         );
         toast.warn(`🗑️ Mission supprimée`);
         break;
 
       default:
-        console.log("ts mande")
         console.warn("⚠️ Action inconnue :", action);
         break;
     }
@@ -119,6 +125,18 @@ useEffect(() => {
   socket.onclose = () => console.log("❌ WS fermé");
   return () => socket.close();
 }, []);
+
+useEffect(() => {
+  // console.log("Nombre de nouvelles offres :", newoffer);
+}, [newoffer]);
+
+
+const handleSectionChange = (section) => {
+  setActiveSection(section);
+  if (section === "Offres disponibles") {
+    setNewoffer(0); // reset du compteur
+  }
+};
 
 
 
@@ -249,12 +267,13 @@ useEffect(() => {
         user={{ nom: "Freelance X", profile_image: "" }}
         activeSection={activeSection}
         freelance={freelances[0] || {}}
-        onSectionChange={setActiveSection}
+        onSectionChange={handleSectionChange}
+        newoffer={newoffer}
       />
 
       <div className="flex-1 flex flex-col">
         <header className="flex justify-between items-center bg-white shadow p-4">
-          <h1 className="text-2xl font-bold">Dashboard Freelance</h1>
+          <h1 className="text-2xl font-bold">Freelanceur</h1>
         </header>
 
         <main className="flex-1 p-6 overflow-y-auto">{renderContent()}</main>

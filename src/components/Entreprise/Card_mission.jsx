@@ -33,12 +33,6 @@ export default function CardMission({ mission, onEdit, onDelete, onView }) {
       {/* Actions entreprise */}
       <div className="flex gap-3">
         <button
-          onClick={() => onView(mission)}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-100 transition"
-        >
-          <Eye className="w-4 h-4" /> Voir détails
-        </button>
-        <button
           onClick={() => onEdit(mission)}
           className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
         >
