@@ -17,31 +17,29 @@ const getCookie = (name) => {
   return cookieValue;
 };
 
-export default function Navbar({ section, onSectionChange }) {
+export default function Navbar({ section, onSectionChange, candidatureCount }) {
   const navigate = useNavigate();
+  const handleLogout = async () => {
+    const csrftoken = getCookie("csrftoken");
+    try {
+      const res = await fetch("http://localhost:8001/auth/logout/", {
+        method: "POST",
+        credentials: "include",
+        headers: { "X-CSRFToken": csrftoken },
+      });
 
-
-const handleLogout = async () => {
-  const csrftoken = getCookie("csrftoken");
-  try {
-    const res = await fetch("http://localhost:8001/auth/logout/", {
-      method: "POST",
-      credentials: "include",
-      headers: { "X-CSRFToken": csrftoken },
-    });
-
-    if (res.ok) {
-      toast.success("✅ Déconnexion réussie", { position: "top-center" });
-      navigate("/"); // redirection vers login
-    } else {
-      toast.error(`❌ Erreur logout (${res.status})`, { position: "top-center" });
-      console.error("Erreur logout", res.status);
+      if (res.ok) {
+        toast.success("✅ Déconnexion réussie", { position: "top-center" });
+        navigate("/"); // redirection vers login
+      } else {
+        toast.error(`❌ Erreur logout (${res.status})`, { position: "top-center" });
+        console.error("Erreur logout", res.status);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("❌ Erreur réseau lors du logout", { position: "top-center" });
     }
-  } catch (err) {
-    console.error(err);
-    toast.error("❌ Erreur réseau lors du logout", { position: "top-center" });
-  }
-};
+  };
 
   const menuItems = [
     { key: "dashboard", label: "Missions", icon: <Home className="w-5 h-5" /> },
@@ -58,7 +56,7 @@ const handleLogout = async () => {
             <button
               key={item.key}
               onClick={() => onSectionChange(item.key)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-left font-medium transition
+              className={`relative flex items-center gap-2 px-3 py-2 rounded-lg text-left font-medium transition
                 ${
                   section === item.key
                     ? "bg-red-600 text-white"
@@ -67,6 +65,13 @@ const handleLogout = async () => {
             >
               {item.icon}
               {item.label}
+
+              {/* Badge rouge si Candidats */}
+              {item.key === "Candidat" && candidatureCount > 0 && (
+                <span className="absolute right-3 bg-red-600 text-white text-xs px-2 py-0.5 rounded-full">
+                 new {candidatureCount}
+                </span>
+              )}
             </button>
           ))}
         </nav>

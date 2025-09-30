@@ -1,6 +1,6 @@
 // NavbarFreelance.js
 import React from "react";
-import { User, Briefcase, Cpu, Clock } from "lucide-react";
+import { User, Briefcase, Cpu, Clock, MessageCircle } from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -48,7 +48,7 @@ export default function NavbarFreelance({  activeSection, onSectionChange, freel
     { name: "Mon Profil", icon: <User className="w-4 h-4" /> },
     { name: "Offres disponibles", icon: <Briefcase className="w-4 h-4" /> },
     { name: "IA", icon: <Cpu className="w-4 h-4" /> },
-    { name: "Historique", icon: <Clock className="w-4 h-4" /> },
+    { name: "Notifications", icon: <MessageCircle className="w-4 h-4" /> },
   ];
 
   return (

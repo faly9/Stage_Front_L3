@@ -124,14 +124,106 @@ export default function EntrepriseDashboard() {
   const [missions, setMissions] = useState([]);
   const [user, setUser] = useState({ id: null, nom: "", secteur: "", profile_image: null, profile_imageFile: null });
   const [userinfo, setUserinfo] = useState({ email: "", role: "" });
+  const [entreprise_id, setEntreprise_id] = useState(null);
+  const [candidatures, setCandidatures] = useState([]);
+  const [drafts, setDrafts] = useState({});
+
   const [errors, setErrors] = useState({});
-  const [section, setSection] = useState("dashboard");
+
+  // pour l indice de nouveau message
+  const [currentsection, setCurrentSection] = useState("dashboard");
+  const [candidatureCount, setCandidatureCount] = useState(() => {
+    return parseInt(localStorage.getItem("candidatureCount")) || 0;
+  });
+
+
+// Sauvegarder dans localStorage à chaque changement
+  useEffect(() => {
+    localStorage.setItem("candidatureCount", candidatureCount);
+  }, [candidatureCount]);
+
+  const handleSectionChange = (section) => {
+    setCurrentSection(section);
+    // Quand l'utilisateur ouvre "candidatures", on considère que c'est lu
+    if (section === "Candidat") {
+      setCandidatureCount(0);
+      localStorage.setItem("candidatureCount" , 0);
+    }
+  };
 
   useEffect(() => {
     fetchUserProfile();
     fetchUserInfo();
     fetchMissions();
   }, []);
+
+
+  // Récupérer l'ID de l'entreprise au montage
+useEffect(() => {
+  fetch("http://localhost:8001/etr/id/", { credentials: "include" })
+    .then((res) => {
+      if (!res.ok) throw new Error("Erreur API entreprise");
+      return res.json();
+    })
+    .then((data) => {
+      setEntreprise_id(data.entreprise_id);
+    })
+    .catch((err) =>
+      console.error("❌ Impossible de récupérer l'entreprise :", err)
+    );
+}, []);
+
+// Connexion WebSocket candidature (uniquement quand entreprise_id est dispo)
+useEffect(() => {
+  if (!entreprise_id) return;
+
+  const ws = new WebSocket(
+    `ws://localhost:8001/ws/candidatures/${entreprise_id}/`
+  );
+
+  ws.onopen = () =>
+    console.log("✅ WebSocket connecté à l'entreprise", entreprise_id);
+
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+
+    // 🔹 incrémente le compteur (et sauvegarde dans localStorage)
+    setCandidatureCount((count) => {
+      const newCount = count + 1;
+      localStorage.setItem("candidatureCount", newCount);
+      console.log("🟢 Ancien count:", count, "➡️ Nouveau count:", newCount);
+      return newCount;
+    });
+
+    console.log("📥 Nouvelle candidature reçue :", data);
+
+    // 🔹 ajoute ou met à jour la candidature
+    setCandidatures((prev) => {
+      const exists = prev.some((c) => c.id_candidature === data.id_candidature);
+      return exists
+        ? prev.map((c) =>
+            c.id_candidature === data.id_candidature ? data : c
+          )
+        : [data, ...prev];
+    });
+
+    // 🔹 ajoute/maj le draft
+    setDrafts((prev) => ({
+      ...prev,
+      [data.id_candidature]: {
+        status: data.status || "attente",
+        date_entretien: data.date_entretien || "",
+        commentaire_entretien: data.commentaire_entretien || "",
+      },
+    }));
+  };
+
+  ws.onerror = (err) => console.error("❌ Erreur WebSocket :", err);
+  ws.onclose = () => console.log("⚠️ WebSocket déconnecté");
+
+  return () => ws.close();
+}, [entreprise_id]);
+
 
   const fetchMissions = async () => {
     try {
@@ -271,7 +363,7 @@ const handleSaveProfile = async () => {
 
 return (
     <div className="flex h-screen bg-gray-100">
-      <Navbar onSectionChange={setSection} section={section} />
+      <Navbar onSectionChange={handleSectionChange} candidatureCount={candidatureCount} section={currentsection} />
       <div className="flex-1 flex flex-col">
         <header className="flex justify-between items-center bg-white shadow p-4">
           <h1 className="text-2xl font-bold">Entreprise</h1>
@@ -288,7 +380,7 @@ return (
 
         {/* MAIN */}
         <main className="flex-1 p-6 overflow-y-auto">
-          {section === "dashboard" && (
+          {currentsection === "dashboard" && (
             <div>
               <div className="sticky top-0 bg-white mb-6 z-50 shadow-sm flex justify-between px-4 py-3">
                 <h1 className="text-2xl font-bold">Missions publiées</h1>
@@ -331,11 +423,17 @@ return (
               />
             </div>
           )}
-          { section == "Candidat" && (
-    <div>
-      <CandidatureList/>
-    </div>
-          )}
+          {currentsection == "Candidat" && (
+  <div>
+    <CandidatureList 
+      candidatures={candidatures} 
+      setCandidatures={setCandidatures}
+      drafts={drafts}
+      setDrafts={setDrafts}
+    />
+  </div>
+)}
+
         </main>
 
         {/* MODAL PROFIL */}

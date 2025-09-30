@@ -23,72 +23,92 @@ function formatDateForInput(dateString) {
   return new Date(d - tzOffset).toISOString().slice(0, 16);
 }
 
-export default function CandidatureList() {
-  const [candidatures, setCandidatures] = useState([]);
-  const [drafts, setDrafts] = useState({});
+export default function CandidatureList({candidatures , setCandidatures , drafts , setDrafts}) {
+  // const [drafts, setDrafts] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // const [candidatures , setCandidatures] = useState([])
 
-  
   // 🔹 Charger toutes les candidatures au montage
-  // Ton GET mis dans une fonction réutilisable
-const fetchCandidatures = () => {
-  fetch("http://localhost:8001/ptl/candidatures/", {
-    credentials: "include",
-  })
-    .then((res) => {
-      if (!res.ok) throw new Error(`Erreur ${res.status}`);
-      return res.json();
-    })
-    .then((data) => {
-      const arrayData = Array.isArray(data) ? data : [];
-      setCandidatures(arrayData);
+  // useEffect(() => {
+  //   fetch("http://localhost:8001/ptl/candidatures/", {
+  //     credentials: "include",
+  //   })
+  //     .then((res) => {
+  //       if (!res.ok) throw new Error(`Erreur ${res.status}`);
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       const arrayData = Array.isArray(data) ? data : [];
+  //       setCandidatures(arrayData);
 
-      // Initialiser les drafts
-      const initialDrafts = {};
-      arrayData.forEach((c) => {
-        initialDrafts[c.id_candidature] = {
-          status: c.status || "attente",
-          date_entretien: c.date_entretien || "",
-          commentaire_entretien: c.commentaire_entretien || "",
-        };
-      });
-      setDrafts(initialDrafts);
-    })
-    .catch((err) => setError(err.message))
-    .finally(() => setLoading(false));
-};
+  //       // Initialiser les drafts
+  //       const initialDrafts = {};
+  //       arrayData.forEach((c) => {
+  //         initialDrafts[c.id_candidature] = {
+  //           status: c.status || "attente",
+  //           date_entretien: c.date_entretien || "",
+  //           commentaire_entretien: c.commentaire_entretien || "",
+  //         };
+  //       });
+  //       setDrafts(initialDrafts);
+  //     })
+  //     .catch((err) => setError(err.message))
+  //     .finally(() => setLoading(false));
+  // }, [setCandidatures]);
 
-// useEffect au montage
-useEffect(() => {
-  fetchCandidatures();
-}, []);
-
-// 🔹 Update
-const handleUpdate = (id) => {
-  const updates = drafts[id];
-  const csrftoken = getCookie("csrftoken");
-
-  fetch(`http://localhost:8001/ptl/candidatures/${id}/`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrftoken,
-    },
-    body: JSON.stringify(updates),
-    credentials: "include",
-  })
-    .then((res) => {
-      if (!res.ok) throw new Error(`Erreur ${res.status} lors de la mise à jour`);
-      return res.json();
+  useEffect(() => {
+    fetch("http://localhost:8001/ptl/candidatures/", {
+      credentials: "include",
     })
-    .then(() => {
-      // ⬅️ Recharger toute la liste depuis le backend
-      fetchCandidatures();
-      alert("✅ Candidature mise à jour !");
+      .then((res) => {
+        if (!res.ok) throw new Error(`Erreur ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        const arrayData = Array.isArray(data) ? data : [];
+        setCandidatures(arrayData);
+
+        // Initialiser drafts seulement si vides
+        if (Object.keys(drafts).length === 0) {
+          const initialDrafts = {};
+          arrayData.forEach((c) => {
+            initialDrafts[c.id_candidature] = {
+              status: c.status || "attente",
+              date_entretien: c.date_entretien || "",
+              commentaire_entretien: c.commentaire_entretien || "",
+            };
+          });
+          setDrafts(initialDrafts);
+        }
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, [setCandidatures, setDrafts]);
+
+  // 🔹 Update candidature
+  const handleUpdate = (id) => {
+    const updates = drafts[id];
+    const csrftoken = getCookie("csrftoken");
+
+    fetch(`http://localhost:8001/ptl/candidatures/${id}/`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify(updates),
+      credentials: "include",
     })
-    .catch((err) => alert(err.message));
-};
+      .then((res) => {
+        if (!res.ok) throw new Error(`Erreur ${res.status} lors de la mise à jour`);
+        return res.json();
+      })
+      .then(() => {
+        alert("✅ Candidature mise à jour !");
+      })
+      .catch((err) => alert(err.message));
+  };
 
   // 🔹 Rendu
   if (loading) return <p className="text-center">Chargement...</p>;

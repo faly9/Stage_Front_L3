@@ -4,17 +4,18 @@ import CardProfil from "./CardProfil";
 import CardOffre from "./OffreDispo";
 import EditProfileFreelance from "./EditProfil";
 import { toast } from "react-toastify";
+import EntretienCard from "./EntretienCard";
 
 export default function FreelanceDashboard() {
-// Initialiser depuis localStorage
-const [newoffer, setNewoffer] = useState(() => {
-  return parseInt(localStorage.getItem("newoffer")) || 0;
-});
+  // Initialiser depuis localStorage
+  const [newoffer, setNewoffer] = useState(() => {
+    return parseInt(localStorage.getItem("newoffer")) || 0;
+  });
 
-// Mettre à jour localStorage à chaque changement
-useEffect(() => {
-  localStorage.setItem("newoffer", newoffer);
-}, [newoffer]);
+  // Mettre à jour localStorage à chaque changement
+  useEffect(() => {
+    localStorage.setItem("newoffer", newoffer);
+  }, [newoffer]);
 
   const [activeSection, setActiveSection] = useState("Mon Profil");
   const [editingFreelance, setEditingFreelance] = useState(null);
@@ -26,13 +27,15 @@ useEffect(() => {
   useEffect(() => {
     const fetchFreelance = async () => {
       try {
+        // NOTE: Utiliser l'ID du freelance authentifié pour une meilleure sécurité
         const res = await fetch("http://localhost:8001/frl/freelances/", {
           credentials: "include",
         });
 
         if (res.ok) {
           const data = await res.json();
-          setFreelances(Array.isArray(data) ? data : [data]);
+          // Assurer que setFreelances reçoit toujours un tableau pour simplifier l'accès
+          setFreelances(Array.isArray(data) ? data : (data ? [data] : []));
         } else {
           setFreelances([]);
         }
@@ -47,58 +50,59 @@ useEffect(() => {
     fetchFreelance();
   }, []);
 
-// Charger missions existantes via API REST
-useEffect(() => {
-  const fetchMissions = async () => {
-    try {
-      const res = await fetch("http://localhost:8001/msn/missions/", {
-        method: "GET",
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Erreur fetch missions");
-      
-      const data = await res.json();
-      // console.log("📩 Données brutes :", data);
+  // Charger missions existantes via API REST
+  useEffect(() => {
+    const fetchMissions = async () => {
+      try {
+        const res = await fetch("http://localhost:8001/msn/missions/", {
+          method: "GET",
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error("Erreur fetch missions");
 
-      // if (Array.isArray(data)) {
-      //   data.forEach((mission, index) => {
-      //     console.log(`🔹 Mission ${index + 1}:`, mission);
-      //   });
-      // }
+        const data = await res.json();
+        setMissions(data);
+      } catch (err) {
+        console.error("❌ Erreur de chargement des missions :", err.message);
+      }
+    };
 
-      setMissions(data); // ✅ liste de départ
+    fetchMissions();
+  }, []);
+
+  // test pour eviter le reload 
     
-    } catch (err) {
-      console.error("❌ Erreur :", err.message);
-    }
-  };
-
-  fetchMissions();
-}, []);
-
-  // Connexion WebSocket pour le temps réel
+    
+    // Connexion WebSocket pour le temps réel (Missions)
 useEffect(() => {
   const socket = new WebSocket("ws://localhost:8001/ws/missions/");
 
-  socket.onopen = () => console.log("✅ WS connecté");
+  socket.onopen = () => console.log("✅ WS Missions connecté");
 
-  socket.onmessage = (event) => {
+  socket.onmessage = async (event) => {
     const message = JSON.parse(event.data);
     const mission = message.mission;
-    console.log("message recu" , mission)
     const action = message.action;
 
     switch (action) {
       case "created": {
-        setMissions(prev => {
-          // si mission déjà existante, on retourne prev
-          if (prev.some(m => m.id_mission === mission.id_mission)) return prev;
-          return [...prev, mission];
-        });
-
-        // ✅ hors setMissions : compteur et toast
+        // Option 1 : Ajouter directement, mais forcer fetch pour ID correct
+        setMissions(prev => [mission, ...prev]);
         setNewoffer(count => count + 1);
         toast.info(`📢 Nouvelle mission : ${mission.titre}`);
+
+        // 🔹 Fetch missions pour récupérer l'ID définitif
+        try {
+          const res = await fetch("http://localhost:8001/msn/missions/", {
+            credentials: "include"
+          });
+          if (res.ok) {
+            const data = await res.json();
+            setMissions(data); // Remplace l'ancien state avec l'ID correct
+          }
+        } catch (err) {
+          console.error("❌ Erreur fetch missions après création :", err.message);
+        }
         break;
       }
 
@@ -122,28 +126,73 @@ useEffect(() => {
     }
   };
 
-  socket.onclose = () => console.log("❌ WS fermé");
+  socket.onclose = () => console.log("❌ WS Missions fermé");
   return () => socket.close();
 }, []);
 
-useEffect(() => {
-  // console.log("Nombre de nouvelles offres :", newoffer);
-}, [newoffer]);
 
-
-const handleSectionChange = (section) => {
-  setActiveSection(section);
-  if (section === "Offres disponibles") {
-    setNewoffer(0); // reset du compteur
-  }
-};
-
-
-
-  const handlePostuler = (offre) => {
-    alert("Vous postulez pour : " + offre.titre);
+  const handleSectionChange = (section) => {
+    setActiveSection(section);
+    if (section === "Offres disponibles") {
+      setNewoffer(0); // reset du compteur
+    }
   };
 
+  /**
+   * [CORRECTIF] : Fonction pour postuler à une mission via WebSocket.
+   * Améliorations : 
+   * 1. Gestion des erreurs du backend (candidature existante, erreur serveur).
+   * 2. Nettoyage et gestion des événements de la socket.
+   */
+  const postuler = (mission) => {
+    // Vérification de la disponibilité du profil freelance
+    if (freelances.length === 0 || !freelances[0].id_freelance) {
+      toast.error("Veuillez créer votre profil freelance avant de postuler.");
+      return;
+    }
+    
+    const freelanceId = freelances[0].id_freelance;
+    const entrepriseId = mission.entreprise; 
+    
+    // Le WS de candidature doit être dynamique pour l'entreprise
+    const ws = new WebSocket(`ws://localhost:8001/ws/candidatures/${entrepriseId}/`);
+
+    ws.onopen = () => {
+      console.log("✅ WebSocket Candidature connecté à l'entreprise", entrepriseId);
+      
+      const payload = {
+        mission_id: mission.id_mission,
+        freelance_id: freelanceId
+      };
+      ws.send(JSON.stringify(payload));
+    };
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("📥 Candidature reçue du backend :", data);
+
+      if (data.error) {
+        // [IMPORTANT] Gérer les erreurs du backend (ex: "Mission non trouvée", "Erreur de base de données")
+        toast.error(`❌ Échec de la candidature: ${data.error}`);
+      } else if (data.created === false) {
+        // Gérer le cas où la candidature existe déjà (via get_or_create)
+        toast.warn("⚠️ Vous avez déjà postulé à cette mission.");
+      } else {
+        // Succès de la création
+        toast.success(`🎉 Candidature envoyée pour la mission : ${mission.titre}`);
+      }
+
+      ws.close(); // Fermer la connexion après avoir reçu la réponse
+    };
+
+    ws.onerror = (err) => {
+      console.error("❌ WebSocket erreur de candidature :", err);
+      toast.error("Erreur de connexion lors de l'envoi de la candidature.");
+      ws.close(); // S'assurer de fermer en cas d'erreur
+    };
+  };
+
+  // ... (renderContent and the rest of the component remain the same)
   const renderContent = () => {
     switch (activeSection) {
       case "Mon Profil":
@@ -230,7 +279,7 @@ const handleSectionChange = (section) => {
                   <CardOffre
                     key={offre.id_mission}
                     offre={offre}
-                    onPostuler={handlePostuler}
+                    onPostuler={postuler}
                   />
                 ))
               ) : (
@@ -248,11 +297,11 @@ const handleSectionChange = (section) => {
           </div>
         );
 
-      case "Historique":
+      case "Notifications":
         return (
           <div>
-            <h2 className="text-xl font-semibold mb-4">Historique</h2>
-            <p>Liste des missions terminées ou candidatures passées.</p>
+            <h2 className="text-xl font-semibold mb-4">Notifications</h2>
+            <EntretienCard />
           </div>
         );
 
