@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
 import NavbarFreelance from "./NavbarFree";
 import CardProfil from "./CardProfil";
+import axios from "axios";
 import CardOffre from "./OffreDispo";
 import EditProfileFreelance from "./EditProfil";
 import { toast } from "react-toastify";
 import EntretienCard from "./EntretienCard";
 
 export default function FreelanceDashboard() {
+  const [entretienNotifications, setEntretienNotifications] = useState([]);
+
+
   // Initialiser depuis localStorage
   const [newoffer, setNewoffer] = useState(() => {
     return parseInt(localStorage.getItem("newoffer")) || 0;
@@ -70,8 +74,51 @@ export default function FreelanceDashboard() {
     fetchMissions();
   }, []);
 
-  // test pour eviter le reload 
-    
+// 🔹 Charger les notifications permanentes via session (pas de token)
+// Charger notifications permanentes
+  useEffect(() => {
+    axios
+      .get("http://localhost:8001/ptl/note/", { withCredentials: true })
+      .then((res) => {
+        // 🔹 Supprimer les doublons par id_candidature
+        const unique = Array.from(
+          new Map(res.data.map(item => [item.id_candidature, item])).values()
+        );
+        setEntretienNotifications(unique);
+      })
+      .catch((err) => console.error("Erreur chargement notifications :", err));
+  }, []);
+
+  // WebSocket pour notifications temps réel
+  useEffect(() => {
+    if (!freelances.length) return;
+
+    const freelanceId = freelances[0].id_freelance;
+    if (!freelanceId) return;
+
+    const ws = new WebSocket(`ws://localhost:8001/ws/entretien/${freelanceId}/`);
+
+    ws.onopen = () => console.log("✅ WS Entretien connecté");
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("Notification reçue:", data);
+
+      setEntretienNotifications(prev => {
+        // Ajouter seulement si id_candidature unique
+        const exists = prev.some(n => n.id_candidature === data.id_candidature);
+        if (exists) return prev;
+        return [data, ...prev];
+      });
+
+      toast.info(`📢 Entretien mis à jour : ${data.mission_titre}`);
+    };
+
+    ws.onerror = (err) => console.error("❌ WS Entretien erreur :", err);
+    ws.onclose = () => console.log("❌ WS Entretien fermé");
+
+    return () => ws.close();
+  }, [freelances]);
     
     // Connexion WebSocket pour le temps réel (Missions)
 useEffect(() => {
@@ -297,13 +344,24 @@ useEffect(() => {
           </div>
         );
 
-      case "Notifications":
-        return (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Notifications</h2>
-            <EntretienCard />
-          </div>
-        );
+case "Notifications":
+  return (
+    <div>
+      <h2 className="text-xl font-semibold mb-4">Notifications</h2>
+      <div className="flex flex-col gap-4">
+{entretienNotifications.length > 0 ? (
+  entretienNotifications.map((entretien, index) => (
+    <EntretienCard
+      key={`${entretien.id_candidature}-${index}`}
+      notification={entretien} // 🔹 passer l'objet individuel, pas tout le tableau
+    />
+  ))
+) : (
+  <p>Aucun entretien planifié pour le moment.</p>
+)}
+      </div>
+    </div>
+  );
 
       default:
         return null;
