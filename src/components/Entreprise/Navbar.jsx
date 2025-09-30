@@ -1,4 +1,4 @@
-import { Home, Brain, Briefcase, User } from "lucide-react";
+import { Home, Brain, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 

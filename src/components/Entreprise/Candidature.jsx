@@ -205,7 +205,6 @@ export default function CandidatureList({candidatures , setCandidatures , drafts
                 >
                   <option value="en_attente">En attente</option>
                   <option value="en_entretien">En entretien</option>
-                  <option value="refusee">Refusé</option>
                 </select>
               </div>
 
@@ -262,7 +261,7 @@ export default function CandidatureList({candidatures , setCandidatures , drafts
                 onClick={() => handleUpdate(c.id_candidature)}
                 className="mt-3 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
               >
-                Enregistrer
+                Envoyer
               </button>
             </div>
           );

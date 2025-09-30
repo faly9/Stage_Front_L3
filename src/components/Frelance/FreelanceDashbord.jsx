@@ -21,11 +21,17 @@ export default function FreelanceDashboard() {
     localStorage.setItem("newoffer", newoffer);
   }, [newoffer]);
 
-  const [activeSection, setActiveSection] = useState("Mon Profil");
   const [editingFreelance, setEditingFreelance] = useState(null);
   const [freelances, setFreelances] = useState([]);
   const [missions, setMissions] = useState([]); // 🔹 missions dynamiques
   const [loading, setLoading] = useState(true);
+  const [activeSection, setActiveSection] = useState("Mon Profil");
+  
+  // nombre de nouvelle notification sur l'option notification
+  const [newnotification , setNewnotification] = useState(()=>{
+    return parseInt(localStorage.getItem("newnotification")) || 0;
+  })
+
 
   // Charger profil freelance
   useEffect(() => {
@@ -110,6 +116,7 @@ export default function FreelanceDashboard() {
         if (exists) return prev;
         return [data, ...prev];
       });
+      setNewnotification(count => count + 1)
 
       toast.info(`📢 Entretien mis à jour : ${data.mission_titre}`);
     };
@@ -182,6 +189,9 @@ useEffect(() => {
     setActiveSection(section);
     if (section === "Offres disponibles") {
       setNewoffer(0); // reset du compteur
+    }
+    else if (section == "Notifications"){
+      setNewnotification(0);
     }
   };
 
@@ -376,6 +386,7 @@ case "Notifications":
         freelance={freelances[0] || {}}
         onSectionChange={handleSectionChange}
         newoffer={newoffer}
+        newnotification={newnotification}
       />
 
       <div className="flex-1 flex flex-col">

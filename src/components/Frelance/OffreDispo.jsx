@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Briefcase, DollarSign, Star, Eye } from "lucide-react";
 
-export default function CardOffre({ offre, onView, onPostuler }) {
+export default function CardOffre({ offre, onPostuler }) {
   const [showDetails, setShowDetails] = useState(false);
   const [isPostuled, setIsPostuled] = useState(false);
   console.log("id mission :" , offre.id_mission)

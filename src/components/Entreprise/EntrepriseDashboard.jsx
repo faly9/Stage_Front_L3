@@ -127,7 +127,6 @@ export default function EntrepriseDashboard() {
   const [entreprise_id, setEntreprise_id] = useState(null);
   const [candidatures, setCandidatures] = useState([]);
   const [drafts, setDrafts] = useState({});
-
   const [errors, setErrors] = useState({});
 
   // pour l indice de nouveau message

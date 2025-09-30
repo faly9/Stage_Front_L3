@@ -1,6 +1,6 @@
 // NavbarFreelance.js
 import React from "react";
-import { User, Briefcase, Cpu, Clock, MessageCircle } from "lucide-react";
+import { User, Briefcase, Cpu, MessageCircle } from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -19,7 +19,7 @@ const getCookie = (name) => {
   return cookieValue;
 };
 
-export default function NavbarFreelance({  activeSection, onSectionChange, freelance, newoffer }) {
+export default function NavbarFreelance({  activeSection, onSectionChange, freelance, newoffer , newnotification }) {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -83,6 +83,11 @@ export default function NavbarFreelance({  activeSection, onSectionChange, freel
                  new {newoffer}
                 </span>
               )}
+              {sec.name === "Notifications" && newnotification > 0 && (
+              <span className="absolute right-2 top-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
+                 new {newnotification}
+              </span>
+              ) }
             </button>
           ))}
         </div>
