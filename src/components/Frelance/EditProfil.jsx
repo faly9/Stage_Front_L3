@@ -13,18 +13,18 @@ const getCookie = (name) => {
 };
 
 export default function EditProfileFreelance({ freelance, onSave, onCancel }) {
-const [profile, setProfile] = useState({
-  id_freelance: freelance?.id_freelance || null,
-  nom: freelance?.nom || "",
-  description: freelance?.description || "",
-  competence: freelance?.competence || "",
-  experience: freelance?.experience || "",
-  formation: freelance?.formation || "",
-  certificat: freelance?.certificat || "",
-  tarif: freelance?.tarif || "",
-  photo: freelance?.photo || null,
-  photoPreview: null,
-});
+  const [profile, setProfile] = useState({
+    id_freelance: freelance?.id_freelance || null,
+    nom: freelance?.nom || "",
+    description: freelance?.description || "",
+    competence: freelance?.competence || "",
+    experience: freelance?.experience || "",
+    formation: freelance?.formation || "",
+    certificat: freelance?.certificat || "",
+    tarif: freelance?.tarif || "",
+    photo: freelance?.photo || null,
+    photoPreview: null,
+  });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -60,7 +60,7 @@ const [profile, setProfile] = useState({
         formData.append("photo", profile.photo);
       }
       const isUpdate = !!profile.id_freelance;
-      console.log(isUpdate)
+      console.log(isUpdate);
       const url = isUpdate
         ? `http://localhost:8001/frl/freelances/${profile.id_freelance}/`
         : "http://localhost:8001/frl/freelances/";

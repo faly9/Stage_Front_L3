@@ -32,12 +32,16 @@ export default function Navbar({ section, onSectionChange, candidatureCount }) {
         toast.success("✅ Déconnexion réussie", { position: "top-center" });
         navigate("/"); // redirection vers login
       } else {
-        toast.error(`❌ Erreur logout (${res.status})`, { position: "top-center" });
+        toast.error(`❌ Erreur logout (${res.status})`, {
+          position: "top-center",
+        });
         console.error("Erreur logout", res.status);
       }
     } catch (err) {
       console.error(err);
-      toast.error("❌ Erreur réseau lors du logout", { position: "top-center" });
+      toast.error("❌ Erreur réseau lors du logout", {
+        position: "top-center",
+      });
     }
   };
 
@@ -69,7 +73,7 @@ export default function Navbar({ section, onSectionChange, candidatureCount }) {
               {/* Badge rouge si Candidats */}
               {item.key === "Candidat" && candidatureCount > 0 && (
                 <span className="absolute right-3 bg-red-600 text-white text-xs px-2 py-0.5 rounded-full">
-                 new {candidatureCount}
+                  new {candidatureCount}
                 </span>
               )}
             </button>

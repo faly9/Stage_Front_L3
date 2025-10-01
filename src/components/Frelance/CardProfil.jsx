@@ -28,7 +28,9 @@ export default function CardProfil({ freelance, onEdit }) {
           alt={freelance.nom || "Profil"}
           className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 mb-3"
         />
-        <h2 className="text-2xl font-bold">{freelance.nom || "Nom non renseigné"}</h2>
+        <h2 className="text-2xl font-bold">
+          {freelance.nom || "Nom non renseigné"}
+        </h2>
         <p className="text-gray-600">
           {freelance.description || "Description non renseignée"}
         </p>
@@ -36,7 +38,9 @@ export default function CardProfil({ freelance, onEdit }) {
 
       {/* Compétences */}
       <div className="mb-4 relative z-10">
-        <h3 className="text-lg font-semibold mb-2 border-b pb-1">Compétences</h3>
+        <h3 className="text-lg font-semibold mb-2 border-b pb-1">
+          Compétences
+        </h3>
         {competences.length > 0 ? (
           <ul className="list-disc list-inside text-gray-700">
             {competences.map((comp, idx) => (
@@ -50,7 +54,9 @@ export default function CardProfil({ freelance, onEdit }) {
 
       {/* Expériences */}
       <div className="mb-4 relative z-10">
-        <h3 className="text-lg font-semibold mb-2 border-b pb-1">Expériences professionnelles</h3>
+        <h3 className="text-lg font-semibold mb-2 border-b pb-1">
+          Expériences professionnelles
+        </h3>
         {experiences.length > 0 ? (
           <ul className="list-disc list-inside text-gray-700">
             {experiences.map((exp, idx) => (
@@ -78,7 +84,9 @@ export default function CardProfil({ freelance, onEdit }) {
 
       {/* Certificats */}
       <div className="mb-4 relative z-10">
-        <h3 className="text-lg font-semibold mb-2 border-b pb-1">Certificats</h3>
+        <h3 className="text-lg font-semibold mb-2 border-b pb-1">
+          Certificats
+        </h3>
         {certificats.length > 0 ? (
           <ul className="list-disc list-inside text-gray-700">
             {certificats.map((cert, idx) => (

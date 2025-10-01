@@ -23,7 +23,12 @@ function formatDateForInput(dateString) {
   return new Date(d - tzOffset).toISOString().slice(0, 16);
 }
 
-export default function CandidatureList({candidatures , setCandidatures , drafts , setDrafts}) {
+export default function CandidatureList({
+  candidatures,
+  setCandidatures,
+  drafts,
+  setDrafts,
+}) {
   // const [drafts, setDrafts] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -101,7 +106,8 @@ export default function CandidatureList({candidatures , setCandidatures , drafts
       credentials: "include",
     })
       .then((res) => {
-        if (!res.ok) throw new Error(`Erreur ${res.status} lors de la mise à jour`);
+        if (!res.ok)
+          throw new Error(`Erreur ${res.status} lors de la mise à jour`);
         return res.json();
       })
       .then(() => {
@@ -112,7 +118,8 @@ export default function CandidatureList({candidatures , setCandidatures , drafts
 
   // 🔹 Rendu
   if (loading) return <p className="text-center">Chargement...</p>;
-  if (error) return <p className="text-center text-red-500">Erreur : {error}</p>;
+  if (error)
+    return <p className="text-center text-red-500">Erreur : {error}</p>;
   if (candidatures.length === 0)
     return <p className="text-center text-gray-500">Aucune candidature</p>;
 
@@ -185,6 +192,7 @@ export default function CandidatureList({candidatures , setCandidatures , drafts
                 {c.freelance_tarif ? `${c.freelance_tarif} €/h` : "Non défini"}
               </p>
 
+              <p className="font-semibold">Réponse à une demande d’emploi :</p>
               {/* Statut */}
               <div className="mt-4">
                 <label className="block text-sm font-medium text-gray-700">
@@ -261,7 +269,7 @@ export default function CandidatureList({candidatures , setCandidatures , drafts
                 onClick={() => handleUpdate(c.id_candidature)}
                 className="mt-3 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
               >
-                Envoyer
+                Envoyer votre reponse
               </button>
             </div>
           );

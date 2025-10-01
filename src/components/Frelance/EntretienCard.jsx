@@ -1,7 +1,7 @@
 import React from "react";
 
 export default function EntretienCard({ notification }) {
-  if (!notification) 
+  if (!notification)
     return <p className="text-gray-500">Aucune notification pour le moment.</p>;
 
   return (
@@ -26,9 +26,15 @@ export default function EntretienCard({ notification }) {
       </div>
 
       <p>A Mr/Md : {notification.freelance_nom}</p>
-      <p className="text-sm text-gray-700 mb-1">📌 Mission : {notification.mission_titre}</p>
-      <p className="text-sm text-gray-700 mb-1">📅 Date : {notification.date_entretien}</p>
-      <p className="text-sm text-gray-700 mb-2">💬 {notification.commentaire}</p>
+      <p className="text-sm text-gray-700 mb-1">
+        📌 Mission : {notification.mission_titre}
+      </p>
+      <p className="text-sm text-gray-700 mb-1">
+        📅 Date : {notification.date_entretien}
+      </p>
+      <p className="text-sm text-gray-700 mb-2">
+        💬 {notification.commentaire_entretien}
+      </p>
 
       <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">
         {notification.status}

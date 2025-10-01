@@ -23,7 +23,7 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-          <Route
+        <Route
           path="/dashboard-freelance"
           element={
             <ProtectedRoute>
@@ -31,7 +31,6 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-
       </Routes>
       <ToastContainer position="top-center" autoClose={1000} />
     </BrowserRouter>

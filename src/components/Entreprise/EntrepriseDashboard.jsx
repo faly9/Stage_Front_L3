@@ -7,7 +7,6 @@ import EditMissionModal from "./EditMission";
 import { toast } from "react-toastify";
 import CandidatureList from "./Candidature";
 
-
 // 🔹 fonction utilitaire pour lire le cookie CSRF
 const getCookie = (name) => {
   let cookieValue = null;
@@ -37,78 +36,135 @@ function Mission({ isOpen, onClose, onAdded }) {
 
   if (!isOpen) return null;
 
-  const handleChange = (e) => setMission({ ...mission, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setMission({ ...mission, [e.target.name]: e.target.value });
 
-const handleSaveMission = async () => {
-  const newErrors = {};
-  if (!mission.titre.trim()) newErrors.titre = "Le titre est obligatoire";
-  if (!mission.description.trim()) newErrors.description = "La description est obligatoire";
-  if (!mission.competence.trim()) newErrors.competence = "Les compétences sont obligatoires";
-  if (!mission.budget || parseFloat(mission.budget) <= 0)
-    newErrors.budget = "Le budget doit être supérieur à 0";
+  const handleSaveMission = async () => {
+    const newErrors = {};
+    if (!mission.titre.trim()) newErrors.titre = "Le titre est obligatoire";
+    if (!mission.description.trim())
+      newErrors.description = "La description est obligatoire";
+    if (!mission.competence.trim())
+      newErrors.competence = "Les compétences sont obligatoires";
+    if (!mission.budget || parseFloat(mission.budget) <= 0)
+      newErrors.budget = "Le budget doit être supérieur à 0";
 
-  setErrors(newErrors);
-  if (Object.keys(newErrors).length > 0) return;
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
 
-  setLoading(true);
-  const csrftoken = getCookie("csrftoken");
+    setLoading(true);
+    const csrftoken = getCookie("csrftoken");
 
-  try {
-    const res = await fetch("http://localhost:8001/msn/missions/me/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
-      credentials: "include",
-      body: JSON.stringify({
-        titre: mission.titre,
-        description: mission.description,
-        competence_requis: mission.competence,
-        budget: mission.budget,
-      }),
-    });
+    try {
+      const res = await fetch("http://localhost:8001/msn/missions/me/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken,
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          titre: mission.titre,
+          description: mission.description,
+          competence_requis: mission.competence,
+          budget: mission.budget,
+        }),
+      });
 
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error("Erreur lors de l'ajout de la mission : " + errText);
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error("Erreur lors de l'ajout de la mission : " + errText);
+      }
+
+      const data = await res.json();
+      if (onAdded) onAdded(); // rafraîchit la liste
+      onClose();
+      setMission({ titre: "", description: "", competence: "", budget: "" });
+
+      // ✅ toast succès
+      toast.success("Mission ajoutée avec succès ✅", {
+        position: "top-center",
+      });
+    } catch (err) {
+      console.error(err);
+
+      // ❌ toast erreur
+      toast.error(err.message || "Erreur lors de l'ajout de la mission ❌", {
+        position: "top-center",
+      });
+    } finally {
+      setLoading(false);
     }
-
-    const data = await res.json();
-    if (onAdded) onAdded(); // rafraîchit la liste
-    onClose();
-    setMission({ titre: "", description: "", competence: "", budget: "" });
-
-    // ✅ toast succès
-    toast.success("Mission ajoutée avec succès ✅", { position: "top-center" });
-
-  } catch (err) {
-    console.error(err);
-
-    // ❌ toast erreur
-    toast.error(err.message || "Erreur lors de l'ajout de la mission ❌", { position: "top-center" });
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-xl shadow-lg w-[500px]">
         <h2 className="text-xl font-semibold mb-4">Ajouter une mission</h2>
         <div className="space-y-4">
-          <input type="text" name="titre" value={mission.titre} onChange={handleChange} placeholder="Titre" className="w-full px-3 py-2 border rounded-lg" />
-          {errors.titre && <p className="text-red-500 text-sm">{errors.titre}</p>}
+          <input
+            type="text"
+            name="titre"
+            value={mission.titre}
+            onChange={handleChange}
+            placeholder="Titre"
+            className="w-full px-3 py-2 border rounded-lg"
+          />
+          {errors.titre && (
+            <p className="text-red-500 text-sm">{errors.titre}</p>
+          )}
 
-          <textarea name="description" value={mission.description} onChange={handleChange} placeholder="Description" className="w-full px-3 py-2 border rounded-lg" />
-          {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
+          <textarea
+            name="description"
+            value={mission.description}
+            onChange={handleChange}
+            placeholder="Description"
+            className="w-full px-3 py-2 border rounded-lg"
+          />
+          {errors.description && (
+            <p className="text-red-500 text-sm">{errors.description}</p>
+          )}
 
-          <input type="text" name="competence" value={mission.competence} onChange={handleChange} placeholder="Compétences requises" className="w-full px-3 py-2 border rounded-lg" />
-          {errors.competence && <p className="text-red-500 text-sm">{errors.competence}</p>}
+          <input
+            type="text"
+            name="competence"
+            value={mission.competence}
+            onChange={handleChange}
+            placeholder="Compétences requises"
+            className="w-full px-3 py-2 border rounded-lg"
+          />
+          {errors.competence && (
+            <p className="text-red-500 text-sm">{errors.competence}</p>
+          )}
 
-          <input type="number" name="budget" value={mission.budget} onChange={handleChange} placeholder="Budget" className="w-full px-3 py-2 border rounded-lg" />
-          {errors.budget && <p className="text-red-500 text-sm">{errors.budget}</p>}
+          <input
+            type="number"
+            name="budget"
+            value={mission.budget}
+            onChange={handleChange}
+            placeholder="Budget"
+            className="w-full px-3 py-2 border rounded-lg"
+          />
+          {errors.budget && (
+            <p className="text-red-500 text-sm">{errors.budget}</p>
+          )}
 
           <div className="flex justify-end gap-3">
-            <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200">Annuler</button>
-            <button type="button" onClick={handleSaveMission} disabled={loading} className="px-4 py-2 rounded-lg bg-green-600 text-white">{loading ? "Ajout..." : "Ajouter"}</button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 rounded-lg bg-gray-200"
+            >
+              Annuler
+            </button>
+            <button
+              type="button"
+              onClick={handleSaveMission}
+              disabled={loading}
+              className="px-4 py-2 rounded-lg bg-green-600 text-white"
+            >
+              {loading ? "Ajout..." : "Ajouter"}
+            </button>
           </div>
         </div>
       </div>
@@ -122,7 +178,13 @@ export default function EntrepriseDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingMission, setEditingMission] = useState(null);
   const [missions, setMissions] = useState([]);
-  const [user, setUser] = useState({ id: null, nom: "", secteur: "", profile_image: null, profile_imageFile: null });
+  const [user, setUser] = useState({
+    id: null,
+    nom: "",
+    secteur: "",
+    profile_image: null,
+    profile_imageFile: null,
+  });
   const [userinfo, setUserinfo] = useState({ email: "", role: "" });
   const [entreprise_id, setEntreprise_id] = useState(null);
   const [candidatures, setCandidatures] = useState([]);
@@ -135,8 +197,7 @@ export default function EntrepriseDashboard() {
     return parseInt(localStorage.getItem("candidatureCount")) || 0;
   });
 
-
-// Sauvegarder dans localStorage à chaque changement
+  // Sauvegarder dans localStorage à chaque changement
   useEffect(() => {
     localStorage.setItem("candidatureCount", candidatureCount);
   }, [candidatureCount]);
@@ -146,7 +207,7 @@ export default function EntrepriseDashboard() {
     // Quand l'utilisateur ouvre "candidatures", on considère que c'est lu
     if (section === "Candidat") {
       setCandidatureCount(0);
-      localStorage.setItem("candidatureCount" , 0);
+      localStorage.setItem("candidatureCount", 0);
     }
   };
 
@@ -156,77 +217,80 @@ export default function EntrepriseDashboard() {
     fetchMissions();
   }, []);
 
-
   // Récupérer l'ID de l'entreprise au montage
-useEffect(() => {
-  fetch("http://localhost:8001/etr/id/", { credentials: "include" })
-    .then((res) => {
-      if (!res.ok) throw new Error("Erreur API entreprise");
-      return res.json();
-    })
-    .then((data) => {
-      setEntreprise_id(data.entreprise_id);
-    })
-    .catch((err) =>
-      console.error("❌ Impossible de récupérer l'entreprise :", err)
+  useEffect(() => {
+    fetch("http://localhost:8001/etr/id/", { credentials: "include" })
+      .then((res) => {
+        if (!res.ok) throw new Error("Erreur API entreprise");
+        return res.json();
+      })
+      .then((data) => {
+        setEntreprise_id(data.entreprise_id);
+      })
+      .catch((err) =>
+        console.error("❌ Impossible de récupérer l'entreprise :", err)
+      );
+  }, []);
+
+  // Connexion WebSocket candidature (uniquement quand entreprise_id est dispo)
+  useEffect(() => {
+    if (!entreprise_id) return;
+
+    const ws = new WebSocket(
+      `ws://localhost:8001/ws/candidatures/${entreprise_id}/`
     );
-}, []);
 
-// Connexion WebSocket candidature (uniquement quand entreprise_id est dispo)
-useEffect(() => {
-  if (!entreprise_id) return;
+    ws.onopen = () =>
+      console.log("✅ WebSocket connecté à l'entreprise", entreprise_id);
 
-  const ws = new WebSocket(
-    `ws://localhost:8001/ws/candidatures/${entreprise_id}/`
-  );
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
 
-  ws.onopen = () =>
-    console.log("✅ WebSocket connecté à l'entreprise", entreprise_id);
+      // 🔹 incrémente le compteur (et sauvegarde dans localStorage)
+      setCandidatureCount((count) => {
+        const newCount = count + 1;
+        localStorage.setItem("candidatureCount", newCount);
+        console.log("🟢 Ancien count:", count, "➡️ Nouveau count:", newCount);
+        return newCount;
+      });
 
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
+      console.log("📥 Nouvelle candidature reçue :", data);
 
-    // 🔹 incrémente le compteur (et sauvegarde dans localStorage)
-    setCandidatureCount((count) => {
-      const newCount = count + 1;
-      localStorage.setItem("candidatureCount", newCount);
-      console.log("🟢 Ancien count:", count, "➡️ Nouveau count:", newCount);
-      return newCount;
-    });
+      // 🔹 ajoute ou met à jour la candidature
+      setCandidatures((prev) => {
+        const exists = prev.some(
+          (c) => c.id_candidature === data.id_candidature
+        );
+        return exists
+          ? prev.map((c) =>
+              c.id_candidature === data.id_candidature ? data : c
+            )
+          : [data, ...prev];
+      });
 
-    console.log("📥 Nouvelle candidature reçue :", data);
+      // 🔹 ajoute/maj le draft
+      setDrafts((prev) => ({
+        ...prev,
+        [data.id_candidature]: {
+          status: data.status || "attente",
+          date_entretien: data.date_entretien || "",
+          commentaire_entretien: data.commentaire_entretien || "",
+        },
+      }));
+    };
 
-    // 🔹 ajoute ou met à jour la candidature
-    setCandidatures((prev) => {
-      const exists = prev.some((c) => c.id_candidature === data.id_candidature);
-      return exists
-        ? prev.map((c) =>
-            c.id_candidature === data.id_candidature ? data : c
-          )
-        : [data, ...prev];
-    });
+    ws.onerror = (err) => console.error("❌ Erreur WebSocket :", err);
+    ws.onclose = () => console.log("⚠️ WebSocket déconnecté");
 
-    // 🔹 ajoute/maj le draft
-    setDrafts((prev) => ({
-      ...prev,
-      [data.id_candidature]: {
-        status: data.status || "attente",
-        date_entretien: data.date_entretien || "",
-        commentaire_entretien: data.commentaire_entretien || "",
-      },
-    }));
-  };
-
-  ws.onerror = (err) => console.error("❌ Erreur WebSocket :", err);
-  ws.onclose = () => console.log("⚠️ WebSocket déconnecté");
-
-  return () => ws.close();
-}, [entreprise_id]);
-
+    return () => ws.close();
+  }, [entreprise_id]);
 
   const fetchMissions = async () => {
     try {
-      const res = await fetch("http://localhost:8001/msn/missions/me/", { method: "GET", credentials: "include" });
+      const res = await fetch("http://localhost:8001/msn/missions/me/", {
+        method: "GET",
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Erreur fetch missions");
       const data = await res.json();
       setMissions(data);
@@ -235,7 +299,7 @@ useEffect(() => {
     }
   };
 
- // ✅ Fonction de suppression avec toast de confirmation
+  // ✅ Fonction de suppression avec toast de confirmation
   const handleDeleteMission = (id_mission) => {
     toast.info(
       <div>
@@ -286,7 +350,10 @@ useEffect(() => {
 
   const fetchUserInfo = async () => {
     try {
-      const res = await fetch("http://localhost:8001/auth/info/", { method: "GET", credentials: "include" });
+      const res = await fetch("http://localhost:8001/auth/info/", {
+        method: "GET",
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Erreur fetch auth/info");
       const data = await res.json();
       setUserinfo({ email: data.email, role: data.role });
@@ -297,10 +364,19 @@ useEffect(() => {
 
   const fetchUserProfile = async () => {
     try {
-      const res = await fetch("http://localhost:8001/etr/entreprises/me/", { method: "GET", credentials: "include" });
+      const res = await fetch("http://localhost:8001/etr/entreprises/me/", {
+        method: "GET",
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Erreur fetch profile");
       const data = await res.json();
-      setUser({ id: data.id_entreprise, nom: data.nom, secteur: data.secteur, profile_image: data.profile_image || "", profile_imageFile: null });
+      setUser({
+        id: data.id_entreprise,
+        nom: data.nom,
+        secteur: data.secteur,
+        profile_image: data.profile_image || "",
+        profile_imageFile: null,
+      });
     } catch (err) {
       console.error(err);
     }
@@ -308,61 +384,77 @@ useEffect(() => {
 
   const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
 
-  const handleChange = (e) => setUser({ ...user, [e.target.name]: e.target.value });
-  const handleFileChange = (e) => { const file = e.target.files[0]; if (file) setUser({ ...user, profile_imageFile: file, profile_image: URL.createObjectURL(file) }); };
+  const handleChange = (e) =>
+    setUser({ ...user, [e.target.name]: e.target.value });
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file)
+      setUser({
+        ...user,
+        profile_imageFile: file,
+        profile_image: URL.createObjectURL(file),
+      });
+  };
 
-const handleSaveProfile = async () => {
-  const newErrors = {};
-  if (!user.nom.trim()) newErrors.nom = "Le nom est obligatoire";
-  if (!user.secteur.trim()) newErrors.secteur = "Le secteur est obligatoire";
-  setErrors(newErrors);
-  if (Object.keys(newErrors).length > 0) return;
+  const handleSaveProfile = async () => {
+    const newErrors = {};
+    if (!user.nom.trim()) newErrors.nom = "Le nom est obligatoire";
+    if (!user.secteur.trim()) newErrors.secteur = "Le secteur est obligatoire";
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
 
-  try {
-    const formData = new FormData();
-    formData.append("nom", user.nom);
-    formData.append("secteur", user.secteur);
-    if (user.profile_imageFile) {
-      formData.append("profile_image", user.profile_imageFile);
+    try {
+      const formData = new FormData();
+      formData.append("nom", user.nom);
+      formData.append("secteur", user.secteur);
+      if (user.profile_imageFile) {
+        formData.append("profile_image", user.profile_imageFile);
+      }
+
+      const res = await fetch("http://localhost:8001/etr/entreprises/me/", {
+        method: "POST",
+        credentials: "include",
+        headers: { "X-CSRFToken": getCookie("csrftoken") },
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error("Erreur sauvegarde profil : " + errText);
+      }
+
+      const data = await res.json();
+      setUser({
+        ...user,
+        id: data.id_entreprise,
+        nom: data.nom,
+        secteur: data.secteur,
+        profile_image: data.profile_image || "",
+        profile_imageFile: null,
+      });
+      setIsProfileOpen(false);
+
+      // ✅ toast succès
+      toast.success("Profil sauvegardé avec succès ✅", {
+        position: "top-center",
+      });
+    } catch (err) {
+      console.error(err);
+
+      // ❌ toast erreur
+      toast.error(err.message || "Erreur lors de la sauvegarde du profil ❌", {
+        position: "top-center",
+      });
     }
+  };
 
-    const res = await fetch("http://localhost:8001/etr/entreprises/me/", {
-      method: "POST",
-      credentials: "include",
-      headers: { "X-CSRFToken": getCookie("csrftoken") },
-      body: formData,
-    });
-
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error("Erreur sauvegarde profil : " + errText);
-    }
-
-    const data = await res.json();
-    setUser({
-      ...user,
-      id: data.id_entreprise,
-      nom: data.nom,
-      secteur: data.secteur,
-      profile_image: data.profile_image || "",
-      profile_imageFile: null,
-    });
-    setIsProfileOpen(false);
-
-    // ✅ toast succès
-    toast.success("Profil sauvegardé avec succès ✅", { position: "top-center" });
-
-  } catch (err) {
-    console.error(err);
-
-    // ❌ toast erreur
-    toast.error(err.message || "Erreur lors de la sauvegarde du profil ❌", { position: "top-center" });
-  }
-};
-
-return (
+  return (
     <div className="flex h-screen bg-gray-100">
-      <Navbar onSectionChange={handleSectionChange} candidatureCount={candidatureCount} section={currentsection} />
+      <Navbar
+        onSectionChange={handleSectionChange}
+        candidatureCount={candidatureCount}
+        section={currentsection}
+      />
       <div className="flex-1 flex flex-col">
         <header className="flex justify-between items-center bg-white shadow p-4">
           <h1 className="text-2xl font-bold">Entreprise</h1>
@@ -416,23 +508,24 @@ return (
                 onClose={() => setEditingMission(null)}
                 onUpdated={(updated) =>
                   setMissions((prev) =>
-                    prev.map((m) => (m.id_mission === updated.id_mission ? updated : m))
+                    prev.map((m) =>
+                      m.id_mission === updated.id_mission ? updated : m
+                    )
                   )
                 }
               />
             </div>
           )}
           {currentsection == "Candidat" && (
-  <div>
-    <CandidatureList 
-      candidatures={candidatures} 
-      setCandidatures={setCandidatures}
-      drafts={drafts}
-      setDrafts={setDrafts}
-    />
-  </div>
-)}
-
+            <div>
+              <CandidatureList
+                candidatures={candidatures}
+                setCandidatures={setCandidatures}
+                drafts={drafts}
+                setDrafts={setDrafts}
+              />
+            </div>
+          )}
         </main>
 
         {/* MODAL PROFIL */}
@@ -508,7 +601,9 @@ return (
                     placeholder="Nom de l'entreprise"
                     className="w-full mt-1 p-2 border rounded-lg"
                   />
-                  {errors.nom && <p className="text-red-500 text-sm">{errors.nom}</p>}
+                  {errors.nom && (
+                    <p className="text-red-500 text-sm">{errors.nom}</p>
+                  )}
                 </label>
 
                 <label>
@@ -521,7 +616,9 @@ return (
                     placeholder="Votre secteur"
                     className="w-full mt-1 p-2 border rounded-lg"
                   />
-                  {errors.secteur && <p className="text-red-500 text-sm">{errors.secteur}</p>}
+                  {errors.secteur && (
+                    <p className="text-red-500 text-sm">{errors.secteur}</p>
+                  )}
                 </label>
 
                 <label>

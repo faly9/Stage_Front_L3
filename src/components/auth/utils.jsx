@@ -9,7 +9,7 @@ export default function ProtectedRoute({ children }) {
     const checkAuth = async () => {
       try {
         const res = await fetch("http://localhost:8001/auth/check/", {
-        credentials: "include",
+          credentials: "include",
         });
         setIsAuthenticated(res.ok); // si backend renvoie 200 => connecté
       } catch {

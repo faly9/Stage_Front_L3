@@ -4,11 +4,12 @@ import { Briefcase, DollarSign, Star, Eye } from "lucide-react";
 export default function CardOffre({ offre, onPostuler }) {
   const [showDetails, setShowDetails] = useState(false);
   const [isPostuled, setIsPostuled] = useState(false);
-  console.log("id mission :" , offre.id_mission)
+  console.log("id mission :", offre.id_mission);
 
   // 🔹 Au montage, on vérifie si cette offre a déjà été postulée
   useEffect(() => {
-    const postuledOffers = JSON.parse(localStorage.getItem("postuledOffers")) || [];
+    const postuledOffers =
+      JSON.parse(localStorage.getItem("postuledOffers")) || [];
     if (postuledOffers.includes(offre.id_mission)) {
       setIsPostuled(true);
     }
@@ -21,7 +22,8 @@ export default function CardOffre({ offre, onPostuler }) {
     setIsPostuled(true);
 
     // 🔹 Sauvegarder l'offre dans localStorage
-    const postuledOffers = JSON.parse(localStorage.getItem("postuledOffers")) || [];
+    const postuledOffers =
+      JSON.parse(localStorage.getItem("postuledOffers")) || [];
     if (!postuledOffers.includes(offre.id_mission)) {
       postuledOffers.push(offre.id_mission);
       localStorage.setItem("postuledOffers", JSON.stringify(postuledOffers));
@@ -61,10 +63,12 @@ export default function CardOffre({ offre, onPostuler }) {
         <div className="space-y-2 mb-4">
           <p className="text-gray-600">{offre.description}</p>
           <p className="text-sm text-gray-700 flex items-center gap-2">
-            <Star className="w-4 h-4 text-yellow-500" /> Compétences : {offre.competence_requis}
+            <Star className="w-4 h-4 text-yellow-500" /> Compétences :{" "}
+            {offre.competence_requis}
           </p>
           <p className="text-sm text-gray-700 flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-green-500" /> Budget : {offre.budget} €
+            <DollarSign className="w-4 h-4 text-green-500" /> Budget :{" "}
+            {offre.budget} €
           </p>
         </div>
       )}
@@ -75,7 +79,8 @@ export default function CardOffre({ offre, onPostuler }) {
           onClick={() => setShowDetails(!showDetails)}
           className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-100 transition"
         >
-          <Eye className="w-4 h-4" /> {showDetails ? "Masquer détails" : "Voir détails"}
+          <Eye className="w-4 h-4" />{" "}
+          {showDetails ? "Masquer détails" : "Voir détails"}
         </button>
 
         <button

@@ -19,7 +19,13 @@ const getCookie = (name) => {
   return cookieValue;
 };
 
-export default function NavbarFreelance({  activeSection, onSectionChange, freelance, newoffer , newnotification }) {
+export default function NavbarFreelance({
+  activeSection,
+  onSectionChange,
+  freelance,
+  newoffer,
+  newnotification,
+}) {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -35,12 +41,16 @@ export default function NavbarFreelance({  activeSection, onSectionChange, freel
         toast.success("✅ Déconnexion réussie", { position: "top-center" });
         navigate("/"); // redirection vers login
       } else {
-        toast.error(`❌ Erreur logout (${res.status})`, { position: "top-center" });
+        toast.error(`❌ Erreur logout (${res.status})`, {
+          position: "top-center",
+        });
         console.error("Erreur logout", res.status);
       }
     } catch (err) {
       console.error(err);
-      toast.error("❌ Erreur réseau lors du logout", { position: "top-center" });
+      toast.error("❌ Erreur réseau lors du logout", {
+        position: "top-center",
+      });
     }
   };
 
@@ -70,7 +80,9 @@ export default function NavbarFreelance({  activeSection, onSectionChange, freel
             <button
               key={sec.name}
               className={`relative flex items-center gap-2 text-left px-3 py-2 rounded hover:bg-gray-200 transition ${
-                activeSection === sec.name ? "bg-red-600 text-white font-semibold" : ""
+                activeSection === sec.name
+                  ? "bg-red-600 text-white font-semibold"
+                  : ""
               }`}
               onClick={() => onSectionChange(sec.name)}
             >
@@ -80,14 +92,14 @@ export default function NavbarFreelance({  activeSection, onSectionChange, freel
               {/* ✅ Badge pour les offres disponibles */}
               {sec.name === "Offres disponibles" && newoffer > 0 && (
                 <span className="absolute right-2 top-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
-                 new {newoffer}
+                  new {newoffer}
                 </span>
               )}
               {sec.name === "Notifications" && newnotification > 0 && (
-              <span className="absolute right-2 top-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
-                 new {newnotification}
-              </span>
-              ) }
+                <span className="absolute right-2 top-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
+                  new {newnotification}
+                </span>
+              )}
             </button>
           ))}
         </div>

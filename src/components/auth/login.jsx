@@ -4,8 +4,6 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-
-
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== "") {
@@ -28,7 +26,7 @@ export default function Login() {
   const [message, setMessage] = useState("");
   const [cursor, setCursor] = useState({ x: 0, y: 0 });
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   // Déplacement du curseur -> effet parallax
   const handleMouseMove = (e) => {
@@ -41,47 +39,46 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     let tempErrors = {};
-    console.log("tonga eto" , email , password)
+    console.log("tonga eto", email, password);
 
     if (!email) tempErrors.email = "L'email est obligatoire";
     if (!password) tempErrors.password = "Le mot de passe est obligatoire";
     setErrors(tempErrors);
     if (Object.keys(tempErrors).length > 0) return;
-    
+
     try {
       const res = await fetch("http://localhost:8001/auth/login/", {
         method: "POST",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRFToken": getCookie("csrftoken") // <-- ajouter ça
-        },        
+          "X-CSRFToken": getCookie("csrftoken"), // <-- ajouter ça
+        },
         body: JSON.stringify({ email, password }),
       });
-      console.log("tongasoa" , email , password)
+      console.log("tongasoa", email, password);
 
-// Fonction utilitaire pour récupérer un cookie par son nom
+      // Fonction utilitaire pour récupérer un cookie par son nom
 
       const data = await res.json();
 
-if (res.ok) {
-  toast.success("✅ Connexion réussie !", {
-    position: "top-center",
-    autoClose: 1000,
-    onClose: () => {
-      if (data.role === "Entreprise") {
-        navigate("/dashboard-entreprise");
-      } else {
-        navigate("/dashboard-freelance");
-      }
-    },
-  });
+      if (res.ok) {
+        toast.success("✅ Connexion réussie !", {
+          position: "top-center",
+          autoClose: 1000,
+          onClose: () => {
+            if (data.role === "Entreprise") {
+              navigate("/dashboard-entreprise");
+            } else {
+              navigate("/dashboard-freelance");
+            }
+          },
+        });
 
-  setEmail("");
-  setPassword("");
-  setErrors({});
-}
-      else {
+        setEmail("");
+        setPassword("");
+        setErrors({});
+      } else {
         if (data.error?.toLowerCase().includes("email")) {
           setErrors({ email: data.error });
         } else if (data.error?.toLowerCase().includes("mot de passe")) {
@@ -219,20 +216,19 @@ if (res.ok) {
             </button>
           </form>
 
-<div className="flex justify-center pt-4">
-  <p>
-    Pas encore de compte ?{" "}
-    <button
-      className="underline text-blue-600"
-      onClick={() => navigate("/register")}
-    >
-      S'inscrire
-    </button>
-  </p>
-</div>        
-</div>
+          <div className="flex justify-center pt-4">
+            <p>
+              Pas encore de compte ?{" "}
+              <button
+                className="underline text-blue-600"
+                onClick={() => navigate("/register")}
+              >
+                S'inscrire
+              </button>
+            </p>
+          </div>
+        </div>
       </motion.div>
-
     </div>
   );
 }
