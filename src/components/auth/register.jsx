@@ -15,8 +15,8 @@ export default function Register() {
     e.preventDefault();
     let tempErrors = {};
 
-    // juste une debogage de code 
-     console.log(email , role , password , cpassword)
+    // juste une debogage de code
+    console.log(email, role, password, cpassword);
     if (!email) tempErrors.email = "L'email est obligatoire";
     if (!role) tempErrors.role = "Le rôle est obligatoire";
     if (!password) tempErrors.password = "Le mot de passe est obligatoire";
@@ -201,7 +201,7 @@ export default function Register() {
               Avez-vous déjà un compte ?{" "}
               <button
                 className="underline text-blue-600"
-                 onClick={() => navigate("/")}
+                onClick={() => navigate("/")}
               >
                 Se connecter
               </button>

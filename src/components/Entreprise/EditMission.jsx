@@ -16,7 +16,12 @@ const getCookie = (name) => {
   return cookieValue;
 };
 
-export default function EditMissionModal({ mission, isOpen, onClose, onUpdated }) {
+export default function EditMissionModal({
+  mission,
+  isOpen,
+  onClose,
+  onUpdated,
+}) {
   const [formData, setFormData] = useState({
     titre: "",
     description: "",
@@ -46,9 +51,12 @@ export default function EditMissionModal({ mission, isOpen, onClose, onUpdated }
   const handleUpdate = async () => {
     const newErrors = {};
     if (!formData.titre.trim()) newErrors.titre = "Le titre est obligatoire";
-    if (!formData.description.trim()) newErrors.description = "La description est obligatoire";
-    if (!formData.competence.trim()) newErrors.competence = "Les compétences sont obligatoires";
-    if (!formData.budget || parseFloat(formData.budget) <= 0) newErrors.budget = "Le budget doit être > 0";
+    if (!formData.description.trim())
+      newErrors.description = "La description est obligatoire";
+    if (!formData.competence.trim())
+      newErrors.competence = "Les compétences sont obligatoires";
+    if (!formData.budget || parseFloat(formData.budget) <= 0)
+      newErrors.budget = "Le budget doit être > 0";
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
@@ -56,20 +64,23 @@ export default function EditMissionModal({ mission, isOpen, onClose, onUpdated }
     setLoading(true);
     try {
       const csrftoken = getCookie("csrftoken");
-      const res = await fetch(`http://localhost:8001/msn/missions/${mission.id_mission}/`, {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrftoken,
-        },
-        body: JSON.stringify({
-          titre: formData.titre,
-          description: formData.description,
-          competence_requis: formData.competence,
-          budget: formData.budget,
-        }),
-      });
+      const res = await fetch(
+        `http://localhost:8001/msn/missions/${mission.id_mission}/`,
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken,
+          },
+          body: JSON.stringify({
+            titre: formData.titre,
+            description: formData.description,
+            competence_requis: formData.competence,
+            budget: formData.budget,
+          }),
+        }
+      );
 
       if (!res.ok) {
         const errText = await res.text();
@@ -81,14 +92,16 @@ export default function EditMissionModal({ mission, isOpen, onClose, onUpdated }
       onClose();
 
       // ✅ toast succès
-      toast.success("Mission mise à jour avec succès ✅", { position: "top-center" });
-
+      toast.success("Mission mise à jour avec succès ✅", {
+        position: "top-center",
+      });
     } catch (err) {
       console.error(err);
 
       // ❌ toast erreur
-      toast.error(err.message || "Une erreur est survenue ❌", { position: "top-center" });
-
+      toast.error(err.message || "Une erreur est survenue ❌", {
+        position: "top-center",
+      });
     } finally {
       setLoading(false);
     }
@@ -107,7 +120,9 @@ export default function EditMissionModal({ mission, isOpen, onClose, onUpdated }
             placeholder="Titre"
             className="w-full px-3 py-2 border rounded-lg"
           />
-          {errors.titre && <p className="text-red-500 text-sm">{errors.titre}</p>}
+          {errors.titre && (
+            <p className="text-red-500 text-sm">{errors.titre}</p>
+          )}
 
           <textarea
             name="description"
@@ -116,7 +131,9 @@ export default function EditMissionModal({ mission, isOpen, onClose, onUpdated }
             placeholder="Description"
             className="w-full px-3 py-2 border rounded-lg"
           />
-          {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
+          {errors.description && (
+            <p className="text-red-500 text-sm">{errors.description}</p>
+          )}
 
           <input
             type="text"
@@ -126,7 +143,9 @@ export default function EditMissionModal({ mission, isOpen, onClose, onUpdated }
             placeholder="Compétences requises"
             className="w-full px-3 py-2 border rounded-lg"
           />
-          {errors.competence && <p className="text-red-500 text-sm">{errors.competence}</p>}
+          {errors.competence && (
+            <p className="text-red-500 text-sm">{errors.competence}</p>
+          )}
 
           <input
             type="number"
@@ -136,10 +155,15 @@ export default function EditMissionModal({ mission, isOpen, onClose, onUpdated }
             placeholder="Budget"
             className="w-full px-3 py-2 border rounded-lg"
           />
-          {errors.budget && <p className="text-red-500 text-sm">{errors.budget}</p>}
+          {errors.budget && (
+            <p className="text-red-500 text-sm">{errors.budget}</p>
+          )}
 
           <div className="flex justify-end gap-3">
-            <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-200">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 rounded-lg bg-gray-200"
+            >
               Annuler
             </button>
             <button

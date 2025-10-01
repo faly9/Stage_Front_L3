@@ -13,18 +13,18 @@ const getCookie = (name) => {
 };
 
 export default function EditProfileFreelance({ freelance, onSave, onCancel }) {
-const [profile, setProfile] = useState({
-  id_freelance: freelance?.id_freelance || null,
-  nom: freelance?.nom || "",
-  description: freelance?.description || "",
-  competence: freelance?.competence || "",
-  experience: freelance?.experience || "",
-  formation: freelance?.formation || "",
-  certificat: freelance?.certificat || "",
-  tarif: freelance?.tarif || "",
-  photo: freelance?.photo || null,
-  photoPreview: null,
-});
+  const [profile, setProfile] = useState({
+    id_freelance: freelance?.id_freelance || null,
+    nom: freelance?.nom || "",
+    description: freelance?.description || "",
+    competence: freelance?.competence || "",
+    experience: freelance?.experience || "",
+    formation: freelance?.formation || "",
+    certificat: freelance?.certificat || "",
+    tarif: freelance?.tarif || "",
+    photo: freelance?.photo || null,
+    photoPreview: null,
+  });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -60,7 +60,7 @@ const [profile, setProfile] = useState({
         formData.append("photo", profile.photo);
       }
       const isUpdate = !!profile.id_freelance;
-      console.log(isUpdate)
+      console.log(isUpdate);
       const url = isUpdate
         ? `http://localhost:8001/frl/freelances/${profile.id_freelance}/`
         : "http://localhost:8001/frl/freelances/";
@@ -162,7 +162,7 @@ const [profile, setProfile] = useState({
 
         {/* Compétences */}
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Compétences</label>
+          <label className="block mb-1 font-medium">Compétences(,)</label>
           <textarea
             name="competence"
             value={profile.competence || ""}
@@ -174,7 +174,7 @@ const [profile, setProfile] = useState({
 
         {/* Expériences */}
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Expériences</label>
+          <label className="block mb-1 font-medium">Expériences(,)</label>
           <textarea
             name="experience"
             value={profile.experience || ""}
@@ -186,7 +186,7 @@ const [profile, setProfile] = useState({
 
         {/* Diplômes */}
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Diplômes</label>
+          <label className="block mb-1 font-medium">Diplômes(,)</label>
           <textarea
             name="formation"
             value={profile.formation || ""}
@@ -198,7 +198,7 @@ const [profile, setProfile] = useState({
 
         {/* Certificats */}
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Certificats</label>
+          <label className="block mb-1 font-medium">Certificats(,)</label>
           <textarea
             name="certificat"
             value={profile.certificat || ""}
@@ -210,7 +210,7 @@ const [profile, setProfile] = useState({
 
         {/* Tarif */}
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Tarif ar/h</label>
+          <label className="block mb-1 font-medium">Tarif E/h</label>
           <input
             type="number"
             name="tarif"

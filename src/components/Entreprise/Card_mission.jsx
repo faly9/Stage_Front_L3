@@ -1,6 +1,6 @@
-import { Briefcase, DollarSign, Star, Edit, Trash2, Eye } from "lucide-react";
+import { Briefcase, DollarSign, Star, Edit, Trash2 } from "lucide-react";
 
-export default function CardMission({ mission, onEdit, onDelete, onView }) {
+export default function CardMission({ mission, onEdit, onDelete }) {
   return (
     <div className="bg-gradient-to-br from-purple-50 to-white rounded-2xl shadow-md p-6 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
       {/* Header */}
