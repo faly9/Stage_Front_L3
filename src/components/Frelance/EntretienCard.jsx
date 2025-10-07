@@ -1,8 +1,27 @@
 import React from "react";
 
 export default function EntretienCard({ notification }) {
+  // Vérifie si la notification existe
   if (!notification)
     return <p className="text-gray-500">Aucune notification pour le moment.</p>;
+
+  // Heure locale du freelance
+  function formatLocalDate(dateString) {
+    if (!dateString) return "";
+    return new Date(dateString).toLocaleString("fr-FR", {
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      hour12: false,
+    });
+  }
+
+  // Heure d'origine selon le fuseau de l'entreprise
+  function formatEntrepriseDate(dateString, timezoneEntreprise) {
+    if (!dateString || !timezoneEntreprise) return "";
+    return new Date(dateString).toLocaleString("fr-FR", {
+      timeZone: timezoneEntreprise,
+      hour12: false,
+    });
+  }
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-5 hover:shadow-xl transition flex flex-col">
@@ -10,7 +29,7 @@ export default function EntretienCard({ notification }) {
         {notification.entreprise_photo ? (
           <img
             src={
-              notification.entreprise_photo
+              notification.entreprise_photo?.startsWith("/media/")
                 ? `http://localhost:8001${notification.entreprise_photo}`
                 : `http://localhost:8001/media/${notification.entreprise_photo}`
             }
@@ -26,12 +45,25 @@ export default function EntretienCard({ notification }) {
       </div>
 
       <p>A Mr/Md : {notification.freelance_nom}</p>
+
       <p className="text-sm text-gray-700 mb-1">
         📌 Mission : {notification.mission_titre}
       </p>
-      <p className="text-sm text-gray-700 mb-1">
-        📅 Date : {notification.date_entretien}
-      </p>
+
+      {notification.date_entretien && (
+        <div className="text-sm text-gray-700 mb-1">
+          📅 Rendez-vous :
+          <br />
+          • {formatLocalDate(notification.date_entretien)} (votre heure locale)
+          <br />
+          • {formatEntrepriseDate(
+            notification.date_entretien,
+            notification.timezone
+          )}{" "}
+          ({notification.timezone})
+        </div>
+      )}
+
       <p className="text-sm text-gray-700 mb-2">
         💬 {notification.commentaire_entretien}
       </p>

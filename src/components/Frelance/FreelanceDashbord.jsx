@@ -88,7 +88,9 @@ export default function FreelanceDashboard() {
         const unique = Array.from(
           new Map(res.data.map((item) => [item.id_candidature, item])).values()
         );
+        console.log("unique apres le reload",unique)
         setEntretienNotifications(unique);
+        console.log(entretienNotifications)
       })
       .catch((err) => console.error("Erreur chargement notifications :", err));
   }, []);

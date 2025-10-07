@@ -16,11 +16,13 @@ function getCookie(name) {
 }
 
 // ✅ Formatter la date pour un <input type="datetime-local" />
+// Pour affichage lisible (notification, texte, etc.)
+
+// Pour input datetime-local (champ du formulaire)
 function formatDateForInput(dateString) {
   if (!dateString) return "";
-  const d = new Date(dateString);
-  const tzOffset = d.getTimezoneOffset() * 60000; // corriger fuseau horaire
-  return new Date(d - tzOffset).toISOString().slice(0, 16);
+  const date = new Date(dateString);
+  return date.toISOString().slice(0, 16);
 }
 
 export default function CandidatureList({
@@ -32,35 +34,9 @@ export default function CandidatureList({
   // const [drafts, setDrafts] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // const [candidatures , setCandidatures] = useState([])
-
-  // 🔹 Charger toutes les candidatures au montage
-  // useEffect(() => {
-  //   fetch("http://localhost:8001/ptl/candidatures/", {
-  //     credentials: "include",
-  //   })
-  //     .then((res) => {
-  //       if (!res.ok) throw new Error(`Erreur ${res.status}`);
-  //       return res.json();
-  //     })
-  //     .then((data) => {
-  //       const arrayData = Array.isArray(data) ? data : [];
-  //       setCandidatures(arrayData);
-
-  //       // Initialiser les drafts
-  //       const initialDrafts = {};
-  //       arrayData.forEach((c) => {
-  //         initialDrafts[c.id_candidature] = {
-  //           status: c.status || "attente",
-  //           date_entretien: c.date_entretien || "",
-  //           commentaire_entretien: c.commentaire_entretien || "",
-  //         };
-  //       });
-  //       setDrafts(initialDrafts);
-  //     })
-  //     .catch((err) => setError(err.message))
-  //     .finally(() => setLoading(false));
-  // }, [setCandidatures]);
+  const [timezoneEntreprise, setTimezoneEntreprise] = useState(
+    Intl.DateTimeFormat().resolvedOptions().timeZone // fuseau local par défaut
+  );
 
   useEffect(() => {
     fetch("http://localhost:8001/ptl/candidatures/", {
@@ -95,6 +71,21 @@ export default function CandidatureList({
   const handleUpdate = (id) => {
     const updates = drafts[id];
     const csrftoken = getCookie("csrftoken");
+
+    let dateUtc = "";
+    if (updates.date_entretien) {
+      const localDate = new Date(updates.date_entretien);
+      const utcDate = new Date(
+        localDate.toLocaleString("en-US", { timeZone: updates.timezone })
+      );
+      dateUtc = utcDate.toISOString();
+    }
+
+    const payload = {
+      ...updates,
+      date_entretien: dateUtc,
+      timezone: updates.timezone,
+    };
 
     fetch(`http://localhost:8001/ptl/candidatures/${id}/`, {
       method: "PATCH",
@@ -132,6 +123,18 @@ export default function CandidatureList({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {candidatures.map((c) => {
           const draft = drafts[c.id_candidature] || {};
+
+          // 🔹 Conversion UTC → fuseau local du freelance (navigateur)
+          let dateLocale = "";
+          if (draft.date_entretien) {
+            dateLocale = new Date(draft.date_entretien).toLocaleString(
+              "fr-FR",
+              {
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                hour12: false,
+              }
+            );
+          }
           return (
             <div
               key={c.id_candidature}
@@ -216,12 +219,38 @@ export default function CandidatureList({
                 </select>
               </div>
 
+              {/* Fuseau horaire entreprise */}
+              <div className="mt-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Fuseau horaire de l’entreprise :
+                </label>
+                <select
+                  value={draft.timezone || timezoneEntreprise}
+                  onChange={(e) =>
+                    setDrafts((prev) => ({
+                      ...prev,
+                      [c.id_candidature]: {
+                        ...prev[c.id_candidature],
+                        timezone: e.target.value,
+                      },
+                    }))
+                  }
+                  className="w-full p-2 border rounded-lg mt-1"
+                >
+                  <option value="Europe/Paris">Europe/Paris</option>
+                  <option value="Indian/Antananarivo">
+                    Indian/Antananarivo
+                  </option>
+                  <option value="America/New_York">America/New_York</option>
+                  <option value="Asia/Tokyo">Asia/Tokyo</option>
+                </select>
+              </div>
+
               {/* Date entretien */}
               <div className="mt-3">
                 {draft.date_entretien && (
                   <p className="text-sm text-green-600 font-medium mb-1">
-                    📅 Entretien prévu le :{" "}
-                    {new Date(draft.date_entretien).toLocaleString()}
+                    📅 Entretien prévu le : {dateLocale} (heure locale)
                   </p>
                 )}
                 <label className="block text-sm font-medium text-gray-700">
@@ -242,7 +271,6 @@ export default function CandidatureList({
                   className="w-full p-2 border rounded-lg mt-1"
                 />
               </div>
-
               {/* Commentaire */}
               <div className="mt-3">
                 <label className="block text-sm font-medium text-gray-700">
