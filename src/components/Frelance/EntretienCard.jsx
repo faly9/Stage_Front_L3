@@ -1,4 +1,5 @@
 import React from "react";
+import JoinCall from "./JoinCall";
 
 export default function EntretienCard({ notification }) {
   // Vérifie si la notification existe
@@ -25,6 +26,7 @@ export default function EntretienCard({ notification }) {
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-5 hover:shadow-xl transition flex flex-col">
+      <JoinCall/>
       <div className="flex items-center mb-3 gap-3">
         {notification.entreprise_photo ? (
           <img
@@ -52,7 +54,7 @@ export default function EntretienCard({ notification }) {
 
       {notification.date_entretien && (
         <div className="text-sm text-gray-700 mb-1">
-          📅 Rendez-vous :
+          📅 Rendez-vous de l'entretien :
           <br />
           • {formatLocalDate(notification.date_entretien)} (votre heure locale)
           <br />
@@ -64,9 +66,15 @@ export default function EntretienCard({ notification }) {
         </div>
       )}
 
-      <p className="text-sm text-gray-700 mb-2">
-        💬 {notification.commentaire_entretien}
-      </p>
+{notification.commentaire_entretien ? (
+  <p className="text-sm text-gray-700 mb-2">
+    💬 Nom de la salle : {notification.commentaire_entretien}
+  </p>
+) : (
+  <p className="text-sm text-gray-500 italic mb-2">
+    Nous vous enverrons ici le nom de la salle au moment de l’entretien.
+  </p>
+)}
 
       <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">
         {notification.status}

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import StartCall from "./StartCall";
 
 function getCookie(name) {
   let cookieValue = null;
@@ -274,7 +275,7 @@ export default function CandidatureList({
               {/* Commentaire */}
               <div className="mt-3">
                 <label className="block text-sm font-medium text-gray-700">
-                  Commentaire :
+                  Entrez le lien de la salle d'entretien au moment de l'entretien :
                 </label>
                 <textarea
                   value={draft.commentaire_entretien || ""}
@@ -298,6 +299,9 @@ export default function CandidatureList({
                 className="mt-3 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
               >
                 Envoyer votre reponse
+              </button>
+              <button className="mt-3 w-full  text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                <StartCall freelancerId={c.freelance}/>
               </button>
             </div>
           );
