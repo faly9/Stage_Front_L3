@@ -88,9 +88,9 @@ export default function FreelanceDashboard() {
         const unique = Array.from(
           new Map(res.data.map((item) => [item.id_candidature, item])).values()
         );
-        console.log("unique apres le reload",unique)
+        console.log("unique apres le reload", unique);
         setEntretienNotifications(unique);
-        console.log(entretienNotifications)
+        console.log(entretienNotifications);
       })
       .catch((err) => console.error("Erreur chargement notifications :", err));
   }, []);
@@ -101,28 +101,40 @@ export default function FreelanceDashboard() {
 
     const freelanceId = freelances[0].id_freelance;
     if (!freelanceId) return;
+    const userrole = "freelance";
 
     const ws = new WebSocket(
-      `ws://localhost:8001/ws/entretien/${freelanceId}/`
+      `ws://localhost:8001/ws/entretien/${userrole}/${freelanceId}/`
     );
 
     ws.onopen = () => console.log("✅ WS Entretien connecté");
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("Notification reçue:", data);
+      console.log("📩 Notification reçue :", data);
 
       setEntretienNotifications((prev) => {
-        // Ajouter seulement si id_candidature unique
         const exists = prev.some(
           (n) => n.id_candidature === data.id_candidature
         );
-        if (exists) return prev;
-        return [data, ...prev];
-      });
-      setNewnotification((count) => count + 1);
 
-      toast.info(`📢 Entretien mis à jour : ${data.mission_titre}`);
+        let updated;
+        if (exists) {
+          // Mise à jour de la notification existante
+          updated = prev.map((n) =>
+            n.id_candidature === data.id_candidature ? { ...n, ...data } : n
+          );
+          toast.info(`🔄 Entretien mis à jour : ${data.mission_titre}`);
+        } else {
+          // Nouvelle notification
+          updated = [data, ...prev];
+          toast.success(`📢 Nouvelle notification : ${data.entreprise_nom}`);
+        }
+
+        return updated;
+      });
+
+      setNewnotification((count) => count + 1);
     };
 
     ws.onerror = (err) => console.error("❌ WS Entretien erreur :", err);

@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { Edit } from "lucide-react";
 import Navbar from "./Navbar";
+import axios from "axios";
 import CardMission from "./Card_mission";
 import ButtonAdd from "./Ajout_mission";
 import EditMissionModal from "./EditMission";
 import { toast } from "react-toastify";
 import CandidatureList from "./Candidature";
+import EntrepriseNotifications from "./EntrepriseNotifications";
 
 // 🔹 fonction utilitaire pour lire le cookie CSRF
 const getCookie = (name) => {
@@ -174,6 +176,7 @@ function Mission({ isOpen, onClose, onAdded }) {
 
 // 🔹 Dashboard de l'entreprise
 export default function EntrepriseDashboard() {
+  const [entretienNotifications, setEntretienNotifications] = useState([]);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingMission, setEditingMission] = useState(null);
@@ -448,6 +451,85 @@ export default function EntrepriseDashboard() {
     }
   };
 
+  // 🔹 Charger les notifications permanentes via session (pas de token)
+  // Charger notifications permanentes
+
+  // historique de la messagerie
+  // 🔹 Charger les anciennes notifications persistantes (API)
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await axios.get("http://localhost:8001/ptl/notee/", {
+          withCredentials: true,
+        });
+        console.log(response.data);
+        setEntretienNotifications(response.data);
+        console.log("📦 Notifications persistantes chargées :", response.data);
+      } catch (error) {
+        console.error("Erreur lors du chargement des notifications :", error);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
+  // ───────── WebSocket notifications d'entretien ─────────
+  useEffect(() => {
+    if (!user.id) return;
+
+    const userrole = "entreprise";
+    const ws = new WebSocket(
+      `ws://localhost:8001/ws/entretien/${userrole}/${user.id}/`
+    );
+
+    ws.onopen = () => console.log("✅ WS Entreprise connecté");
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("Notification reçue pour l'entreprise:", data);
+
+      setEntretienNotifications((prev) => {
+        const exists = prev.some(
+          (n) => n.id_candidature === data.id_candidature
+        );
+        if (exists) {
+          // ⚡ Met à jour la notification existante
+          return prev.map((n) =>
+            n.id_candidature === data.id_candidature ? { ...n, ...data } : n
+          );
+        } else {
+          // ➕ Ajoute la nouvelle notification
+          return [data, ...prev];
+        }
+      });
+    };
+
+    ws.onerror = (err) => console.error("❌ WS Entreprise erreur :", err);
+    ws.onclose = () => console.log("❌ WS Entreprise fermé");
+
+    return () => ws.close();
+  }, [user.id]);
+
+  // ───────── Effet pour afficher les toasts en toute sécurité ─────────
+  useEffect(() => {
+    if (entretienNotifications.length === 0) return;
+
+    const latest = entretienNotifications[0]; // dernière notification
+    const isUpdate =
+      entretienNotifications.length > 1 &&
+      entretienNotifications[1].id_candidature === latest.id_candidature;
+
+    if (isUpdate) {
+      toast.info(`🔄 Entretien mis à jour : ${latest.mission_titre}`, {
+        autoClose: 3000,
+      });
+    } else {
+      toast.success(`📢 Nouvelle notification : ${latest.mission_titre}`, {
+        autoClose: 3000,
+      });
+    }
+  }, [entretienNotifications]);
+
   return (
     <div className="flex h-screen bg-gray-100">
       <Navbar
@@ -523,6 +605,13 @@ export default function EntrepriseDashboard() {
                 setCandidatures={setCandidatures}
                 drafts={drafts}
                 setDrafts={setDrafts}
+              />
+            </div>
+          )}
+          {currentsection == "message" && (
+            <div>
+              <EntrepriseNotifications
+                entretienNotifications={entretienNotifications}
               />
             </div>
           )}

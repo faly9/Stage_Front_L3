@@ -1,4 +1,4 @@
-import { Home, Brain, User } from "lucide-react";
+import { Home, Brain, User, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -49,6 +49,11 @@ export default function Navbar({ section, onSectionChange, candidatureCount }) {
     { key: "dashboard", label: "Missions", icon: <Home className="w-5 h-5" /> },
     { key: "ia", label: "Proposition IA", icon: <Brain className="w-5 h-5" /> },
     { key: "Candidat", label: "Candidats", icon: <User className="w-5 h-5" /> },
+    {
+      key: "message",
+      label: "Messages envoyés",
+      icon: <MessageCircle className="w-5 h-5" />,
+    },
   ];
 
   return (

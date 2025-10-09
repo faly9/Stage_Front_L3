@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import StartCall from "./StartCall";
+import { toast } from "react-toastify";
 
 function getCookie(name) {
   let cookieValue = null;
@@ -103,7 +104,7 @@ export default function CandidatureList({
         return res.json();
       })
       .then(() => {
-        alert("✅ Candidature mise à jour !");
+        toast.success("✅ Message envoyé !");
       })
       .catch((err) => alert(err.message));
   };
@@ -275,7 +276,8 @@ export default function CandidatureList({
               {/* Commentaire */}
               <div className="mt-3">
                 <label className="block text-sm font-medium text-gray-700">
-                  Entrez le lien de la salle d'entretien au moment de l'entretien :
+                  Entrez le lien de la salle d'entretien au moment de
+                  l'entretien :
                 </label>
                 <textarea
                   value={draft.commentaire_entretien || ""}
@@ -300,9 +302,9 @@ export default function CandidatureList({
               >
                 Envoyer votre reponse
               </button>
-              <button className="mt-3 w-full  text-white py-2 rounded-lg hover:bg-blue-700 transition">
-                <StartCall freelancerId={c.freelance}/>
-              </button>
+              <div className="mt-3 w-full  text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                <StartCall freelancerId={c.freelance} />
+              </div>
             </div>
           );
         })}
