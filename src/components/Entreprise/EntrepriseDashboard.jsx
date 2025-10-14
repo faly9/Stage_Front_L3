@@ -100,9 +100,14 @@ function Mission({ isOpen, onClose, onAdded }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-xl shadow-lg w-[500px]">
-        <h2 className="text-xl font-semibold mb-4">Ajouter une mission</h2>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-2xl shadow-2xl w-[500px] max-w-full relative">
+        {/* Titre */}
+        <h2 className="text-2xl font-bold text-purple-700 mb-6 text-center">
+          Ajouter une mission
+        </h2>
+
+        {/* Formulaire */}
         <div className="space-y-4">
           <input
             type="text"
@@ -110,7 +115,7 @@ function Mission({ isOpen, onClose, onAdded }) {
             value={mission.titre}
             onChange={handleChange}
             placeholder="Titre"
-            className="w-full px-3 py-2 border rounded-lg"
+            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none transition"
           />
           {errors.titre && (
             <p className="text-red-500 text-sm">{errors.titre}</p>
@@ -121,7 +126,8 @@ function Mission({ isOpen, onClose, onAdded }) {
             value={mission.description}
             onChange={handleChange}
             placeholder="Description"
-            className="w-full px-3 py-2 border rounded-lg"
+            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none transition resize-none"
+            rows={4}
           />
           {errors.description && (
             <p className="text-red-500 text-sm">{errors.description}</p>
@@ -133,7 +139,7 @@ function Mission({ isOpen, onClose, onAdded }) {
             value={mission.competence}
             onChange={handleChange}
             placeholder="Compétences requises"
-            className="w-full px-3 py-2 border rounded-lg"
+            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none transition"
           />
           {errors.competence && (
             <p className="text-red-500 text-sm">{errors.competence}</p>
@@ -145,17 +151,18 @@ function Mission({ isOpen, onClose, onAdded }) {
             value={mission.budget}
             onChange={handleChange}
             placeholder="Budget"
-            className="w-full px-3 py-2 border rounded-lg"
+            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none transition"
           />
           {errors.budget && (
             <p className="text-red-500 text-sm">{errors.budget}</p>
           )}
 
-          <div className="flex justify-end gap-3">
+          {/* Actions */}
+          <div className="flex justify-end gap-3 mt-4">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-lg bg-gray-200"
+              className="px-5 py-2 rounded-xl bg-gray-200 hover:bg-gray-300 transition font-medium"
             >
               Annuler
             </button>
@@ -163,12 +170,20 @@ function Mission({ isOpen, onClose, onAdded }) {
               type="button"
               onClick={handleSaveMission}
               disabled={loading}
-              className="px-4 py-2 rounded-lg bg-green-600 text-white"
+              className="px-5 py-2 rounded-xl bg-purple-600 text-white hover:bg-purple-700 transition font-medium"
             >
               {loading ? "Ajout..." : "Ajouter"}
             </button>
           </div>
         </div>
+
+        {/* Close bouton */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-lg"
+        >
+          ✕
+        </button>
       </div>
     </div>
   );
@@ -524,10 +539,10 @@ export default function EntrepriseDashboard() {
         autoClose: 3000,
       });
     } else {
-      toast.success(`📢 Nouvelle notification : ${latest.mission_titre}`, {
+       toast.success(`📢 Nouvelle notification : ${latest.mission_titre}`, {
         autoClose: 3000,
       });
-    }
+     }
   }, [entretienNotifications]);
 
   return (
@@ -537,17 +552,40 @@ export default function EntrepriseDashboard() {
         candidatureCount={candidatureCount}
         section={currentsection}
       />
-      <div className="flex-1 flex flex-col">
-        <header className="flex justify-between items-center bg-white shadow p-4">
-          <h1 className="text-2xl font-bold">Entreprise</h1>
+
+      <div className="flex-1 flex flex-col bg-gradient-to-b from-red-50 to-white min-h-screen">
+        <header className="flex justify-between items-center bg-white/80 backdrop-blur-sm shadow-md border-b border-red-100 px-6 py-4">
+          <h1 className="text-2xl font-bold text-red-600 tracking-wide">
+            Espace Entreprise
+          </h1>
+
           <div className="flex items-center gap-4">
-            <p>{user.nom || "User"}</p>
-            <img
-              src={user.profile_image || ""}
-              alt="Profil"
-              className="w-10 h-10 rounded-full border cursor-pointer object-cover"
+            <p className="font-medium text-gray-800 text-lg">
+              {user.nom || "Utilisateur"}
+            </p>
+            <div
+              className="relative group cursor-pointer"
               onClick={toggleProfile}
-            />
+            >
+              {user.profile_image ? (
+                <img
+                  src={user.profile_image}
+                  alt="Profil"
+                  className="w-12 h-12 rounded-full border-2 border-red-500 shadow-md object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-red-200 flex items-center justify-center border-2 border-red-500 shadow-md">
+                  <span className="text-red-700 font-bold text-lg">
+                    {user.nom ? user.nom[0].toUpperCase() : "U"}
+                  </span>
+                </div>
+              )}
+
+              {/* Effet de survol */}
+              <div className="absolute top-full right-0 z-[9999] mt-2 bg-white border shadow-lg rounded-xl px-3 py-1 text-sm text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                Éditer le profil
+              </div>
+            </div>
           </div>
         </header>
 
@@ -598,6 +636,7 @@ export default function EntrepriseDashboard() {
               />
             </div>
           )}
+
           {currentsection == "Candidat" && (
             <div>
               <CandidatureList
@@ -620,13 +659,19 @@ export default function EntrepriseDashboard() {
         {/* MODAL PROFIL */}
         {isProfileOpen && (
           <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
-            <div className="bg-white rounded-2xl p-6 w-96 relative z-10">
-              <h2 className="text-xl font-bold mb-4">Éditer Profil</h2>
+            {/* --- FOND FLOU + OMBRÉ --- */}
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity duration-300"></div>
 
-              <div className="flex flex-col gap-3">
-                <div className="flex items-center justify-center gap-4">
-                  <div className="relative">
+            {/* --- MODAL --- */}
+            <div className="relative z-10 bg-gradient-to-b from-white via-white to-gray-50 rounded-3xl shadow-2xl p-8 w-[420px] transform transition-all duration-300 scale-100 hover:scale-[1.01]">
+              <h2 className="text-2xl font-bold mb-5 text-center text-gray-800">
+                ✨ Éditer le profil
+              </h2>
+
+              <div className="flex flex-col gap-4">
+                {/* --- PHOTO DE PROFIL --- */}
+                <div className="flex items-center justify-center">
+                  <div className="relative group">
                     <input
                       type="file"
                       accept="image/*"
@@ -639,10 +684,10 @@ export default function EntrepriseDashboard() {
                         <img
                           src={user.profile_image}
                           alt="Aperçu Profil"
-                          className="w-24 h-24 rounded-full object-cover"
+                          className="w-28 h-28 rounded-full object-cover ring-4 ring-purple-200 shadow-md group-hover:ring-purple-400 transition-all duration-300"
                         />
                       ) : (
-                        <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
+                        <div className="w-28 h-28 rounded-full bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300 group-hover:border-purple-400 transition">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-12 w-12 text-gray-500"
@@ -660,85 +705,92 @@ export default function EntrepriseDashboard() {
                         </div>
                       )}
                     </label>
+
                     <label
                       htmlFor="profileUpload"
-                      className="absolute bottom-1 right-1 bg-white p-1 rounded-full shadow cursor-pointer"
+                      className="absolute bottom-2 right-2 bg-purple-600 p-2 rounded-full shadow-lg cursor-pointer hover:bg-purple-700 transition"
                     >
-                      <Edit className="w-4 h-4 text-gray-600" />
+                      <Edit className="w-4 h-4 text-white" />
                     </label>
                   </div>
                 </div>
 
-                <label>
-                  Role :
-                  <input
-                    type="text"
-                    name="role"
-                    value={userinfo.role}
-                    readOnly
-                    className="w-full mt-1 p-2 border rounded-lg"
-                  />
-                </label>
+                {/* --- INPUTS --- */}
+                <div className="flex flex-col gap-3 mt-2">
+                  {[
+                    {
+                      label: "Role",
+                      name: "role",
+                      type: "text",
+                      readOnly: true,
+                      value: userinfo.role,
+                    },
+                    {
+                      label: "Nom",
+                      name: "nom",
+                      type: "text",
+                      value: user.nom,
+                      placeholder: "Nom de l'entreprise",
+                      error: errors.nom,
+                    },
+                    {
+                      label: "Secteur",
+                      name: "secteur",
+                      type: "text",
+                      value: user.secteur,
+                      placeholder: "Votre secteur",
+                      error: errors.secteur,
+                    },
+                    {
+                      label: "Email",
+                      name: "email",
+                      type: "email",
+                      readOnly: true,
+                      value: userinfo.email,
+                    },
+                  ].map((field, i) => (
+                    <label key={i} className="block">
+                      <span className="text-sm font-medium text-gray-700">
+                        {field.label}
+                      </span>
+                      <input
+                        type={field.type}
+                        name={field.name}
+                        value={field.value}
+                        onChange={handleChange}
+                        readOnly={field.readOnly}
+                        placeholder={field.placeholder || ""}
+                        className="w-full mt-1 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none transition"
+                      />
+                      {field.error && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {field.error}
+                        </p>
+                      )}
+                    </label>
+                  ))}
+                </div>
 
-                <label>
-                  Nom :
-                  <input
-                    type="text"
-                    name="nom"
-                    value={user.nom}
-                    onChange={handleChange}
-                    placeholder="Nom de l'entreprise"
-                    className="w-full mt-1 p-2 border rounded-lg"
-                  />
-                  {errors.nom && (
-                    <p className="text-red-500 text-sm">{errors.nom}</p>
-                  )}
-                </label>
-
-                <label>
-                  Secteur :
-                  <input
-                    type="text"
-                    name="secteur"
-                    value={user.secteur}
-                    onChange={handleChange}
-                    placeholder="Votre secteur"
-                    className="w-full mt-1 p-2 border rounded-lg"
-                  />
-                  {errors.secteur && (
-                    <p className="text-red-500 text-sm">{errors.secteur}</p>
-                  )}
-                </label>
-
-                <label>
-                  Email :
-                  <input
-                    type="email"
-                    name="email"
-                    readOnly
-                    value={userinfo.email}
-                    className="w-full mt-1 p-2 border rounded-lg"
-                  />
-                </label>
+                {/* --- BOUTONS --- */}
+                <div className="flex justify-end gap-3 mt-6">
+                  <button
+                    className="px-5 py-2.5 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition"
+                    onClick={toggleProfile}
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    className="px-5 py-2.5 rounded-lg bg-purple-600 text-white font-medium hover:bg-purple-700 shadow-md transition"
+                    onClick={handleSaveProfile}
+                  >
+                    Sauvegarder
+                  </button>
+                </div>
               </div>
 
-              <div className="flex justify-end gap-2 mt-4">
-                <button
-                  className="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400"
-                  onClick={toggleProfile}
-                >
-                  Annuler
-                </button>
-                <button
-                  className="px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700"
-                  onClick={handleSaveProfile}
-                >
-                  Sauvegarder
-                </button>
-              </div>
-
+              {/* --- CLOSE BUTTON --- */}
               <button
-                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 font-bold"
+                className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-lg font-bold transition"
                 onClick={toggleProfile}
               >
                 ✕

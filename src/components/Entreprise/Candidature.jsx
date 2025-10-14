@@ -117,198 +117,176 @@ export default function CandidatureList({
     return <p className="text-center text-gray-500">Aucune candidature</p>;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        Candidatures à mes offres
-      </h1>
+<div className="p-6 bg-gray-50 min-h-screen">
+<h1 className="sticky top-0 z-50 text-3xl sm:text-4xl font-extrabold mb-8 text-center
+               bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500
+               drop-shadow-lg py-4">
+  Candidatures à mes offres
+</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {candidatures.map((c) => {
-          const draft = drafts[c.id_candidature] || {};
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {candidatures.map((c) => {
+      const draft = drafts[c.id_candidature] || {};
 
-          // 🔹 Conversion UTC → fuseau local du freelance (navigateur)
-          let dateLocale = "";
-          if (draft.date_entretien) {
-            dateLocale = new Date(draft.date_entretien).toLocaleString(
-              "fr-FR",
-              {
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                hour12: false,
-              }
-            );
-          }
-          return (
-            <div
-              key={c.id_candidature}
-              className="bg-white rounded-2xl shadow-lg p-5 hover:shadow-xl transition"
-            >
-              {/* Titre et date */}
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold text-blue-600">
-                  {c.mission_titre || "Mission non renseignée"}
-                </h2>
-                <p className="text-gray-500 text-sm">{c.date}</p>
+      let dateLocale = "";
+      if (draft.date_entretien) {
+        dateLocale = new Date(draft.date_entretien).toLocaleString("fr-FR", {
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          hour12: false,
+        });
+      }
+
+      return (
+        <div
+          key={c.id_candidature}
+          className="bg-white rounded-2xl shadow-lg p-5 hover:shadow-2xl transition-transform transform hover:-translate-y-1 duration-300"
+        >
+          {/* Titre et date */}
+          <div className="flex justify-between items-center mb-3">
+            <h2 className="text-xl font-bold text-purple-600">
+              {c.mission_titre || "Mission non renseignée"}
+            </h2>
+            <p className="text-gray-400 text-sm">{c.date}</p>
+          </div>
+
+          {/* Profil freelance */}
+          <div className="flex items-center mt-1 mb-4">
+            {c.freelance_photo ? (
+              <img
+                src={`http://localhost:8001/media/${c.freelance_photo}`}
+                alt={c.freelance_nom || "Freelance inconnu"}
+                className="w-14 h-14 rounded-full mr-3 border-2 border-purple-200 object-cover"
+              />
+            ) : (
+              <div className="w-14 h-14 bg-gray-200 rounded-full mr-3 flex items-center justify-center">
+                <span className="text-gray-400 font-bold">?</span>
               </div>
-
-              {/* Profil freelance */}
-              <div className="flex items-center mt-3 mb-4">
-                {c.freelance_photo ? (
-                  <img
-                    src={`http://localhost:8001/media/${c.freelance_photo}`}
-                    alt={c.freelance_nom || "Freelance inconnu"}
-                    className="w-12 h-12 rounded-full mr-3"
-                  />
-                ) : (
-                  <div className="w-12 h-12 bg-gray-300 rounded-full mr-3" />
-                )}
-                <div>
-                  <h3 className="text-lg font-semibold">
-                    {c.freelance_nom || "Nom non renseigné"}
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    {c.freelance_description || "Compétences non renseignées"}
-                  </p>
-                </div>
-              </div>
-
-              {/* Infos freelance */}
-              <p className="mb-1">
-                <span className="font-semibold">Compétences :</span>{" "}
-                {c.freelance_competence || "Non renseignées"}
-              </p>
-              <p className="mb-1">
-                <span className="font-semibold">Contact :</span>{" "}
-                {c.freelance_email || "Non renseigné"}
-              </p>
-              <p className="mb-1">
-                <span className="font-semibold">Expériences :</span>{" "}
-                {c.freelance_experience || "Non renseignées"}
-              </p>
-              <p className="mb-1">
-                <span className="font-semibold">Diplômes :</span>{" "}
-                {c.freelance_formation || "Non renseigné"}
-              </p>
-              <p className="mb-1">
-                <span className="font-semibold">Certificats :</span>{" "}
-                {c.freelance_certificat || "Non renseigné"}
-              </p>
-              <p className="mb-2">
-                <span className="font-semibold">Tarif :</span>{" "}
-                {c.freelance_tarif ? `${c.freelance_tarif} €/h` : "Non défini"}
-              </p>
-
-              <p className="font-semibold">Réponse à une demande d’emploi :</p>
-              {/* Statut */}
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700">
-                  Statut :
-                </label>
-                <select
-                  value={draft.status || "attente"}
-                  onChange={(e) =>
-                    setDrafts((prev) => ({
-                      ...prev,
-                      [c.id_candidature]: {
-                        ...prev[c.id_candidature],
-                        status: e.target.value,
-                      },
-                    }))
-                  }
-                  className="w-full p-2 border rounded-lg mt-1"
-                >
-                  <option value="en_attente">En attente</option>
-                  <option value="en_entretien">En entretien</option>
-                </select>
-              </div>
-
-              {/* Fuseau horaire entreprise */}
-              <div className="mt-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  Fuseau horaire de l’entreprise :
-                </label>
-                <select
-                  value={draft.timezone || timezoneEntreprise}
-                  onChange={(e) =>
-                    setDrafts((prev) => ({
-                      ...prev,
-                      [c.id_candidature]: {
-                        ...prev[c.id_candidature],
-                        timezone: e.target.value,
-                      },
-                    }))
-                  }
-                  className="w-full p-2 border rounded-lg mt-1"
-                >
-                  <option value="Europe/Paris">Europe/Paris</option>
-                  <option value="Indian/Antananarivo">
-                    Indian/Antananarivo
-                  </option>
-                  <option value="America/New_York">America/New_York</option>
-                  <option value="Asia/Tokyo">Asia/Tokyo</option>
-                </select>
-              </div>
-
-              {/* Date entretien */}
-              <div className="mt-3">
-                {draft.date_entretien && (
-                  <p className="text-sm text-green-600 font-medium mb-1">
-                    📅 Entretien prévu le : {dateLocale} (heure locale)
-                  </p>
-                )}
-                <label className="block text-sm font-medium text-gray-700">
-                  Choisir une date d’entretien :
-                </label>
-                <input
-                  type="datetime-local"
-                  value={formatDateForInput(draft.date_entretien)}
-                  onChange={(e) =>
-                    setDrafts((prev) => ({
-                      ...prev,
-                      [c.id_candidature]: {
-                        ...prev[c.id_candidature],
-                        date_entretien: e.target.value,
-                      },
-                    }))
-                  }
-                  className="w-full p-2 border rounded-lg mt-1"
-                />
-              </div>
-              {/* Commentaire */}
-              <div className="mt-3">
-                <label className="block text-sm font-medium text-gray-700">
-                  Entrez le lien de la salle d'entretien au moment de
-                  l'entretien :
-                </label>
-                <textarea
-                  value={draft.commentaire_entretien || ""}
-                  onChange={(e) =>
-                    setDrafts((prev) => ({
-                      ...prev,
-                      [c.id_candidature]: {
-                        ...prev[c.id_candidature],
-                        commentaire_entretien: e.target.value,
-                      },
-                    }))
-                  }
-                  className="w-full p-2 border rounded-lg mt-1"
-                  rows="2"
-                />
-              </div>
-
-              {/* Bouton Enregistrer */}
-              <button
-                onClick={() => handleUpdate(c.id_candidature)}
-                className="mt-3 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-              >
-                Envoyer votre reponse
-              </button>
-              <div className="mt-3 w-full  text-white py-2 rounded-lg hover:bg-blue-700 transition">
-                <StartCall freelancerId={c.freelance} />
-              </div>
+            )}
+            <div>
+              <h3 className="text-lg font-semibold">{c.freelance_nom || "Nom non renseigné"}</h3>
+              <p className="text-sm text-gray-500">{c.freelance_description || "Compétences non renseignées"}</p>
             </div>
-          );
-        })}
-      </div>
-    </div>
+          </div>
+
+          {/* Infos freelance */}
+          <div className="space-y-1 text-gray-700 text-sm mb-3">
+            <p><span className="font-semibold">Compétences :</span> {c.freelance_competence || "Non renseignées"}</p>
+            <p><span className="font-semibold">Contact :</span> {c.freelance_email || "Non renseigné"}</p>
+            <p><span className="font-semibold">Expériences :</span> {c.freelance_experience || "Non renseignées"}</p>
+            <p><span className="font-semibold">Diplômes :</span> {c.freelance_formation || "Non renseigné"}</p>
+            <p><span className="font-semibold">Certificats :</span> {c.freelance_certificat || "Non renseigné"}</p>
+            <p><span className="font-semibold">Tarif :</span> {c.freelance_tarif ? `${c.freelance_tarif} €/h` : "Non défini"}</p>
+          </div>
+
+          <p className="font-semibold mb-2">Réponse à une demande d’emploi :</p>
+
+          {/* Statut */}
+          <div className="mb-3">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Statut :</label>
+            <select
+              value={draft.status || "attente"}
+              onChange={(e) =>
+                setDrafts((prev) => ({
+                  ...prev,
+                  [c.id_candidature]: {
+                    ...prev[c.id_candidature],
+                    status: e.target.value,
+                  },
+                }))
+              }
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 transition"
+            >
+              <option value="en_attente">En attente</option>
+              <option value="en_entretien">En entretien</option>
+            </select>
+          </div>
+
+          {/* Fuseau horaire entreprise */}
+          <div className="mb-3">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Fuseau horaire de l’entreprise :</label>
+            <select
+              value={draft.timezone || timezoneEntreprise}
+              onChange={(e) =>
+                setDrafts((prev) => ({
+                  ...prev,
+                  [c.id_candidature]: {
+                    ...prev[c.id_candidature],
+                    timezone: e.target.value,
+                  },
+                }))
+              }
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 transition"
+            >
+              <option value="Europe/Paris">Europe/Paris</option>
+              <option value="Indian/Antananarivo">Indian/Antananarivo</option>
+              <option value="America/New_York">America/New_York</option>
+              <option value="Asia/Tokyo">Asia/Tokyo</option>
+            </select>
+          </div>
+
+          {/* Date entretien */}
+          <div className="mb-3">
+            {draft.date_entretien && (
+              <p className="text-sm text-green-600 font-medium mb-1">
+                📅 Entretien prévu le : {dateLocale} (heure locale)
+              </p>
+            )}
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Choisir une date d’entretien :
+            </label>
+            <input
+              type="datetime-local"
+              value={formatDateForInput(draft.date_entretien)}
+              onChange={(e) =>
+                setDrafts((prev) => ({
+                  ...prev,
+                  [c.id_candidature]: {
+                    ...prev[c.id_candidature],
+                    date_entretien: e.target.value,
+                  },
+                }))
+              }
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 transition"
+            />
+          </div>
+
+          {/* Commentaire */}
+          <div className="mb-3">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Lien de la salle d'entretien :
+            </label>
+            <textarea
+              value={draft.commentaire_entretien || ""}
+              onChange={(e) =>
+                setDrafts((prev) => ({
+                  ...prev,
+                  [c.id_candidature]: {
+                    ...prev[c.id_candidature],
+                    commentaire_entretien: e.target.value,
+                  },
+                }))
+              }
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 transition"
+              rows="2"
+            />
+          </div>
+
+          {/* Boutons */}
+          <div className="flex flex-col gap-2">
+            <button
+              onClick={() => handleUpdate(c.id_candidature)}
+              className="w-full bg-purple-600 text-white py-2 rounded-xl hover:bg-purple-700 transition font-medium"
+            >
+              Envoyer votre réponse
+            </button>
+            <div className="w-full">
+              <StartCall freelancerId={c.freelance} />
+            </div>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
   );
 }

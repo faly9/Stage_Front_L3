@@ -94,153 +94,100 @@ export default function EditProfileFreelance({ freelance, onSave, onCancel }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-2xl w-full max-w-lg overflow-y-auto max-h-[90vh]">
-        <h2 className="text-2xl font-bold mb-4">
-          {profile.id_freelance ? "Modifier le profil" : "Créer mon profil"}
-        </h2>
-        {error && <p className="text-red-600 mb-2">{error}</p>}
+<div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+  <div className="bg-white p-6 rounded-3xl w-full max-w-lg overflow-y-auto max-h-[90vh] shadow-2xl border border-gray-200 transform transition-all duration-300 scale-95 animate-fadeIn">
+    
+    {/* Titre */}
+    <h2 className="text-2xl font-bold mb-4 text-gray-800">
+      {profile.id_freelance ? "Modifier le profil" : "Créer mon profil"}
+    </h2>
+    {error && <p className="text-red-600 mb-2">{error}</p>}
 
-        {/* Photo */}
-        <div className="flex items-center justify-center gap-4 mb-4">
-          <div className="relative">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="hidden"
-              id="profileUpload"
+    {/* Photo */}
+    <div className="flex items-center justify-center gap-4 mb-6">
+      <div className="relative group">
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden"
+          id="profileUpload"
+        />
+        <label htmlFor="profileUpload" className="cursor-pointer">
+          {profile.photoPreview || profile.photo ? (
+            <img
+              src={profile.photoPreview || profile.photo}
+              alt="Aperçu Profil"
+              className="w-24 h-24 rounded-full object-cover border-2 border-indigo-300 shadow-lg group-hover:scale-105 transition-transform duration-200"
             />
-            <label htmlFor="profileUpload" className="cursor-pointer">
-              {profile.photoPreview || profile.photo ? (
-                <img
-                  src={
-                    profile.photoPreview ||
-                    profile.photo /* backend peut renvoyer URL */
-                  }
-                  alt="Aperçu Profil"
-                  className="w-24 h-24 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-500">+</span>
-                </div>
-              )}
-            </label>
-            <label
-              htmlFor="profileUpload"
-              className="absolute bottom-1 right-1 bg-white p-1 rounded-full shadow cursor-pointer"
-            >
-              <Edit className="w-4 h-4 text-gray-600" />
-            </label>
-          </div>
-        </div>
-
-        {/* Nom */}
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Nom</label>
-          <input
-            type="text"
-            name="nom"
-            value={profile.nom || ""}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        {/* Description */}
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Description</label>
-          <textarea
-            name="description"
-            value={profile.description || ""}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            rows={3}
-          />
-        </div>
-
-        {/* Compétences */}
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Compétences(,)</label>
-          <textarea
-            name="competence"
-            value={profile.competence || ""}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            rows={3}
-          />
-        </div>
-
-        {/* Expériences */}
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Expériences(,)</label>
-          <textarea
-            name="experience"
-            value={profile.experience || ""}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            rows={3}
-          />
-        </div>
-
-        {/* Diplômes */}
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Diplômes(,)</label>
-          <textarea
-            name="formation"
-            value={profile.formation || ""}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            rows={3}
-          />
-        </div>
-
-        {/* Certificats */}
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Certificats(,)</label>
-          <textarea
-            name="certificat"
-            value={profile.certificat || ""}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            rows={3}
-          />
-        </div>
-
-        {/* Tarif */}
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Tarif E/h</label>
-          <input
-            type="number"
-            name="tarif"
-            value={profile.tarif || ""}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-
-        {/* Boutons */}
-        <div className="flex justify-end gap-3 mt-4">
-          <button
-            onClick={onCancel}
-            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-          >
-            Annuler
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            {loading
-              ? "Enregistrement..."
-              : profile.id_freelance
-              ? "Mettre à jour"
-              : "Créer"}
-          </button>
-        </div>
+          ) : (
+            <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-2xl font-bold">
+              +
+            </div>
+          )}
+        </label>
+        <label
+          htmlFor="profileUpload"
+          className="absolute bottom-0 right-0 bg-white p-1 rounded-full shadow hover:bg-gray-100 transition cursor-pointer"
+        >
+          <Edit className="w-4 h-4 text-gray-600" />
+        </label>
       </div>
     </div>
+
+    {/* Champs du formulaire */}
+    {[
+      { label: "Nom", name: "nom", type: "text" },
+      { label: "Description", name: "description", type: "textarea", rows: 3 },
+      { label: "Compétences (séparées par ,)", name: "competence", type: "textarea", rows: 3 },
+      { label: "Expériences (séparées par ,)", name: "experience", type: "textarea", rows: 3 },
+      { label: "Diplômes (séparés par ,)", name: "formation", type: "textarea", rows: 3 },
+      { label: "Certificats (séparés par ,)", name: "certificat", type: "textarea", rows: 3 },
+      { label: "Tarif €/h", name: "tarif", type: "number" },
+    ].map((field, idx) => (
+      <div className="mb-4" key={idx}>
+        <label className="block mb-1 font-medium text-gray-700">{field.label}</label>
+        {field.type === "textarea" ? (
+          <textarea
+            name={field.name}
+            value={profile[field.name] || ""}
+            onChange={handleChange}
+            rows={field.rows}
+            className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-300 transition-shadow shadow-sm hover:shadow-md"
+          />
+        ) : (
+          <input
+            type={field.type}
+            name={field.name}
+            value={profile[field.name] || ""}
+            onChange={handleChange}
+            className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-300 transition-shadow shadow-sm hover:shadow-md"
+          />
+        )}
+      </div>
+    ))}
+
+    {/* Boutons */}
+    <div className="flex justify-end gap-3 mt-6">
+      <button
+        onClick={onCancel}
+        className="px-5 py-2 bg-gray-300 text-gray-700 rounded-xl hover:bg-gray-400 transition"
+      >
+        Annuler
+      </button>
+      <button
+        onClick={handleSave}
+        disabled={loading}
+        className="px-5 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition"
+      >
+        {loading
+          ? "Enregistrement..."
+          : profile.id_freelance
+          ? "Mettre à jour"
+          : "Créer"}
+      </button>
+    </div>
+  </div>
+</div>
   );
 }

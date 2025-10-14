@@ -112,6 +112,7 @@ export default function FreelanceDashboard() {
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       console.log("📩 Notification reçue :", data);
+      setNewnotification((count) => count + 1);
 
       setEntretienNotifications((prev) => {
         const exists = prev.some(
@@ -124,7 +125,7 @@ export default function FreelanceDashboard() {
           updated = prev.map((n) =>
             n.id_candidature === data.id_candidature ? { ...n, ...data } : n
           );
-          toast.info(`🔄 Entretien mis à jour : ${data.mission_titre}`);
+          // toast.info(`🔄 Entretien mis à jour : ${data.mission_titre}`);
         } else {
           // Nouvelle notification
           updated = [data, ...prev];
@@ -133,8 +134,6 @@ export default function FreelanceDashboard() {
 
         return updated;
       });
-
-      setNewnotification((count) => count + 1);
     };
 
     ws.onerror = (err) => console.error("❌ WS Entretien erreur :", err);
@@ -413,10 +412,23 @@ export default function FreelanceDashboard() {
         newnotification={newnotification}
       />
 
-      <div className="flex-1 flex flex-col">
-        <header className="flex justify-between items-center bg-white shadow p-4">
-          <h1 className="text-2xl font-bold">Freelanceur</h1>
-        </header>
+      <div className="flex-1 flex flex-col w-full">
+        <div className="flex items-center justify-between bg-white shadow-md p-4 rounded-xl">
+          {/* Titre à gauche */}
+          <h1 className="text-2xl font-bold text-gray-800">Freelanceur</h1>
+
+          {/* Profil à droite */}
+          <div className="flex items-center gap-3">
+            <p className="font-bold text-gray-700 text-lg">
+              {freelances[0].nom}
+            </p>
+            <img
+              src={freelances[0].photo || "/images/profil.png"}
+              alt="Profil"
+              className="w-16 h-16 rounded-full border-2 border-indigo-400 shadow-lg object-cover"
+            />
+          </div>
+        </div>
 
         <main className="flex-1 p-6 overflow-y-auto">{renderContent()}</main>
       </div>
