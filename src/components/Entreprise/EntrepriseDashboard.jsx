@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Edit } from "lucide-react";
+import { useState, useEffect, Profiler } from "react";
+import { Edit, Bell, Moon, Sun, User } from "lucide-react";
 import Navbar from "./Navbar";
 import axios from "axios";
 import CardMission from "./Card_mission";
@@ -34,6 +34,7 @@ function Mission({ isOpen, onClose, onAdded }) {
     competence: "",
     budget: "",
   });
+
   const [errors, setErrors] = useState({});
 
   if (!isOpen) return null;
@@ -101,9 +102,22 @@ function Mission({ isOpen, onClose, onAdded }) {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-2xl shadow-2xl w-[500px] max-w-full relative">
+      <div
+        className="p-6 rounded-2xl shadow-2xl w-[500px] max-w-full relative"
+        style={{
+          background: "var(--card-bg)",
+          color: "var(--text-primary)",
+          border: "1px solid var(--border)",
+        }}
+      >
         {/* Titre */}
-        <h2 className="text-2xl font-bold text-purple-700 mb-6 text-center">
+        <h2
+          className="text-2xl font-semibold mb-6 text-center"
+          style={{
+            color: "var(--accent)",
+            fontFamily: "'Poppins', sans-serif",
+          }}
+        >
           Ajouter une mission
         </h2>
 
@@ -115,10 +129,18 @@ function Mission({ isOpen, onClose, onAdded }) {
             value={mission.titre}
             onChange={handleChange}
             placeholder="Titre"
-            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none transition"
+            className="w-full px-4 py-2 rounded-xl focus:ring-2 focus:outline-none transition"
+            style={{
+              background: "var(--button-bg)",
+              border: "1px solid var(--border)",
+              color: "var(--text-primary)",
+              boxShadow: "inset 0 1px 2px rgba(0,0,0,0.05)",
+            }}
           />
           {errors.titre && (
-            <p className="text-red-500 text-sm">{errors.titre}</p>
+            <p className="text-sm" style={{ color: "var(--accent-strong)" }}>
+              {errors.titre}
+            </p>
           )}
 
           <textarea
@@ -126,11 +148,18 @@ function Mission({ isOpen, onClose, onAdded }) {
             value={mission.description}
             onChange={handleChange}
             placeholder="Description"
-            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none transition resize-none"
+            className="w-full px-4 py-2 rounded-xl focus:ring-2 focus:outline-none transition resize-none"
             rows={4}
+            style={{
+              background: "var(--button-bg)",
+              border: "1px solid var(--border)",
+              color: "var(--text-primary)",
+            }}
           />
           {errors.description && (
-            <p className="text-red-500 text-sm">{errors.description}</p>
+            <p className="text-sm" style={{ color: "var(--accent-strong)" }}>
+              {errors.description}
+            </p>
           )}
 
           <input
@@ -139,10 +168,17 @@ function Mission({ isOpen, onClose, onAdded }) {
             value={mission.competence}
             onChange={handleChange}
             placeholder="Compétences requises"
-            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none transition"
+            className="w-full px-4 py-2 rounded-xl focus:ring-2 focus:outline-none transition"
+            style={{
+              background: "var(--button-bg)",
+              border: "1px solid var(--border)",
+              color: "var(--text-primary)",
+            }}
           />
           {errors.competence && (
-            <p className="text-red-500 text-sm">{errors.competence}</p>
+            <p className="text-sm" style={{ color: "var(--accent-strong)" }}>
+              {errors.competence}
+            </p>
           )}
 
           <input
@@ -151,10 +187,17 @@ function Mission({ isOpen, onClose, onAdded }) {
             value={mission.budget}
             onChange={handleChange}
             placeholder="Budget"
-            className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none transition"
+            className="w-full px-4 py-2 rounded-xl focus:ring-2 focus:outline-none transition"
+            style={{
+              background: "var(--button-bg)",
+              border: "1px solid var(--border)",
+              color: "var(--text-primary)",
+            }}
           />
           {errors.budget && (
-            <p className="text-red-500 text-sm">{errors.budget}</p>
+            <p className="text-sm" style={{ color: "var(--accent-strong)" }}>
+              {errors.budget}
+            </p>
           )}
 
           {/* Actions */}
@@ -162,7 +205,12 @@ function Mission({ isOpen, onClose, onAdded }) {
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2 rounded-xl bg-gray-200 hover:bg-gray-300 transition font-medium"
+              className="px-5 py-2 rounded-xl transition font-medium"
+              style={{
+                background: "var(--button-bg)",
+                color: "var(--text-secondary)",
+                border: "1px solid var(--border)",
+              }}
             >
               Annuler
             </button>
@@ -170,7 +218,11 @@ function Mission({ isOpen, onClose, onAdded }) {
               type="button"
               onClick={handleSaveMission}
               disabled={loading}
-              className="px-5 py-2 rounded-xl bg-purple-600 text-white hover:bg-purple-700 transition font-medium"
+              className="px-5 py-2 rounded-xl transition font-medium shadow-md"
+              style={{
+                background: "var(--accent)",
+                color: "var(--text-on-accent)",
+              }}
             >
               {loading ? "Ajout..." : "Ajouter"}
             </button>
@@ -180,7 +232,10 @@ function Mission({ isOpen, onClose, onAdded }) {
         {/* Close bouton */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-lg"
+          className="absolute top-4 right-4 font-bold text-lg"
+          style={{
+            color: "var(--text-secondary)",
+          }}
         >
           ✕
         </button>
@@ -214,6 +269,29 @@ export default function EntrepriseDashboard() {
   const [candidatureCount, setCandidatureCount] = useState(() => {
     return parseInt(localStorage.getItem("candidatureCount")) || 0;
   });
+
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Charger le thème depuis localStorage
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      document.documentElement.classList.add("dark");
+      setIsDarkMode(true);
+    }
+  }, []);
+
+  // Fonction pour basculer le thème
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+    if (!isDarkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  };
 
   // Sauvegarder dans localStorage à chaque changement
   useEffect(() => {
@@ -538,266 +616,338 @@ export default function EntrepriseDashboard() {
       toast.info(`🔄 Entretien mis à jour : ${latest.mission_titre}`, {
         autoClose: 3000,
       });
-    } else {
-       toast.success(`📢 Nouvelle notification : ${latest.mission_titre}`, {
-        autoClose: 3000,
-      });
-     }
+    }
   }, [entretienNotifications]);
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <Navbar
-        onSectionChange={handleSectionChange}
-        candidatureCount={candidatureCount}
-        section={currentsection}
-      />
+    <div
+      className="flex items-center justify-center h-screen transition-colors duration-500"
+      style={{
+        background:
+          "linear-gradient(to bottom, var(--gradient-from), var(--gradient-via), var(--gradient-to))",
+      }}
+    >
+      <div className="w-[90%] max-w-[1600px] h-screen flex rounded-3xl shadow-2xl  overflow-hidden  bg-[var(--card-bg)]">
+        <Navbar
+          onSectionChange={handleSectionChange}
+          candidatureCount={candidatureCount}
+          section={currentsection}
+        />
 
-      <div className="flex-1 flex flex-col bg-gradient-to-b from-red-50 to-white min-h-screen">
-        <header className="flex justify-between items-center bg-white/80 backdrop-blur-sm shadow-md border-b border-red-100 px-6 py-4">
-          <h1 className="text-2xl font-bold text-red-600 tracking-wide">
-            Espace Entreprise
-          </h1>
-
-          <div className="flex items-center gap-4">
-            <p className="font-medium text-gray-800 text-lg">
-              {user.nom || "Utilisateur"}
-            </p>
-            <div
-              className="relative group cursor-pointer"
-              onClick={toggleProfile}
+        <div className="flex-1 flex flex-col min-h-screen">
+          {/* HEADER */}
+          <header className="flex justify-between items-center bg-[var(--card-bg)] backdrop-blur-md shadow-md border-b border-[var(--border)] px-6 py-4 transition-all duration-500">
+            <p
+              className="text-xl w-56 font-extrabold text-center bg-clip-text text-transparent
+        bg-gradient-to-r from-[var(--accent)] via-[var(--accent-light)] to-[var(--accent-strong)] drop-shadow-lg"
             >
-              {user.profile_image ? (
-                <img
-                  src={user.profile_image}
-                  alt="Profil"
-                  className="w-12 h-12 rounded-full border-2 border-red-500 shadow-md object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-              ) : (
-                <div className="w-12 h-12 rounded-full bg-red-200 flex items-center justify-center border-2 border-red-500 shadow-md">
-                  <span className="text-red-700 font-bold text-lg">
-                    {user.nom ? user.nom[0].toUpperCase() : "U"}
-                  </span>
+              {currentsection === "dashboard"
+                ? "Liste des Missions"
+                : currentsection === "ia"
+                ? "Proposition de l'IA"
+                : currentsection === "Candidat"
+                ? "Liste des candidats"
+                : currentsection === "message"
+                ? "Historiques"
+                : ""}
+            </p>
+
+            {/* PROFIL + ICONES */}
+            <div className="flex flex-col justify-end lg:flex-row items-center gap-6 w-full ">
+              <div className="relative cursor-pointer w-full max-w-lg sm:max-w-xl md:max-w-2xl">
+                <div className="rounded-3xl bg-gradient-to-r from-[var(--gradient-from)] via-[var(--gradient-via)] to-[var(--gradient-to)] shadow-2xl border border-transparent hover:border-[var(--accent)] hover:shadow-[var(--accent-light)]/30 transition-all duration-500 w-full">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-5 bg-[var(--card-bg)] p-4 rounded-2xl shadow-md hover:shadow-2xl hover:-translate-y-1 transition-transform duration-300 w-full">
+                    {/* PROFIL */}
+                    <div className="flex items-center gap-4 relative group">
+                      {user.profile_image ? (
+                        <img
+                          src={user.profile_image}
+                          onClick={toggleProfile}
+                          alt="Profil"
+                          className="w-12 h-12 rounded-full border-2 border-[var(--accent)] shadow-md object-cover transition-transform duration-300 hover:scale-105"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--accent-strong)] flex items-center justify-center shadow-md">
+                          <span className="text-[var(--text-on-accent)] font-bold text-lg">
+                            {user.nom ? user.nom[0].toUpperCase() : "U"}
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="absolute top-full left-0 mt-2 bg-[var(--tooltip-bg)] border border-[var(--border)] shadow-lg rounded-xl px-3 py-1 text-sm text-[var(--tooltip-text)] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        ✏️ Éditer le profil
+                      </div>
+
+                      <div>
+                        <h3 className="text-md font-semibold text-[var(--text-primary)]">
+                          {user.nom || "Utilisateur"}
+                        </h3>
+                        <p className="text-sm text-[var(--text-secondary)] italic">
+                          Entreprise disponible
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* ICONES */}
+                    <div className="flex items-center gap-4 sm:gap-6 mt-3 sm:mt-0">
+                      <div className="relative group">
+                        <User className="w-6 h-6 text-[var(--icon-primary)] hover:scale-110 transition-transform cursor-pointer" />
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-[var(--tooltip-bg)] border border-[var(--border)] shadow-lg rounded-xl px-2 py-1 text-xs text-[var(--tooltip-text)] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          👥 Candidats
+                        </div>
+                      </div>
+
+                      <div className="relative group">
+                        <Bell className="w-6 h-6 text-[var(--icon-secondary)] hover:scale-110 transition-transform cursor-pointer" />
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-[var(--tooltip-bg)] border border-[var(--border)] shadow-lg rounded-xl px-2 py-1 text-xs text-[var(--tooltip-text)] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          🔔 Notifications
+                        </div>
+                      </div>
+
+                      <div className="relative group">
+                        <button
+                          onClick={toggleTheme}
+                          className="p-2 rounded-full bg-[var(--button-bg)] shadow-md hover:scale-110 transition-transform duration-300"
+                        >
+                          {isDarkMode ? (
+                            <Sun className="w-5 h-5 text-[var(--sun-color)]" />
+                          ) : (
+                            <Moon className="w-5 h-5 text-[var(--moon-color)]" />
+                          )}
+                        </button>
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-[var(--tooltip-bg)] border border-[var(--border)] shadow-lg rounded-xl px-2 py-1 text-xs text-[var(--tooltip-text)] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          🌗 Mode
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              )}
-
-              {/* Effet de survol */}
-              <div className="absolute top-full right-0 z-[9999] mt-2 bg-white border shadow-lg rounded-xl px-3 py-1 text-sm text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity">
-                Éditer le profil
               </div>
             </div>
-          </div>
-        </header>
+          </header>{" "}
+          {/* MAIN */}
+          <main className="flex-1 p-6 hide-scrollbar overflow-y-auto bg-[var(--gradient-from)] text-[var(--text-primary)] transition-colors duration-500">
+            {/* --- DASHBOARD SECTION --- */}
+            {currentsection === "dashboard" && (
+              <div>
+                {/* --- HEADER --- */}
+                <div className="sticky top-0 mb-6 z-50 bg-[var(--card-bg)] shadow-sm flex justify-between items-center px-4 py-4 border-b border-[var(--border)]">
+                  <h1
+                    className="sticky top-0 z-50 text-3xl sm:text-4xl font-extrabold text-center
+              bg-clip-text text-transparent bg-gradient-to-r 
+              from-[var(--accent)] via-[var(--accent-light)] to-[var(--accent-strong)]
+              drop-shadow-md italic"
+                  >
+                    Missions publiées
+                  </h1>
+                  <ButtonAdd onClick={() => setIsModalOpen(true)} />
+                </div>
 
-        {/* MAIN */}
-        <main className="flex-1 p-6 overflow-y-auto">
-          {currentsection === "dashboard" && (
-            <div>
-              <div className="sticky top-0 bg-white mb-6 z-50 shadow-sm flex justify-between px-4 py-3">
-                <h1 className="text-2xl font-bold">Missions publiées</h1>
-                <ButtonAdd onClick={() => setIsModalOpen(true)} />
-              </div>
+                {/* --- MODAL AJOUT MISSION --- */}
+                <Mission
+                  isOpen={isModalOpen}
+                  onClose={() => setIsModalOpen(false)}
+                  onAdded={fetchMissions}
+                />
 
-              {/* Modal ajout mission */}
-              <Mission
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onAdded={fetchMissions}
-              />
+                {/* --- LISTE DES MISSIONS --- */}
+                <div className="flex flex-col gap-6">
+                  {missions.length > 0 ? (
+                    missions.map((mission) => (
+                      <CardMission
+                        key={mission.id_mission}
+                        mission={mission}
+                        onEdit={(m) => setEditingMission(m)}
+                        onDelete={() => handleDeleteMission(mission.id_mission)}
+                      />
+                    ))
+                  ) : (
+                    <p className="text-[var(--text-secondary)]">
+                      Aucune mission pour le moment
+                    </p>
+                  )}
+                </div>
 
-              {/* Liste des missions */}
-              <div className="flex flex-col gap-6">
-                {missions.length > 0 ? (
-                  missions.map((mission) => (
-                    <CardMission
-                      key={mission.id_mission}
-                      mission={mission}
-                      onEdit={(m) => setEditingMission(m)}
-                      onDelete={() => handleDeleteMission(mission.id_mission)}
-                    />
-                  ))
-                ) : (
-                  <p className="text-gray-500">Aucune mission pour le moment</p>
-                )}
-              </div>
-
-              {/* Modal édition mission */}
-              <EditMissionModal
-                mission={editingMission}
-                isOpen={!!editingMission}
-                onClose={() => setEditingMission(null)}
-                onUpdated={(updated) =>
-                  setMissions((prev) =>
-                    prev.map((m) =>
-                      m.id_mission === updated.id_mission ? updated : m
+                {/* --- MODAL ÉDITION MISSION --- */}
+                <EditMissionModal
+                  mission={editingMission}
+                  isOpen={!!editingMission}
+                  onClose={() => setEditingMission(null)}
+                  onUpdated={(updated) =>
+                    setMissions((prev) =>
+                      prev.map((m) =>
+                        m.id_mission === updated.id_mission ? updated : m
+                      )
                     )
-                  )
-                }
-              />
-            </div>
-          )}
+                  }
+                />
+              </div>
+            )}
 
-          {currentsection == "Candidat" && (
-            <div>
+            {/* --- CANDIDATURE SECTION --- */}
+            {currentsection === "Candidat" && (
               <CandidatureList
                 candidatures={candidatures}
                 setCandidatures={setCandidatures}
                 drafts={drafts}
                 setDrafts={setDrafts}
               />
-            </div>
-          )}
-          {currentsection == "message" && (
-            <div>
+            )}
+
+            {/* --- NOTIFICATIONS SECTION --- */}
+            {currentsection === "message" && (
               <EntrepriseNotifications
                 entretienNotifications={entretienNotifications}
               />
-            </div>
-          )}
-        </main>
+            )}
 
-        {/* MODAL PROFIL */}
-        {isProfileOpen && (
-          <div className="fixed inset-0 flex items-center justify-center z-50">
-            {/* --- FOND FLOU + OMBRÉ --- */}
-            <div className="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity duration-300"></div>
+            {/* --- MODAL PROFIL --- */}
+            {isProfileOpen && (
+              <div className="fixed inset-0 flex items-center justify-center z-50">
+                {/* --- FOND FLOU --- */}
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity duration-300"></div>
 
-            {/* --- MODAL --- */}
-            <div className="relative z-10 bg-gradient-to-b from-white via-white to-gray-50 rounded-3xl shadow-2xl p-8 w-[420px] transform transition-all duration-300 scale-100 hover:scale-[1.01]">
-              <h2 className="text-2xl font-bold mb-5 text-center text-gray-800">
-                ✨ Éditer le profil
-              </h2>
+                {/* --- CONTENU MODAL --- */}
+                <div className="relative z-10 bg-[var(--card-bg)] rounded-3xl shadow-2xl p-8 w-[420px] border border-[var(--border)] transform transition-all duration-300 scale-100 hover:scale-[1.01]">
+                  <h2 className="text-2xl font-bold mb-5 text-center text-[var(--text-primary)]">
+                    ✨ Éditer le profil
+                  </h2>
 
-              <div className="flex flex-col gap-4">
-                {/* --- PHOTO DE PROFIL --- */}
-                <div className="flex items-center justify-center">
-                  <div className="relative group">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                      className="hidden"
-                      id="profileUpload"
-                    />
-                    <label htmlFor="profileUpload" className="cursor-pointer">
-                      {user.profile_image ? (
-                        <img
-                          src={user.profile_image}
-                          alt="Aperçu Profil"
-                          className="w-28 h-28 rounded-full object-cover ring-4 ring-purple-200 shadow-md group-hover:ring-purple-400 transition-all duration-300"
+                  <div className="flex flex-col gap-4">
+                    {/* --- PHOTO DE PROFIL --- */}
+                    <div className="flex items-center justify-center">
+                      <div className="relative group">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className="hidden"
+                          id="profileUpload"
                         />
-                      ) : (
-                        <div className="w-28 h-28 rounded-full bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300 group-hover:border-purple-400 transition">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-12 w-12 text-gray-500"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M5.121 17.804A9 9 0 1118.879 6.196 9 9 0 015.121 17.804zM15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        <label
+                          htmlFor="profileUpload"
+                          className="cursor-pointer"
+                        >
+                          {user.profile_image ? (
+                            <img
+                              src={user.profile_image}
+                              alt="Aperçu Profil"
+                              className="w-28 h-28 rounded-full object-cover ring-4 ring-[var(--accent-light)] shadow-md group-hover:ring-[var(--accent)] transition-all duration-300"
                             />
-                          </svg>
-                        </div>
-                      )}
-                    </label>
+                          ) : (
+                            <div className="w-28 h-28 rounded-full bg-[var(--button-bg)] flex items-center justify-center border-2 border-dashed border-[var(--border)] group-hover:border-[var(--accent)] transition">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-12 w-12 text-[var(--text-secondary)]"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M5.121 17.804A9 9 0 1118.879 6.196 9 9 0 015.121 17.804zM15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                              </svg>
+                            </div>
+                          )}
+                        </label>
 
-                    <label
-                      htmlFor="profileUpload"
-                      className="absolute bottom-2 right-2 bg-purple-600 p-2 rounded-full shadow-lg cursor-pointer hover:bg-purple-700 transition"
-                    >
-                      <Edit className="w-4 h-4 text-white" />
-                    </label>
+                        <label
+                          htmlFor="profileUpload"
+                          className="absolute bottom-2 right-2 bg-[var(--accent)] p-2 rounded-full shadow-lg cursor-pointer hover:bg-[var(--accent-strong)] transition"
+                        >
+                          <Edit className="w-4 h-4 text-[var(--text-on-accent)]" />
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* --- INPUTS --- */}
+                    <div className="flex flex-col gap-3 mt-2">
+                      {[
+                        {
+                          label: "Role",
+                          name: "role",
+                          type: "text",
+                          readOnly: true,
+                          value: userinfo.role,
+                        },
+                        {
+                          label: "Nom",
+                          name: "nom",
+                          type: "text",
+                          value: user.nom,
+                          placeholder: "Nom de l'entreprise",
+                          error: errors.nom,
+                        },
+                        {
+                          label: "Secteur",
+                          name: "secteur",
+                          type: "text",
+                          value: user.secteur,
+                          placeholder: "Votre secteur",
+                          error: errors.secteur,
+                        },
+                        {
+                          label: "Email",
+                          name: "email",
+                          type: "email",
+                          readOnly: true,
+                          value: userinfo.email,
+                        },
+                      ].map((field, i) => (
+                        <label key={i} className="block">
+                          <span className="text-sm font-medium text-[var(--text-primary)]">
+                            {field.label}
+                          </span>
+                          <input
+                            type={field.type}
+                            name={field.name}
+                            value={field.value}
+                            onChange={handleChange}
+                            readOnly={field.readOnly}
+                            placeholder={field.placeholder || ""}
+                            className="w-full mt-1 p-2.5 border border-[var(--border)] rounded-lg bg-[var(--button-bg)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent)] focus:outline-none transition"
+                          />
+                          {field.error && (
+                            <p className="text-red-500 text-sm mt-1">
+                              {field.error}
+                            </p>
+                          )}
+                        </label>
+                      ))}
+                    </div>
+
+                    {/* --- BOUTONS --- */}
+                    <div className="flex justify-end gap-3 mt-6">
+                      <button
+                        className="px-5 py-2.5 rounded-lg bg-[var(--button-bg)] text-[var(--text-primary)] font-medium hover:bg-[var(--accent-light)] hover:text-[var(--text-on-accent)] transition"
+                        onClick={toggleProfile}
+                      >
+                        Annuler
+                      </button>
+                      <button
+                        className="px-5 py-2.5 rounded-lg bg-[var(--accent)] text-[var(--text-on-accent)] font-medium hover:bg-[var(--accent-strong)] shadow-md transition"
+                        onClick={handleSaveProfile}
+                      >
+                        Sauvegarder
+                      </button>
+                    </div>
                   </div>
-                </div>
 
-                {/* --- INPUTS --- */}
-                <div className="flex flex-col gap-3 mt-2">
-                  {[
-                    {
-                      label: "Role",
-                      name: "role",
-                      type: "text",
-                      readOnly: true,
-                      value: userinfo.role,
-                    },
-                    {
-                      label: "Nom",
-                      name: "nom",
-                      type: "text",
-                      value: user.nom,
-                      placeholder: "Nom de l'entreprise",
-                      error: errors.nom,
-                    },
-                    {
-                      label: "Secteur",
-                      name: "secteur",
-                      type: "text",
-                      value: user.secteur,
-                      placeholder: "Votre secteur",
-                      error: errors.secteur,
-                    },
-                    {
-                      label: "Email",
-                      name: "email",
-                      type: "email",
-                      readOnly: true,
-                      value: userinfo.email,
-                    },
-                  ].map((field, i) => (
-                    <label key={i} className="block">
-                      <span className="text-sm font-medium text-gray-700">
-                        {field.label}
-                      </span>
-                      <input
-                        type={field.type}
-                        name={field.name}
-                        value={field.value}
-                        onChange={handleChange}
-                        readOnly={field.readOnly}
-                        placeholder={field.placeholder || ""}
-                        className="w-full mt-1 p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none transition"
-                      />
-                      {field.error && (
-                        <p className="text-red-500 text-sm mt-1">
-                          {field.error}
-                        </p>
-                      )}
-                    </label>
-                  ))}
-                </div>
-
-                {/* --- BOUTONS --- */}
-                <div className="flex justify-end gap-3 mt-6">
+                  {/* --- CLOSE BUTTON --- */}
                   <button
-                    className="px-5 py-2.5 rounded-lg bg-gray-200 text-gray-700 font-medium hover:bg-gray-300 transition"
+                    className="absolute top-3 right-3 text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-lg font-bold transition"
                     onClick={toggleProfile}
                   >
-                    Annuler
-                  </button>
-                  <button
-                    className="px-5 py-2.5 rounded-lg bg-purple-600 text-white font-medium hover:bg-purple-700 shadow-md transition"
-                    onClick={handleSaveProfile}
-                  >
-                    Sauvegarder
+                    ✕
                   </button>
                 </div>
               </div>
-
-              {/* --- CLOSE BUTTON --- */}
-              <button
-                className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-lg font-bold transition"
-                onClick={toggleProfile}
-              >
-                ✕
-              </button>
-            </div>
-          </div>
-        )}
+            )}
+          </main>
+        </div>
       </div>
     </div>
   );

@@ -6,9 +6,32 @@ import CardOffre from "./OffreDispo";
 import EditProfileFreelance from "./EditProfil";
 import { toast } from "react-toastify";
 import EntretienCard from "./EntretienCard";
+import { Moon, Sun, Bell, Briefcase } from "lucide-react";
 
 export default function FreelanceDashboard() {
   const [entretienNotifications, setEntretienNotifications] = useState([]);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Charger le thème depuis localStorage
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      document.documentElement.classList.add("dark");
+      setIsDarkMode(true);
+    }
+  }, []);
+
+  // Fonction pour basculer le thème
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+    if (!isDarkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  };
 
   // Initialiser depuis localStorage
   const [newoffer, setNewoffer] = useState(() => {
@@ -44,6 +67,8 @@ export default function FreelanceDashboard() {
           const data = await res.json();
           // Assurer que setFreelances reçoit toujours un tableau pour simplifier l'accès
           setFreelances(Array.isArray(data) ? data : data ? [data] : []);
+          console.log("tonga eto ve");
+          console.log("Données freelance chargées :", data);
         } else {
           setFreelances([]);
         }
@@ -352,8 +377,13 @@ export default function FreelanceDashboard() {
       case "Offres disponibles":
         return (
           <div>
-            <h2 className="text-xl font-semibold mb-4">Offres disponibles</h2>
-            <div className="flex flex-col gap-6">
+            {/* <motion.div
+              className="relative p-6 rounded-3xl bg-white shadow-2xl overflow-hidden"
+              whileHover={{ scale: 1.01 }}
+              transition={{ duration: 0.3 }}
+            > */}
+            {/* Contenu */}
+            <div className="relative z-10 flex flex-col gap-6">
               {missions.length > 0 ? (
                 missions.map((offre) => (
                   <CardOffre
@@ -363,24 +393,18 @@ export default function FreelanceDashboard() {
                   />
                 ))
               ) : (
-                <p>Aucune offre disponible pour le moment.</p>
+                <p className="text-gray-500 italic text-center">
+                  Aucune offre disponible pour le moment.
+                </p>
               )}
             </div>
-          </div>
-        );
-
-      case "IA":
-        return (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">IA</h2>
-            <p>Contenu IA ou outils d’assistance pour freelances.</p>
+            {/* </motion.div> */}
           </div>
         );
 
       case "Notifications":
         return (
           <div>
-            <h2 className="text-xl font-semibold mb-4">Notifications</h2>
             <div className="flex flex-col gap-4">
               {entretienNotifications.length > 0 ? (
                 entretienNotifications.map((entretien, index) => (
@@ -402,35 +426,93 @@ export default function FreelanceDashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <NavbarFreelance
-        user={{ nom: "Freelance X", profile_image: "" }}
-        activeSection={activeSection}
-        freelance={freelances[0] || {}}
-        onSectionChange={handleSectionChange}
-        newoffer={newoffer}
-        newnotification={newnotification}
-      />
+    <div
+      className="flex items-center justify-center h-screen "
+      style={{
+        background:
+          "linear-gradient(to bottom, var(--gradient-from), var(--gradient-via), var(--gradient-to))",
+      }}
+    >
+      <div className="w-[90%] max-w-[1600px] h-screen flex  rounded-3xl shadow-2xl  overflow-hidden  bg-[var(--card-bg)]">
+        <NavbarFreelance
+          user={{ nom: "Freelance X", profile_image: "" }}
+          activeSection={activeSection}
+          freelance={freelances[0] || {}}
+          onSectionChange={handleSectionChange}
+          newoffer={newoffer}
+          newnotification={newnotification}
+        />
 
-      <div className="flex-1 flex flex-col w-full">
-        <div className="flex items-center justify-between bg-white shadow-md p-4 rounded-xl">
-          {/* Titre à gauche */}
-          <h1 className="text-2xl font-bold text-gray-800">Freelanceur</h1>
-
-          {/* Profil à droite */}
-          <div className="flex items-center gap-3">
-            <p className="font-bold text-gray-700 text-lg">
-              {freelances[0].nom}
+        <div className="flex-1 flex flex-col w-full">
+          <div className="flex items-center justify-between bg-var(--gradient-from) shadow-md p-4 rounded-xl">
+            {/* Titre à gauche */}
+            <p
+              className="sticky w-56 top-0 z-50  text-2xl font-extrabold  text-center
+               bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500
+               drop-shadow-lg "
+            >
+              {activeSection === "Mon Profil"
+                ? "Mon Profil"
+                : activeSection === "Offres disponibles"
+                ? "Offres disponibles"
+                : activeSection === "Notifications"
+                ? "Notifications"
+                : ""}
             </p>
-            <img
-              src={freelances[0].photo || "/images/profil.png"}
-              alt="Profil"
-              className="w-16 h-16 rounded-full border-2 border-indigo-400 shadow-lg object-cover"
-            />
-          </div>
-        </div>
+            {/* Profil à droite */}
+            <div className="p-2 rounded-3xl bg-var(--gradient-from) shadow-xl transition-colors duration-500">
+              {freelances.length === 0 ? (
+                <p className="text-gray-600 dark:text-gray-400 text-center italic">
+                  Aucun profil trouvé 😔
+                </p>
+              ) : (
+                freelances.map((freelance) => (
+                  <div
+                    key={freelance.id}
+                className="flex  justify-end lg:flex-row items-center gap-6 w-full"
+                  // className="flex items-center gap-10 justify-between bg-white dark:bg-gray-900 p-2  rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-transform duration-300"
+                  >
+                    {/* --- Profil --- */}
+                    <div className="flex items-center w-52 gap-4">
+                      <img
+                        src={freelance.photo || "/images/profil.png"}
+                        alt="Profil"
+                        className="w-12 h-12 rounded-full border-2 border-violet-500 shadow-md object-cover hover:scale-105 transition-transform duration-300"
+                      />
+                      <div>
+                        <h2 className="font-poppins text-lg font-semibold text-[var(--text-primary)]">
+                          {freelance.nom}
+                        </h2>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                          Freelance disponible
+                        </p>
+                      </div>
+                    </div>
 
-        <main className="flex-1 p-6 overflow-y-auto">{renderContent()}</main>
+                    {/* --- Icônes --- */}
+                    <div className="flex items-center gap-6">
+                      <Briefcase className="w-6 h-6 text-indigo-600 dark:text-indigo-400 hover:scale-110 transition-transform cursor-pointer" />
+                      <Bell className="w-6 h-6 text-purple-600 dark:text-purple-400 hover:scale-110 transition-transform cursor-pointer" />
+                      <button
+                        onClick={toggleTheme}
+                        className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 shadow-md hover:scale-110 transition-transform duration-300"
+                      >
+                        {isDarkMode ? (
+                          <Sun className="w-5 h-5 text-yellow-400" />
+                        ) : (
+                          <Moon className="w-5 h-5 text-indigo-400" />
+                        )}
+                      </button>
+                    </div>
+                  </div>))
+              )}
+            </div>
+          </div>
+
+          <main className="flex-1 p-6 overflow-y-auto hide-scrollbar">
+            {renderContent()}
+          </main>
+        </div>
       </div>
     </div>
   );

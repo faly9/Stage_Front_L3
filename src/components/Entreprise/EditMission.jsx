@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { X, Save, Loader2, Edit3 } from "lucide-react"; // Icônes modernes
 
 const getCookie = (name) => {
   let cookieValue = null;
@@ -16,12 +17,7 @@ const getCookie = (name) => {
   return cookieValue;
 };
 
-export default function EditMissionModal({
-  mission,
-  isOpen,
-  onClose,
-  onUpdated,
-}) {
+export default function EditMissionModal({ mission, isOpen, onClose, onUpdated }) {
   const [formData, setFormData] = useState({
     titre: "",
     description: "",
@@ -82,18 +78,12 @@ export default function EditMissionModal({
         }
       );
 
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error("Erreur mise à jour : " + errText);
-      }
+      if (!res.ok) throw new Error("Erreur lors de la mise à jour ❌");
 
       const updated = await res.json();
-      if (onUpdated) onUpdated(updated);
+      onUpdated?.(updated);
       onClose();
-
-      toast.success("Mission mise à jour avec succès ✅", {
-        position: "top-center",
-      });
+      toast.success("Mission mise à jour avec succès ✅", { position: "top-center" });
     } catch (err) {
       console.error(err);
       toast.error(err.message || "Une erreur est survenue ❌", {
@@ -105,95 +95,92 @@ export default function EditMissionModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="relative bg-gradient-to-br from-white via-purple-50 to-purple-100 p-8 rounded-2xl shadow-2xl w-[480px] animate-fade-in">
-        <h2 className="text-2xl font-bold text-purple-700 mb-6 text-center">
-          ✏️ Modifier la mission
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
+      <div
+        className="relative w-[480px] rounded-2xl shadow-2xl 
+                   bg-[var(--bg-card)] text-[var(--text-primary)] 
+                   border border-[var(--border-color)] 
+                   p-8 transition-all duration-300"
+      >
+        {/* Header */}
+        <h2 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
+          <Edit3 className="w-6 h-6 text-[var(--accent)]" />
+          Modifier la mission
         </h2>
 
+        {/* Form */}
         <div className="space-y-4">
-          <div>
-            <input
-              type="text"
-              name="titre"
-              value={formData.titre}
-              onChange={handleChange}
-              placeholder="Titre de la mission"
-              className="w-full px-4 py-2 border-2 border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none"
-            />
-            {errors.titre && (
-              <p className="text-red-500 text-sm mt-1">{errors.titre}</p>
-            )}
-          </div>
-
-          <div>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Description détaillée"
-              rows={3}
-              className="w-full px-4 py-2 border-2 border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none"
-            />
-            {errors.description && (
-              <p className="text-red-500 text-sm mt-1">{errors.description}</p>
-            )}
-          </div>
-
-          <div>
-            <input
-              type="text"
-              name="competence"
-              value={formData.competence}
-              onChange={handleChange}
-              placeholder="Compétences requises"
-              className="w-full px-4 py-2 border-2 border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none"
-            />
-            {errors.competence && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.competence}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <input
-              type="number"
-              name="budget"
-              value={formData.budget}
-              onChange={handleChange}
-              placeholder="Budget en €"
-              className="w-full px-4 py-2 border-2 border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-400 focus:outline-none"
-            />
-            {errors.budget && (
-              <p className="text-red-500 text-sm mt-1">{errors.budget}</p>
-            )}
-          </div>
+          {[
+            { name: "titre", placeholder: "Titre de la mission" },
+            { name: "description", placeholder: "Description détaillée", type: "textarea" },
+            { name: "competence", placeholder: "Compétences requises" },
+            { name: "budget", placeholder: "Budget en €", type: "number" },
+          ].map(({ name, placeholder, type = "text" }) => (
+            <div key={name}>
+              {type === "textarea" ? (
+                <textarea
+                  name={name}
+                  value={formData[name]}
+                  onChange={handleChange}
+                  rows={3}
+                  placeholder={placeholder}
+                  className="w-full px-4 py-2 border-2 border-[var(--border-color)] rounded-lg 
+                             focus:ring-2 focus:ring-[var(--accent)] focus:outline-none 
+                             bg-[var(--input-bg)] text-[var(--text-primary)]"
+                />
+              ) : (
+                <input
+                  type={type}
+                  name={name}
+                  value={formData[name]}
+                  onChange={handleChange}
+                  placeholder={placeholder}
+                  className="w-full px-4 py-2 border-2 border-[var(--border-color)] rounded-lg 
+                             focus:ring-2 focus:ring-[var(--accent)] focus:outline-none 
+                             bg-[var(--input-bg)] text-[var(--text-primary)]"
+                />
+              )}
+              {errors[name] && (
+                <p className="text-red-500 text-sm mt-1">{errors[name]}</p>
+              )}
+            </div>
+          ))}
         </div>
 
         {/* Boutons */}
         <div className="flex justify-end gap-3 mt-6">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition font-medium"
+            className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 
+                       hover:bg-gray-300 dark:hover:bg-gray-600 transition font-medium"
           >
             Annuler
           </button>
           <button
             onClick={handleUpdate}
             disabled={loading}
-            className="px-5 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium shadow hover:shadow-md hover:from-purple-700 hover:to-blue-700 transition"
+            className="flex items-center gap-2 px-5 py-2 rounded-lg bg-[var(--accent)] 
+                       text-[var(--text-on-accent)] font-medium shadow-md 
+                       hover:shadow-lg hover:brightness-110 transition"
           >
-            {loading ? "Mise à jour..." : "💾 Enregistrer"}
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" /> Mise à jour...
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" /> Enregistrer
+              </>
+            )}
           </button>
         </div>
 
-        {/* Bouton de fermeture */}
+        {/* Bouton fermeture */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl font-bold"
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 transition"
         >
-          ✕
+          <X className="w-5 h-5" />
         </button>
       </div>
     </div>

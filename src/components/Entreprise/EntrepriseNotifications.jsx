@@ -1,15 +1,14 @@
 export default function EntrepriseNotifications({ entretienNotifications }) {
-  // Filtrer les notifications avec date d'entretien
   const notificationsAvecDate = entretienNotifications.filter(
     (notif) => notif.date_entretien
   );
 
   return (
-    <div className="p-6 bg-gray-50 max-w-4xl mx-auto rounded-2xl shadow-xl">
+    <div className="p-6 bg-[var(--card-bg)] max-w-4xl mx-auto rounded-2xl shadow-xl border border-[var(--border)] transition-all duration-300">
       {/* Header */}
-      <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-800 mb-6 flex items-center justify-center gap-2">
+      <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--text-primary)] mb-6 flex items-center justify-center gap-2">
         <svg
-          className="w-7 h-7 text-indigo-600"
+          className="w-7 h-7 text-[var(--icon-primary)]"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -27,7 +26,7 @@ export default function EntrepriseNotifications({ entretienNotifications }) {
 
       {/* Si aucune notification */}
       {notificationsAvecDate.length === 0 ? (
-        <p className="text-gray-500 italic text-center py-8">
+        <p className="text-[var(--text-secondary)] italic text-center py-8">
           Aucune notification d'entretien avec date définie.
         </p>
       ) : (
@@ -44,18 +43,19 @@ export default function EntrepriseNotifications({ entretienNotifications }) {
             return (
               <li
                 key={notif.id_candidature}
-                className="p-5 border-l-4 border-indigo-500 rounded-2xl shadow-md bg-gradient-to-br from-white to-purple-50
+                className="p-5 border-l-4 border-[var(--accent)] rounded-2xl shadow-md 
+                           bg-gradient-to-br from-[var(--gradient-from)] via-[var(--gradient-via)] to-[var(--gradient-to)]
                            hover:shadow-xl hover:scale-[1.02] transition-all duration-300 ease-in-out"
               >
                 {/* Titre de la mission */}
-                <p className="text-lg font-semibold text-gray-800 mb-2 truncate">
+                <p className="text-lg font-semibold text-[var(--text-primary)] mb-2 truncate">
                   {notif.mission_titre}
                 </p>
 
                 {/* Date entretien */}
-                <p className="text-sm text-gray-700 mb-2 flex items-center gap-1">
+                <p className="text-sm text-[var(--text-secondary)] mb-2 flex items-center gap-1">
                   <svg
-                    className="w-4 h-4 text-red-500"
+                    className="w-4 h-4 text-[var(--accent-strong)]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -68,14 +68,18 @@ export default function EntrepriseNotifications({ entretienNotifications }) {
                       d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                     ></path>
                   </svg>
-                  <span className="font-medium">Date entretien :</span>
-                  <span className="text-green-600 ml-1">{dateLocale} (heure locale)</span>
+                  <span className="font-medium text-[var(--text-primary)]">
+                    Date entretien :
+                  </span>
+                  <span className="ml-1 font-semibold text-[var(--accent-strong)]">
+                    {dateLocale} (heure locale)
+                  </span>
                 </p>
 
                 {/* Nom du freelance */}
-                <p className="text-sm text-gray-700 flex items-center gap-1">
+                <p className="text-sm text-[var(--text-secondary)] flex items-center gap-1">
                   <svg
-                    className="w-4 h-4 text-indigo-500"
+                    className="w-4 h-4 text-[var(--icon-secondary)]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -89,7 +93,9 @@ export default function EntrepriseNotifications({ entretienNotifications }) {
                     ></path>
                   </svg>
                   Freelance :
-                  <span className="ml-1 font-medium text-gray-800">{notif.freelance_nom}</span>
+                  <span className="ml-1 font-medium text-[var(--text-primary)]">
+                    {notif.freelance_nom}
+                  </span>
                 </p>
               </li>
             );

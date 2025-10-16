@@ -1,6 +1,13 @@
+// components/EditProfileFreelance.jsx
+// Auteur : Faly Raph
+// Date : 15 Octobre 2025
+// Description : Composant de création/modification de profil freelance
+// Supporte le mode clair/sombre, le responsive et le préchargement d’image.
+
 import React, { useState } from "react";
 import { Edit } from "lucide-react";
 
+// 🔹 Récupère un cookie (ex: CSRF token)
 const getCookie = (name) => {
   let cookieValue = null;
   if (document.cookie) {
@@ -13,6 +20,7 @@ const getCookie = (name) => {
 };
 
 export default function EditProfileFreelance({ freelance, onSave, onCancel }) {
+  // 🔹 États du profil
   const [profile, setProfile] = useState({
     id_freelance: freelance?.id_freelance || null,
     nom: freelance?.nom || "",
@@ -29,9 +37,11 @@ export default function EditProfileFreelance({ freelance, onSave, onCancel }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // 🔹 Gère les changements de champs texte
   const handleChange = (e) =>
     setProfile({ ...profile, [e.target.name]: e.target.value });
 
+  // 🔹 Gère le changement de photo
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -43,6 +53,7 @@ export default function EditProfileFreelance({ freelance, onSave, onCancel }) {
     }
   };
 
+  // 🔹 Sauvegarde ou met à jour le profil
   const handleSave = async () => {
     setLoading(true);
     setError("");
@@ -59,8 +70,8 @@ export default function EditProfileFreelance({ freelance, onSave, onCancel }) {
       if (profile.photo instanceof File) {
         formData.append("photo", profile.photo);
       }
+
       const isUpdate = !!profile.id_freelance;
-      console.log(isUpdate);
       const url = isUpdate
         ? `http://localhost:8001/frl/freelances/${profile.id_freelance}/`
         : "http://localhost:8001/frl/freelances/";
@@ -93,101 +104,109 @@ export default function EditProfileFreelance({ freelance, onSave, onCancel }) {
     }
   };
 
+  // 🔹 Interface utilisateur
   return (
-<div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-  <div className="bg-white p-6 rounded-3xl w-full max-w-lg overflow-y-auto max-h-[90vh] shadow-2xl border border-gray-200 transform transition-all duration-300 scale-95 animate-fadeIn">
-    
-    {/* Titre */}
-    <h2 className="text-2xl font-bold mb-4 text-gray-800">
-      {profile.id_freelance ? "Modifier le profil" : "Créer mon profil"}
-    </h2>
-    {error && <p className="text-red-600 mb-2">{error}</p>}
+    <div className="fixed inset-0 bg-black/60 dark:bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+      <div className="bg-white dark:bg-gray-900 p-6 sm:p-8 rounded-3xl w-full max-w-lg overflow-y-auto max-h-[90vh] shadow-2xl border border-gray-200 dark:border-gray-700 transform transition-all duration-300 animate-fadeIn">
+        {/* Titre */}
+        <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-800 dark:text-gray-100 text-center">
+          {profile.id_freelance ? "Modifier le profil" : "Créer mon profil"}
+        </h2>
 
-    {/* Photo */}
-    <div className="flex items-center justify-center gap-4 mb-6">
-      <div className="relative group">
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="hidden"
-          id="profileUpload"
-        />
-        <label htmlFor="profileUpload" className="cursor-pointer">
-          {profile.photoPreview || profile.photo ? (
-            <img
-              src={profile.photoPreview || profile.photo}
-              alt="Aperçu Profil"
-              className="w-24 h-24 rounded-full object-cover border-2 border-indigo-300 shadow-lg group-hover:scale-105 transition-transform duration-200"
-            />
-          ) : (
-            <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-2xl font-bold">
-              +
-            </div>
-          )}
-        </label>
-        <label
-          htmlFor="profileUpload"
-          className="absolute bottom-0 right-0 bg-white p-1 rounded-full shadow hover:bg-gray-100 transition cursor-pointer"
-        >
-          <Edit className="w-4 h-4 text-gray-600" />
-        </label>
-      </div>
-    </div>
-
-    {/* Champs du formulaire */}
-    {[
-      { label: "Nom", name: "nom", type: "text" },
-      { label: "Description", name: "description", type: "textarea", rows: 3 },
-      { label: "Compétences (séparées par ,)", name: "competence", type: "textarea", rows: 3 },
-      { label: "Expériences (séparées par ,)", name: "experience", type: "textarea", rows: 3 },
-      { label: "Diplômes (séparés par ,)", name: "formation", type: "textarea", rows: 3 },
-      { label: "Certificats (séparés par ,)", name: "certificat", type: "textarea", rows: 3 },
-      { label: "Tarif €/h", name: "tarif", type: "number" },
-    ].map((field, idx) => (
-      <div className="mb-4" key={idx}>
-        <label className="block mb-1 font-medium text-gray-700">{field.label}</label>
-        {field.type === "textarea" ? (
-          <textarea
-            name={field.name}
-            value={profile[field.name] || ""}
-            onChange={handleChange}
-            rows={field.rows}
-            className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-300 transition-shadow shadow-sm hover:shadow-md"
-          />
-        ) : (
-          <input
-            type={field.type}
-            name={field.name}
-            value={profile[field.name] || ""}
-            onChange={handleChange}
-            className="w-full p-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-300 transition-shadow shadow-sm hover:shadow-md"
-          />
+        {/* Message d'erreur */}
+        {error && (
+          <p className="text-red-500 text-center text-sm mb-3">{error}</p>
         )}
-      </div>
-    ))}
 
-    {/* Boutons */}
-    <div className="flex justify-end gap-3 mt-6">
-      <button
-        onClick={onCancel}
-        className="px-5 py-2 bg-gray-300 text-gray-700 rounded-xl hover:bg-gray-400 transition"
-      >
-        Annuler
-      </button>
-      <button
-        onClick={handleSave}
-        disabled={loading}
-        className="px-5 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition"
-      >
-        {loading
-          ? "Enregistrement..."
-          : profile.id_freelance
-          ? "Mettre à jour"
-          : "Créer"}
-      </button>
+        {/* Photo de profil */}
+        <div className="flex flex-col items-center justify-center gap-4 mb-6">
+          <div className="relative group">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+              id="profileUpload"
+            />
+            <label htmlFor="profileUpload" className="cursor-pointer">
+              {profile.photoPreview || profile.photo ? (
+                <img
+                  src={profile.photoPreview || profile.photo}
+                  alt="Aperçu Profil"
+                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-2 border-indigo-300 dark:border-indigo-500 shadow-lg group-hover:scale-105 transition-transform duration-200"
+                />
+              ) : (
+                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 text-2xl font-bold">
+                  +
+                </div>
+              )}
+            </label>
+            <label
+              htmlFor="profileUpload"
+              className="absolute bottom-0 right-0 bg-white dark:bg-gray-800 p-1.5 rounded-full shadow hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer"
+            >
+              <Edit className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+            </label>
+          </div>
+        </div>
+
+        {/* Formulaire d’édition */}
+        <div className="grid grid-cols-1 gap-4">
+          {[
+            { label: "Nom", name: "nom", type: "text" },
+            { label: "Description", name: "description", type: "textarea", rows: 3 },
+            { label: "Compétences (séparées par ,)", name: "competence", type: "textarea", rows: 3 },
+            { label: "Expériences (séparées par ,)", name: "experience", type: "textarea", rows: 3 },
+            { label: "Diplômes (séparés par ,)", name: "formation", type: "textarea", rows: 3 },
+            { label: "Certificats (séparés par ,)", name: "certificat", type: "textarea", rows: 3 },
+            { label: "Tarif €/h", name: "tarif", type: "number" },
+          ].map((field, idx) => (
+            <div key={idx}>
+              <label className="block mb-1 font-medium text-gray-700 dark:text-gray-200">
+                {field.label}
+              </label>
+              {field.type === "textarea" ? (
+                <textarea
+                  name={field.name}
+                  value={profile[field.name] || ""}
+                  onChange={handleChange}
+                  rows={field.rows}
+                  className="w-full p-3 border rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:focus:ring-indigo-500 focus:border-indigo-300 transition shadow-sm hover:shadow-md"
+                />
+              ) : (
+                <input
+                  type={field.type}
+                  name={field.name}
+                  value={profile[field.name] || ""}
+                  onChange={handleChange}
+                  className="w-full p-3 border rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:focus:ring-indigo-500 focus:border-indigo-300 transition shadow-sm hover:shadow-md"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Boutons d'action */}
+        <div className="flex flex-col sm:flex-row justify-end gap-3 mt-8">
+          <button
+            onClick={onCancel}
+            className="w-full sm:w-auto px-5 py-2 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-xl hover:bg-gray-400 dark:hover:bg-gray-600 transition font-medium"
+          >
+            Annuler
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={loading}
+            className="w-full sm:w-auto px-5 py-2 bg-indigo-600 dark:bg-indigo-500 text-white rounded-xl hover:bg-indigo-700 dark:hover:bg-indigo-600 transition font-medium"
+          >
+            {loading
+              ? "Enregistrement..."
+              : profile.id_freelance
+              ? "Mettre à jour"
+              : "Créer"}
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
   );
 }

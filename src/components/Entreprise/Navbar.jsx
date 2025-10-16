@@ -1,4 +1,4 @@
-import { Home, Brain, User, MessageCircle } from "lucide-react";
+import { Home, Brain, User, MessageCircle, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -19,6 +19,7 @@ const getCookie = (name) => {
 
 export default function Navbar({ section, onSectionChange, candidatureCount }) {
   const navigate = useNavigate();
+
   const handleLogout = async () => {
     const csrftoken = getCookie("csrftoken");
     try {
@@ -30,15 +31,13 @@ export default function Navbar({ section, onSectionChange, candidatureCount }) {
 
       if (res.ok) {
         toast.success("✅ Déconnexion réussie", { position: "top-center" });
-        navigate("/"); // redirection vers login
+        navigate("/");
       } else {
         toast.error(`❌ Erreur logout (${res.status})`, {
           position: "top-center",
         });
-        console.error("Erreur logout", res.status);
       }
     } catch (err) {
-      console.error(err);
       toast.error("❌ Erreur réseau lors du logout", {
         position: "top-center",
       });
@@ -47,7 +46,6 @@ export default function Navbar({ section, onSectionChange, candidatureCount }) {
 
   const menuItems = [
     { key: "dashboard", label: "Missions", icon: <Home className="w-5 h-5" /> },
-    { key: "ia", label: "Proposition IA", icon: <Brain className="w-5 h-5" /> },
     { key: "Candidat", label: "Candidats", icon: <User className="w-5 h-5" /> },
     {
       key: "message",
@@ -57,37 +55,58 @@ export default function Navbar({ section, onSectionChange, candidatureCount }) {
   ];
 
   return (
-    <aside className="w-64 bg-gradient-to-b from-white via-red-50 to-white shadow-xl flex flex-col justify-between p-5 h-screen border-r border-red-100">
-      {/* Partie du haut */}
+    <aside
+      className="w-64 flex flex-col justify-between p-5 h-screen shadow-xl border-r transition-colors duration-500"
+      style={{
+        background: "var(--card-bg)",
+        borderColor: "var(--border)",
+      }}
+    >
+      {/* --- Partie du haut --- */}
       <div>
-        {/* <h1 className="text-2xl font-bold text-red-600 mb-6 text-center tracking-wide">
-          Entreprise
-        </h1> */}
-
         <nav className="flex flex-col gap-2">
           {menuItems.map((item) => (
             <button
               key={item.key}
               onClick={() => onSectionChange(item.key)}
-              className={`relative flex items-center gap-3 px-4 py-3 rounded-xl text-left font-medium transition-all duration-300 shadow-sm
-            ${
-              section === item.key
-                ? "bg-red-600 text-white shadow-md scale-[1.02]"
-                : "text-gray-700 hover:bg-red-100 hover:shadow-sm hover:scale-[1.02]"
-            }`}
+              className={`relative flex items-center gap-3 px-4 py-3 rounded-xl text-left font-medium transition-all duration-300 shadow-sm`}
+              style={{
+                background:
+                  section === item.key ? "var(--accent)" : "transparent",
+                color:
+                  section === item.key
+                    ? "var(--text-on-accent)"
+                    : "var(--text-primary)",
+                boxShadow:
+                  section === item.key
+                    ? "0 4px 10px rgba(0,0,0,0.15)"
+                    : "none",
+              }}
             >
               <div
-                className={`p-2 rounded-lg ${
-                  section === item.key ? "bg-white/20" : "bg-red-100"
-                }`}
+                className="p-2 rounded-lg"
+                style={{
+                  background:
+                    section === item.key ? "var(--accent-light)" : "transparent",
+                  color:
+                    section === item.key
+                      ? "var(--text-primary)"
+                      : "var(--text-primary)",
+                }}
               >
                 {item.icon}
               </div>
               <span className="text-base">{item.label}</span>
 
-              {/* Badge rouge si Candidats */}
+              {/* Badge de candidats */}
               {item.key === "Candidat" && candidatureCount > 0 && (
-                <span className="absolute right-4 bg-red-600 text-white text-xs px-2 py-0.5 rounded-full shadow">
+                <span
+                  className="absolute right-4 text-xs px-2 py-0.5 rounded-full shadow"
+                  style={{
+                    background: "var(--accent-strong)",
+                    color: "var(--text-on-accent)",
+                  }}
+                >
                   +{candidatureCount}
                 </span>
               )}
@@ -96,13 +115,18 @@ export default function Navbar({ section, onSectionChange, candidatureCount }) {
         </nav>
       </div>
 
-      {/* Bouton déconnexion */}
-      <div className="pt-6 border-t border-gray-200">
+      {/* --- Bouton déconnexion --- */}
+      <div className="pt-6 border-t" style={{ borderColor: "var(--border)" }}>
         <button
           onClick={handleLogout}
-          className="w-full bg-red-600 text-white px-4 py-3 rounded-xl font-semibold hover:bg-red-700 active:scale-95 shadow-md transition-all duration-300"
+          className="w-full flex items-center gap-5 px-4 py-3 rounded-xl font-semibold shadow-md transition-all duration-300 active:scale-95"
+          style={{
+            background: "var(--accent)",
+            color: "var(--text-on-accent)",
+          }}
         >
-          🚪 Déconnexion
+          <LogOut className="w-8 h-8 p-2 rounded-lg" style={{ color: "var(--text-on-accent)" }} />
+          Déconnexion
         </button>
       </div>
     </aside>

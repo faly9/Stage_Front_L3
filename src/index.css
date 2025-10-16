@@ -1,1 +1,76 @@
 @import "tailwindcss";
+
+:root {
+  /* Fond et dégradés */
+  --gradient-from: #f9f5ff;
+  --gradient-via: #f3f1ff;
+  --gradient-to: #f4f3ff;
+
+  /* Couleurs d'accentuation */
+  --accent: #4ae;
+  --accent-light: #c4b5fd;
+  --accent-strong: #4ae;
+  --red-bot: #f1e8e6;
+  /* 5b21b6 */
+
+  /* Texte et fond */
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-on-accent: #ffffff;
+
+  /* Icônes */
+  --icon-primary: #4f46e5;
+  --icon-secondary: #9333ea;
+
+  --bouton-ajouter: #10b981;
+
+  /* Tooltip et carte */
+  --tooltip-bg: #ffffff;
+  --tooltip-text: #374151;
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --button-bg: #f3f4f6;
+  --border: #e5e7eb;
+
+  /* Mode clair */
+  --sun-color: #facc15;
+  --moon-color: #4f46e5;
+}
+
+/* --- Thème sombre --- */
+.dark {
+  --gradient-from: #1f1f23;
+  --gradient-via: #18181b;
+  --gradient-to: #4d4d5a;
+   
+  --red-bot: #1c1c20;
+  --accent: #8b5cf6;
+  --accent-light: #a78bfa;
+  --accent-strong: #6d28d9;
+
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-on-accent: #ffffff;
+
+  --icon-primary: #a78bfa;
+  --icon-secondary: #c084fc;
+
+  --bouton-ajouter: #6d28d9;
+
+  --tooltip-bg: #1f2937;
+  --tooltip-text: #e5e7eb;
+  --card-bg: rgba(17, 24, 39, 0.9);
+  --button-bg: #374151;
+  --border: #4b5563;
+
+  --sun-color: #facc15;
+  --moon-color: #a78bfa;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
