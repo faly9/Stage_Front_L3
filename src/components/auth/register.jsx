@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Register() {
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState(""); // ✅ nouveau champ rôle
+  const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
   const [cpassword, setCpassword] = useState("");
   const [message, setMessage] = useState("");
@@ -15,8 +15,6 @@ export default function Register() {
     e.preventDefault();
     let tempErrors = {};
 
-    // juste une debogage de code
-    console.log(email, role, password, cpassword);
     if (!email) tempErrors.email = "L'email est obligatoire";
     if (!role) tempErrors.role = "Le rôle est obligatoire";
     if (!password) tempErrors.password = "Le mot de passe est obligatoire";
@@ -36,15 +34,13 @@ export default function Register() {
       const data = await res.json();
 
       if (res.ok) {
-        // const { uid, token } = data;
-        // navigate(`/verify/${uid}/${token}`);
         setMessage("Inscription réussie !");
         setEmail("");
         setRole("");
         setPassword("");
         setCpassword("");
         setErrors({});
-        navigate("/verify-notice"); // ✅ redirection vers la page de notification
+        navigate("/verify-notice");
       } else {
         setErrors({ server: data.error || "Erreur lors de l'inscription" });
       }
@@ -54,13 +50,19 @@ export default function Register() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-blue-100">
+    <div
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      style={{
+        background: "linear-gradient(to bottom right, var(--gradient-from), var(--gradient-to))",
+      }}
+    >
       {/* Boules animées */}
       {[...Array(15)].map((_, i) => (
         <div
           key={i}
-          className="absolute rounded-full bg-purple-300 opacity-30 animate-bounce"
+          className="absolute rounded-full opacity-20 animate-bounce"
           style={{
+            backgroundColor: "var(--accent-light)",
             width: `${20 + Math.random() * 80}px`,
             height: `${20 + Math.random() * 80}px`,
             top: `${Math.random() * 100}%`,
@@ -70,7 +72,10 @@ export default function Register() {
         />
       ))}
 
-      <div className="relative bg-white w-full max-w-5xl min-h-[700px] rounded-2xl shadow-2xl flex overflow-hidden">
+      <div
+        className="relative w-full max-w-5xl min-h-[700px] rounded-2xl shadow-2xl flex overflow-hidden"
+        style={{ backgroundColor: "var(--card-bg)", border: "1px solid var(--border)" }}
+      >
         {/* Image à gauche */}
         <div className="w-1/2 hidden md:block">
           <img
@@ -82,128 +87,163 @@ export default function Register() {
 
         {/* Formulaire à droite */}
         <div className="w-full md:w-1/2 p-10 flex flex-col items-center justify-center">
-          <h1 className="text-4xl font-bold mb-6 text-center text-gray-800 animate-bounce">
+          <h1
+            className="text-4xl font-bold mb-6 text-center animate-bounce"
+            style={{ color: "var(--text-primary)" }}
+          >
             Inscription
           </h1>
 
           {message && (
-            <p className="mb-4 text-center text-green-500 font-semibold">
+            <p className="mb-4 text-center font-semibold" style={{ color: "var(--bouton-ajouter)" }}>
               {message}
             </p>
           )}
           {errors.server && (
-            <p className="mb-4 text-center text-red-500 font-semibold">
+            <p className="mb-4 text-center font-semibold" style={{ color: "var(--accent-strong)" }}>
               {errors.server}
             </p>
           )}
 
-          <form
-            onSubmit={handleSubmit}
-            className="w-full flex flex-col gap-4 space-y-5"
-          >
+          <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4 space-y-5">
             {/* Email */}
             <div className="w-full">
-              <label className="block text-gray-700 font-medium">Email</label>
+              <label
+                className="block font-medium"
+                style={{ color: "var(--text-primary)" }}
+              >
+                Email
+              </label>
               <div className="relative">
-                <FaEnvelope className="absolute left-3 top-3 text-gray-400" />
+                <FaEnvelope
+                  className="absolute left-3 top-3"
+                  style={{ color: "var(--icon-primary)" }}
+                />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full pl-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
-                    errors.email
-                      ? "border-red-500 focus:ring-red-400"
-                      : "focus:ring-purple-400"
-                  }`}
+                  className="w-full pl-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition"
+                  style={{
+                    borderColor: errors.email ? "var(--accent-strong)" : "var(--border)",
+                    backgroundColor: "var(--button-bg)",
+                    color: "var(--text-primary)",
+                    outlineColor: "var(--accent)",
+                  }}
                 />
               </div>
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                <p style={{ color: "var(--accent-strong)" }} className="text-sm mt-1">
+                  {errors.email}
+                </p>
               )}
             </div>
 
-            {/* Sélection rôle */}
+            {/* Rôle */}
             <div className="w-full">
-              <label className="block text-gray-700 font-medium">
+              <label className="block font-medium" style={{ color: "var(--text-primary)" }}>
                 Choisissez votre rôle
               </label>
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
-                  errors.role
-                    ? "border-red-500 focus:ring-red-400"
-                    : "focus:ring-purple-400"
-                }`}
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition"
+                style={{
+                  borderColor: errors.role ? "var(--accent-strong)" : "var(--border)",
+                  backgroundColor: "var(--button-bg)",
+                  color: "var(--text-primary)",
+                  outlineColor: "var(--accent)",
+                }}
               >
                 <option value="">-- Sélectionnez un rôle --</option>
                 <option value="Freelance">Freelance</option>
                 <option value="Entreprise">Entreprise</option>
               </select>
               {errors.role && (
-                <p className="text-red-500 text-sm mt-1">{errors.role}</p>
+                <p style={{ color: "var(--accent-strong)" }} className="text-sm mt-1">
+                  {errors.role}
+                </p>
               )}
             </div>
 
             {/* Mot de passe */}
             <div className="w-full">
-              <label className="block text-gray-700 font-medium">
+              <label className="block font-medium" style={{ color: "var(--text-primary)" }}>
                 Mot de passe
               </label>
               <div className="relative">
-                <FaLock className="absolute left-3 top-3 text-gray-400" />
+                <FaLock
+                  className="absolute left-3 top-3"
+                  style={{ color: "var(--icon-primary)" }}
+                />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full pl-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
-                    errors.password
-                      ? "border-red-500 focus:ring-red-400"
-                      : "focus:ring-purple-400"
-                  }`}
+                  className="w-full pl-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition"
+                  style={{
+                    borderColor: errors.password ? "var(--accent-strong)" : "var(--border)",
+                    backgroundColor: "var(--button-bg)",
+                    color: "var(--text-primary)",
+                    outlineColor: "var(--accent)",
+                  }}
                 />
               </div>
               {errors.password && (
-                <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                <p style={{ color: "var(--accent-strong)" }} className="text-sm mt-1">
+                  {errors.password}
+                </p>
               )}
             </div>
 
-            {/* Confirmation mot de passe */}
+            {/* Confirmation */}
             <div className="w-full">
-              <label className="block text-gray-700 font-medium">
+              <label className="block font-medium" style={{ color: "var(--text-primary)" }}>
                 Confirmation du mot de passe
               </label>
               <div className="relative">
-                <FaLock className="absolute left-3 top-3 text-gray-400" />
+                <FaLock
+                  className="absolute left-3 top-3"
+                  style={{ color: "var(--icon-primary)" }}
+                />
                 <input
                   type="password"
                   value={cpassword}
                   onChange={(e) => setCpassword(e.target.value)}
-                  className={`w-full pl-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
-                    errors.cpassword
-                      ? "border-red-500 focus:ring-red-400"
-                      : "focus:ring-purple-400"
-                  }`}
+                  className="w-full pl-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition"
+                  style={{
+                    borderColor: errors.cpassword ? "var(--accent-strong)" : "var(--border)",
+                    backgroundColor: "var(--button-bg)",
+                    color: "var(--text-primary)",
+                    outlineColor: "var(--accent)",
+                  }}
                 />
               </div>
               {errors.cpassword && (
-                <p className="text-red-500 text-sm mt-1">{errors.cpassword}</p>
+                <p style={{ color: "var(--accent-strong)" }} className="text-sm mt-1">
+                  {errors.cpassword}
+                </p>
               )}
             </div>
 
             <button
               type="submit"
-              className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition transform hover:scale-105"
+              className="w-full py-2 rounded-lg font-semibold transition transform hover:scale-105"
+              style={{
+                backgroundColor: "var(--accent)",
+                color: "var(--text-on-accent)",
+              }}
             >
               S'inscrire
             </button>
           </form>
 
           <div className="flex justify-center pt-4">
-            <p>
+            <p style={{ color: "var(--text-secondary)" }}>
               Avez-vous déjà un compte ?{" "}
               <button
-                className="underline text-blue-600"
+                className="underline"
+                style={{ color: "var(--accent)" }}
                 onClick={() => navigate("/")}
               >
                 Se connecter

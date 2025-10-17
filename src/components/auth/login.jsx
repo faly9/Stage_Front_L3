@@ -28,10 +28,9 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-  // Déplacement du curseur -> effet parallax
   const handleMouseMove = (e) => {
     setCursor({
-      x: (e.clientX / window.innerWidth - 0.5) * 40, // décalage -20px à +20px
+      x: (e.clientX / window.innerWidth - 0.5) * 40,
       y: (e.clientY / window.innerHeight - 0.5) * 40,
     });
   };
@@ -39,7 +38,6 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     let tempErrors = {};
-    console.log("tonga eto", email, password);
 
     if (!email) tempErrors.email = "L'email est obligatoire";
     if (!password) tempErrors.password = "Le mot de passe est obligatoire";
@@ -52,13 +50,10 @@ export default function Login() {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRFToken": getCookie("csrftoken"), // <-- ajouter ça
+          "X-CSRFToken": getCookie("csrftoken"),
         },
         body: JSON.stringify({ email, password }),
       });
-      console.log("tongasoa", email, password);
-
-      // Fonction utilitaire pour récupérer un cookie par son nom
 
       const data = await res.json();
 
@@ -92,19 +87,21 @@ export default function Login() {
     }
   };
 
-  // Tableau des bulles animées
   const bubbles = [
-    { size: 80, color: "bg-purple-400", pos: "top-10 left-10" },
-    { size: 120, color: "bg-pink-400", pos: "bottom-20 right-20" },
-    { size: 60, color: "bg-yellow-300", pos: "top-1/4 left-1/3" },
-    { size: 100, color: "bg-blue-400", pos: "bottom-32 left-1/4" },
-    { size: 150, color: "bg-green-400", pos: "top-1/2 right-1/4" },
-    { size: 50, color: "bg-red-400", pos: "top-1/3 right-10" },
+    { size: 80, color: "bg-[var(--accent-light)]", pos: "top-10 left-10" },
+    { size: 120, color: "bg-[var(--accent)]", pos: "bottom-20 right-20" },
+    { size: 60, color: "bg-[var(--moon-color)]", pos: "top-1/4 left-1/3" },
+    { size: 100, color: "bg-[var(--accent-light)]", pos: "bottom-32 left-1/4" },
+    { size: 150, color: "bg-[var(--icon-secondary)]", pos: "top-1/2 right-1/4" },
+    { size: 50, color: "bg-[var(--bouton-ajouter)]", pos: "top-1/3 right-10" },
   ];
 
   return (
     <div
-      className="relative min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-300 to-blue-100 overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      style={{
+        background: `linear-gradient(to right, var(--gradient-from), var(--gradient-to))`,
+      }}
       onMouseMove={handleMouseMove}
     >
       {/* Boules animées */}
@@ -125,16 +122,20 @@ export default function Login() {
         />
       ))}
 
-      {/* Cadre principal animé (parallax) */}
+      {/* Cadre principal */}
       <motion.div
-        className="relative bg-white w-full max-w-5xl min-h-[700px] rounded-2xl shadow-2xl flex overflow-hidden z-10"
+        className="relative w-full max-w-5xl min-h-[700px] rounded-2xl shadow-2xl flex overflow-hidden z-10"
+        style={{
+          backgroundColor: "var(--card-bg)",
+          border: "1px solid var(--border)",
+        }}
         animate={{
-          x: cursor.x / 5, // léger effet parallax
+          x: cursor.x / 5,
           y: cursor.y / 5,
         }}
         transition={{ type: "spring", stiffness: 50, damping: 20 }}
       >
-        {/* Image à gauche */}
+        {/* Image gauche */}
         <div className="w-1/2 hidden md:block">
           <img
             src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80"
@@ -143,19 +144,22 @@ export default function Login() {
           />
         </div>
 
-        {/* Formulaire à droite */}
+        {/* Formulaire droite */}
         <div className="w-full md:w-1/2 p-10 flex flex-col items-center justify-center">
-          <h1 className="text-4xl font-bold mb-6 text-center text-gray-800">
+          <h1
+            className="text-4xl font-bold mb-6 text-center"
+            style={{ color: "var(--text-primary)" }}
+          >
             Connexion
           </h1>
 
           {message && (
-            <p className="mb-4 text-center text-green-500 font-semibold">
+            <p className="mb-4 text-center font-semibold text-[var(--bouton-ajouter)]">
               {message}
             </p>
           )}
           {errors.server && (
-            <p className="mb-4 text-center text-red-500 font-semibold">
+            <p className="mb-4 text-center font-semibold text-red-500">
               {errors.server}
             </p>
           )}
@@ -166,18 +170,27 @@ export default function Login() {
           >
             {/* Email */}
             <div className="w-full">
-              <label className="block text-gray-700 font-medium">Email</label>
+              <label
+                className="block font-medium"
+                style={{ color: "var(--text-primary)" }}
+              >
+                Email
+              </label>
               <div className="relative">
                 <FaEnvelope className="absolute left-3 top-3 text-gray-400" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full pl-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
-                    errors.email
-                      ? "border-red-500 focus:ring-red-400"
-                      : "focus:ring-purple-400"
-                  }`}
+                  className="w-full pl-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition"
+                  style={{
+                    backgroundColor: "var(--button-bg)",
+                    borderColor: errors.email ? "red" : "var(--border)",
+                    color: "var(--text-primary)",
+                    boxShadow: errors.email
+                      ? "0 0 0 2px rgba(239, 68, 68, 0.3)"
+                      : "0 0 0 2px var(--accent-light)",
+                  }}
                 />
               </div>
               {errors.email && (
@@ -187,7 +200,10 @@ export default function Login() {
 
             {/* Mot de passe */}
             <div className="w-full">
-              <label className="block text-gray-700 font-medium">
+              <label
+                className="block font-medium"
+                style={{ color: "var(--text-primary)" }}
+              >
                 Mot de passe
               </label>
               <div className="relative">
@@ -196,11 +212,15 @@ export default function Login() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full pl-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition ${
-                    errors.password
-                      ? "border-red-500 focus:ring-red-400"
-                      : "focus:ring-purple-400"
-                  }`}
+                  className="w-full pl-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition"
+                  style={{
+                    backgroundColor: "var(--button-bg)",
+                    borderColor: errors.password ? "red" : "var(--border)",
+                    color: "var(--text-primary)",
+                    boxShadow: errors.password
+                      ? "0 0 0 2px rgba(239, 68, 68, 0.3)"
+                      : "0 0 0 2px var(--accent-light)",
+                  }}
                 />
               </div>
               {errors.password && (
@@ -210,17 +230,22 @@ export default function Login() {
 
             <button
               type="submit"
-              className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition transform hover:scale-105"
+              className="w-full py-2 rounded-lg font-semibold transition transform hover:scale-105"
+              style={{
+                backgroundColor: "var(--accent)",
+                color: "var(--text-on-accent)",
+              }}
             >
               Se connecter
             </button>
           </form>
 
           <div className="flex justify-center pt-4">
-            <p>
+            <p style={{ color: "var(--text-secondary)" }}>
               Pas encore de compte ?{" "}
               <button
-                className="underline text-blue-600"
+                className="underline font-semibold"
+                style={{ color: "var(--accent)" }}
                 onClick={() => navigate("/register")}
               >
                 S'inscrire

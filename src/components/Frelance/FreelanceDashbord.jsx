@@ -460,7 +460,7 @@ export default function FreelanceDashboard() {
                 : ""}
             </p>
             {/* Profil à droite */}
-            <div className="p-2 rounded-3xl bg-var(--gradient-from) shadow-xl transition-colors duration-500">
+            <div className="p-2 rounded-3xl flex bg-var(--gradient-from) shadow-xl transition-colors duration-500">
               {freelances.length === 0 ? (
                 <p className="text-gray-600 dark:text-gray-400 text-center italic">
                   Aucun profil trouvé 😔
@@ -469,8 +469,8 @@ export default function FreelanceDashboard() {
                 freelances.map((freelance) => (
                   <div
                     key={freelance.id}
-                className="flex  justify-end lg:flex-row items-center gap-6 w-full"
-                  // className="flex items-center gap-10 justify-between bg-white dark:bg-gray-900 p-2  rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-transform duration-300"
+                    className="flex  justify-end lg:flex-row items-center gap-6 w-full"
+                    // className="flex items-center gap-10 justify-between bg-white dark:bg-gray-900 p-2  rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-transform duration-300"
                   >
                     {/* --- Profil --- */}
                     <div className="flex items-center w-52 gap-4">
@@ -490,22 +490,23 @@ export default function FreelanceDashboard() {
                     </div>
 
                     {/* --- Icônes --- */}
-                    <div className="flex items-center gap-6">
-                      <Briefcase className="w-6 h-6 text-indigo-600 dark:text-indigo-400 hover:scale-110 transition-transform cursor-pointer" />
-                      <Bell className="w-6 h-6 text-purple-600 dark:text-purple-400 hover:scale-110 transition-transform cursor-pointer" />
-                      <button
-                        onClick={toggleTheme}
-                        className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 shadow-md hover:scale-110 transition-transform duration-300"
-                      >
-                        {isDarkMode ? (
-                          <Sun className="w-5 h-5 text-yellow-400" />
-                        ) : (
-                          <Moon className="w-5 h-5 text-indigo-400" />
-                        )}
-                      </button>
-                    </div>
-                  </div>))
+                  </div>
+                ))
               )}
+              <div className="flex items-center gap-6">
+                <Briefcase className="w-6 h-6 text-indigo-600 dark:text-indigo-400 hover:scale-110 transition-transform cursor-pointer" />
+                <Bell className="w-6 h-6 text-purple-600 dark:text-purple-400 hover:scale-110 transition-transform cursor-pointer" />
+                <button
+                  onClick={toggleTheme}
+                  className="p-2 rounded-full bg-[var(--button-bg)] shadow-md hover:scale-110 transition-transform duration-300"
+                >
+                  {isDarkMode ? (
+                    <Moon className="w-5 h-5 text-[var(--sun-color)]" />
+                  ) : (
+                    <Sun className="w-5 h-5 text-[var(--moon-color)]" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 

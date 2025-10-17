@@ -667,7 +667,10 @@ export default function EntrepriseDashboard() {
                           className="w-12 h-12 rounded-full border-2 border-[var(--accent)] shadow-md object-cover transition-transform duration-300 hover:scale-105"
                         />
                       ) : (
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--accent-strong)] flex items-center justify-center shadow-md">
+                        <div
+                          onClick={toggleProfile}
+                          className="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--accent)] to-[var(--accent-strong)] flex items-center justify-center shadow-md"
+                        >
                           <span className="text-[var(--text-on-accent)] font-bold text-lg">
                             {user.nom ? user.nom[0].toUpperCase() : "U"}
                           </span>
@@ -710,9 +713,9 @@ export default function EntrepriseDashboard() {
                           className="p-2 rounded-full bg-[var(--button-bg)] shadow-md hover:scale-110 transition-transform duration-300"
                         >
                           {isDarkMode ? (
-                            <Sun className="w-5 h-5 text-[var(--sun-color)]" />
+                            <Moon className="w-5 h-5 text-[var(--sun-color)]" />
                           ) : (
-                            <Moon className="w-5 h-5 text-[var(--moon-color)]" />
+                            <Sun className="w-5 h-5 text-[var(--moon-color)]" />
                           )}
                         </button>
                         <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-[var(--tooltip-bg)] border border-[var(--border)] shadow-lg rounded-xl px-2 py-1 text-xs text-[var(--tooltip-text)] opacity-0 group-hover:opacity-100 transition-opacity duration-300">

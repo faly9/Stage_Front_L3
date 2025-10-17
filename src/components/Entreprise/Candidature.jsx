@@ -115,8 +115,7 @@ export default function CandidatureList({
     return (
       <p className="text-center text-[var(--text-secondary)]">Chargement...</p>
     );
-  if (error)
-    return <p className="text-center text-red-500">Erreur : {error}</p>;
+    
   if (candidatures.length === 0)
     return (
       <p className="text-center text-[var(--text-secondary)]">
@@ -148,7 +147,7 @@ export default function CandidatureList({
                 </h2>
                 <button
                   onClick={() => toggleDetails(c.id_candidature)}
-                  className="text-sm font-semibold text-purple-600 hover:underline"
+                  className="text-sm font-semibold text-[var(--accent)] hover:underline"
                 >
                   {showDetails[c.id_candidature]
                     ? "Masquer les détails"
