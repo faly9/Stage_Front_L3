@@ -36,12 +36,15 @@ export default function Register() {
       const data = await res.json();
 
       if (res.ok) {
+        // const { uid, token } = data;
+        // navigate(`/verify/${uid}/${token}`);
         setMessage("Inscription réussie !");
         setEmail("");
         setRole("");
         setPassword("");
         setCpassword("");
         setErrors({});
+        navigate("/verify-notice"); // ✅ redirection vers la page de notification
       } else {
         setErrors({ server: data.error || "Erreur lors de l'inscription" });
       }
