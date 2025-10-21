@@ -1,6 +1,7 @@
 import { Home, Brain, User, MessageCircle, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { API_URL } from "../../config";
 
 const getCookie = (name) => {
   let cookieValue = null;
@@ -23,7 +24,7 @@ export default function Navbar({ section, onSectionChange, candidatureCount }) {
   const handleLogout = async () => {
     const csrftoken = getCookie("csrftoken");
     try {
-      const res = await fetch("http://localhost:8001/auth/logout/", {
+      const res = await fetch(`${API_URL}/auth/logout/`, {
         method: "POST",
         credentials: "include",
         headers: { "X-CSRFToken": csrftoken },

@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import { User, Briefcase, MessageCircle, LogOut, Menu, X } from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../config";
 
 // --- Gestion du cookie CSRF ---
 const getCookie = (name) => {
@@ -36,7 +37,7 @@ export default function NavbarFreelance({
   const handleLogout = async () => {
     const csrftoken = getCookie("csrftoken");
     try {
-      const res = await fetch("http://localhost:8001/auth/logout/", {
+      const res = await fetch(`${API_URL}/auth/logout/`, {
         method: "POST",
         credentials: "include",
         headers: { "X-CSRFToken": csrftoken },

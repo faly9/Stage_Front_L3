@@ -3,6 +3,7 @@ import { FaEnvelope, FaLock } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { API_URL } from "../../config";
 
 function getCookie(name) {
   let cookieValue = null;
@@ -18,6 +19,7 @@ function getCookie(name) {
   }
   return cookieValue;
 }
+
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -45,7 +47,7 @@ export default function Login() {
     if (Object.keys(tempErrors).length > 0) return;
 
     try {
-      const res = await fetch("http://localhost:8001/auth/login/", {
+      const res = await fetch(`${API_URL}/auth/login/`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -56,7 +58,7 @@ export default function Login() {
       });
 
       const data = await res.json();
-
+      console.log("Login response data:", data);
       if (res.ok) {
         toast.success("✅ Connexion réussie !", {
           position: "top-center",

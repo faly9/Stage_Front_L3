@@ -1,11 +1,6 @@
-// components/EditProfileFreelance.jsx
-// Auteur : Faly Raph
-// Date : 15 Octobre 2025
-// Description : Composant de création/modification de profil freelance
-// Supporte le mode clair/sombre, le responsive et le préchargement d’image.
-
 import React, { useState } from "react";
 import { Edit } from "lucide-react";
+import { API_URL } from "../../config";
 
 // 🔹 Récupère un cookie (ex: CSRF token)
 const getCookie = (name) => {
@@ -73,8 +68,8 @@ export default function EditProfileFreelance({ freelance, onSave, onCancel }) {
 
       const isUpdate = !!profile.id_freelance;
       const url = isUpdate
-        ? `http://localhost:8001/frl/freelances/${profile.id_freelance}/`
-        : "http://localhost:8001/frl/freelances/";
+        ? `${API_URL}/frl/freelances/${profile.id_freelance}/`
+        : `${API_URL}/frl/freelances/`;
 
       const res = await fetch(url, {
         method: isUpdate ? "PUT" : "POST",

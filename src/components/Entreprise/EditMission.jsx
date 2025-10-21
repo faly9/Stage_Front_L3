@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { X, Save, Loader2, Edit3 } from "lucide-react"; // Icônes modernes
+import { API_URL } from "../../config";
 
 const getCookie = (name) => {
   let cookieValue = null;
@@ -61,7 +62,7 @@ export default function EditMissionModal({ mission, isOpen, onClose, onUpdated }
     try {
       const csrftoken = getCookie("csrftoken");
       const res = await fetch(
-        `http://localhost:8001/msn/missions/${mission.id_mission}/`,
+        `${API_URL}/msn/missions/${mission.id_mission}/`,
         {
           method: "PUT",
           credentials: "include",

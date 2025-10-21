@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../config";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -26,7 +27,7 @@ export default function Register() {
     if (Object.keys(tempErrors).length > 0) return;
 
     try {
-      const res = await fetch("http://localhost:8001/auth/register/", {
+      const res = await fetch(`${API_URL}/auth/register/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, role, password }),

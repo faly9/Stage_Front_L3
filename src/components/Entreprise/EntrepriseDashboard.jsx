@@ -8,6 +8,8 @@ import EditMissionModal from "./EditMission";
 import { toast } from "react-toastify";
 import CandidatureList from "./Candidature";
 import EntrepriseNotifications from "./EntrepriseNotifications";
+import { API_URL } from "../../config";
+import { WEBSOCKET_API_URL } from "../../config";
 
 // 🔹 fonction utilitaire pour lire le cookie CSRF
 const getCookie = (name) => {
@@ -59,7 +61,7 @@ function Mission({ isOpen, onClose, onAdded }) {
     const csrftoken = getCookie("csrftoken");
 
     try {
-      const res = await fetch("http://localhost:8001/msn/missions/me/", {
+      const res = await fetch(`${API_URL}/msn/missions/me/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -315,7 +317,7 @@ export default function EntrepriseDashboard() {
 
   // Récupérer l'ID de l'entreprise au montage
   useEffect(() => {
-    fetch("http://localhost:8001/etr/id/", { credentials: "include" })
+    fetch(`${API_URL}/etr/id/`, { credentials: "include" })
       .then((res) => {
         if (!res.ok) throw new Error("Erreur API entreprise");
         return res.json();
@@ -333,7 +335,7 @@ export default function EntrepriseDashboard() {
     if (!entreprise_id) return;
 
     const ws = new WebSocket(
-      `ws://localhost:8001/ws/candidatures/${entreprise_id}/`
+      `${WEBSOCKET_API_URL}/ws/candidatures/${entreprise_id}/`
     );
 
     ws.onopen = () =>
@@ -383,7 +385,7 @@ export default function EntrepriseDashboard() {
 
   const fetchMissions = async () => {
     try {
-      const res = await fetch("http://localhost:8001/msn/missions/me/", {
+      const res = await fetch(`${API_URL}/msn/missions/me/`, {
         method: "GET",
         credentials: "include",
       });
@@ -406,7 +408,7 @@ export default function EntrepriseDashboard() {
               try {
                 const csrftoken = getCookie("csrftoken");
                 const res = await fetch(
-                  `http://localhost:8001/msn/missions/${id_mission}/`,
+                  `${API_URL}/msn/missions/${id_mission}/`,
                   {
                     method: "DELETE",
                     credentials: "include",
@@ -446,7 +448,7 @@ export default function EntrepriseDashboard() {
 
   const fetchUserInfo = async () => {
     try {
-      const res = await fetch("http://localhost:8001/auth/info/", {
+      const res = await fetch(`${API_URL}/auth/info/`, {
         method: "GET",
         credentials: "include",
       });
@@ -460,10 +462,11 @@ export default function EntrepriseDashboard() {
 
   const fetchUserProfile = async () => {
     try {
-      const res = await fetch("http://localhost:8001/etr/entreprises/me/", {
+      const res = await fetch(`${API_URL}/etr/entreprises/me/`, {
         method: "GET",
         credentials: "include",
       });
+
       if (!res.ok) throw new Error("Erreur fetch profile");
       const data = await res.json();
       setUser({
@@ -507,7 +510,7 @@ export default function EntrepriseDashboard() {
         formData.append("profile_image", user.profile_imageFile);
       }
 
-      const res = await fetch("http://localhost:8001/etr/entreprises/me/", {
+      const res = await fetch(`${API_URL}/etr/entreprises/me/`, {
         method: "POST",
         credentials: "include",
         headers: { "X-CSRFToken": getCookie("csrftoken") },
@@ -552,7 +555,7 @@ export default function EntrepriseDashboard() {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get("http://localhost:8001/ptl/notee/", {
+        const response = await axios.get(`${API_URL}/ptl/notee/`, {
           withCredentials: true,
         });
         console.log(response.data);
@@ -572,7 +575,7 @@ export default function EntrepriseDashboard() {
 
     const userrole = "entreprise";
     const ws = new WebSocket(
-      `ws://localhost:8001/ws/entretien/${userrole}/${user.id}/`
+      `${WEBSOCKET_API_URL}/ws/entretien/${userrole}/${user.id}/`
     );
 
     ws.onopen = () => console.log("✅ WS Entreprise connecté");

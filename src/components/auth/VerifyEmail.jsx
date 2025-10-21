@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { API_URL } from "../../config";
 
 export default function VerifyEmail() {
   const { uid, token } = useParams();
@@ -8,7 +9,7 @@ export default function VerifyEmail() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    fetch(`http://localhost:8001/auth/verify/${uid}/${token}/`)
+    fetch(`${API_URL}/auth/verify/${uid}/${token}/`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {

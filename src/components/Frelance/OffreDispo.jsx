@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from "react";
 import { Briefcase, DollarSign, Star, Eye } from "lucide-react";
+import { API_URL } from "../../config";
 
 export default function CardOffre({ offre, onPostuler }) {
   const [showDetails, setShowDetails] = useState(false);
@@ -41,7 +42,7 @@ export default function CardOffre({ offre, onPostuler }) {
         <img
           src={
             offre.entreprise_photo?.startsWith("/media/")
-              ? `http://localhost:8001${offre.entreprise_photo}`
+              ? `${API_URL}${offre.entreprise_photo}`
               : offre.entreprise_photo
           }
           alt={offre.entreprise_nom}

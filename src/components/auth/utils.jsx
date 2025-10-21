@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { API_URL } from "../../config";
 
 export default function ProtectedRoute({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -8,7 +9,7 @@ export default function ProtectedRoute({ children }) {
     // Vérification côté backend si l'user est connecté
     const checkAuth = async () => {
       try {
-        const res = await fetch("http://localhost:8001/auth/check/", {
+        const res = await fetch(`${API_URL}/auth/check/`, {
           credentials: "include",
         });
         setIsAuthenticated(res.ok); // si backend renvoie 200 => connecté

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import StartCall from "./StartCall";
 import { toast } from "react-toastify";
+import { API_URL } from "../../config";
 
 function getCookie(name) {
   let cookieValue = null;
@@ -37,7 +38,7 @@ export default function CandidatureList({
   );
 
   useEffect(() => {
-    fetch("http://localhost:8001/ptl/candidatures/", {
+    fetch(`${API_URL}/ptl/candidatures/`, {
       credentials: "include",
     })
       .then((res) => {
@@ -84,7 +85,7 @@ export default function CandidatureList({
       timezone: updates.timezone,
     };
 
-    fetch(`http://localhost:8001/ptl/candidatures/${id}/`, {
+    fetch(`${API_URL}/ptl/candidatures/${id}/`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -159,7 +160,7 @@ export default function CandidatureList({
               <div className="flex items-center mt-1 mb-4">
                 {c.freelance_photo ? (
                   <img
-                    src={`http://localhost:8001/media/${c.freelance_photo}`}
+                    src={`${API_URL}/media/${c.freelance_photo}`}
                     alt={c.freelance_nom || "Freelance inconnu"}
                     className="w-14 h-14 rounded-full mr-3 border-2 border-[var(--accent-light)] object-cover"
                   />

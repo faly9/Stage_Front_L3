@@ -7,6 +7,7 @@ import EditProfileFreelance from "./EditProfil";
 import { toast } from "react-toastify";
 import EntretienCard from "./EntretienCard";
 import { Moon, Sun, Bell, Briefcase } from "lucide-react";
+import { API_URL, WEBSOCKET_API_URL } from "../../config";
 
 export default function FreelanceDashboard() {
   const [entretienNotifications, setEntretienNotifications] = useState([]);
@@ -59,7 +60,7 @@ export default function FreelanceDashboard() {
     const fetchFreelance = async () => {
       try {
         // NOTE: Utiliser l'ID du freelance authentifié pour une meilleure sécurité
-        const res = await fetch("http://localhost:8001/frl/freelances/", {
+        const res = await fetch(`${API_URL}/frl/freelances/`, {
           credentials: "include",
         });
 
@@ -87,7 +88,7 @@ export default function FreelanceDashboard() {
   useEffect(() => {
     const fetchMissions = async () => {
       try {
-        const res = await fetch("http://localhost:8001/msn/missions/", {
+        const res = await fetch(`${API_URL}/msn/missions/`, {
           method: "GET",
           credentials: "include",
         });
@@ -107,7 +108,7 @@ export default function FreelanceDashboard() {
   // Charger notifications permanentes
   useEffect(() => {
     axios
-      .get("http://localhost:8001/ptl/note/", { withCredentials: true })
+      .get(`${API_URL}/ptl/note/`, { withCredentials: true })
       .then((res) => {
         // 🔹 Supprimer les doublons par id_candidature
         const unique = Array.from(
@@ -129,7 +130,7 @@ export default function FreelanceDashboard() {
     const userrole = "freelance";
 
     const ws = new WebSocket(
-      `ws://localhost:8001/ws/entretien/${userrole}/${freelanceId}/`
+      `${WEBSOCKET_API_URL}/ws/entretien/${userrole}/${freelanceId}/`
     );
 
     ws.onopen = () => console.log("✅ WS Entretien connecté");
@@ -169,7 +170,7 @@ export default function FreelanceDashboard() {
 
   // Connexion WebSocket pour le temps réel (Missions)
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:8001/ws/missions/");
+    const socket = new WebSocket(`${WEBSOCKET_API_URL}/ws/missions/`);
 
     socket.onopen = () => console.log("✅ WS Missions connecté");
 
@@ -187,7 +188,7 @@ export default function FreelanceDashboard() {
 
           // 🔹 Fetch missions pour récupérer l'ID définitif
           try {
-            const res = await fetch("http://localhost:8001/msn/missions/", {
+            const res = await fetch(`${API_URL}/msn/missions/`, {
               credentials: "include",
             });
             if (res.ok) {
@@ -254,7 +255,7 @@ export default function FreelanceDashboard() {
 
     // Le WS de candidature doit être dynamique pour l'entreprise
     const ws = new WebSocket(
-      `ws://localhost:8001/ws/candidatures/${entrepriseId}/`
+      `${WEBSOCKET_API_URL}/ws/candidatures/${entrepriseId}/`
     );
 
     ws.onopen = () => {
@@ -311,7 +312,7 @@ export default function FreelanceDashboard() {
             {hasProfile ? (
               freelances.map((f, idx) => (
                 <CardProfil
-                  key={idx}
+                  key={f.id_freelance || idx}
                   freelance={f}
                   onEdit={() => setEditingFreelance(f)}
                 />
@@ -468,7 +469,7 @@ export default function FreelanceDashboard() {
               ) : (
                 freelances.map((freelance) => (
                   <div
-                    key={freelance.id}
+                    key={freelance.id_freelance}
                     className="flex  justify-end lg:flex-row items-center gap-6 w-full"
                     // className="flex items-center gap-10 justify-between bg-white dark:bg-gray-900 p-2  rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-transform duration-300"
                   >

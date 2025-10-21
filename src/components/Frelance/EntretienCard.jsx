@@ -7,6 +7,7 @@
 import React from "react";
 import { Calendar, MessageCircle, Video, User } from "lucide-react";
 import JoinCall from "./JoinCall";
+import { API_URL } from "../../config";
 
 export default function EntretienCard({ notification }) {
   if (!notification)
@@ -58,8 +59,8 @@ export default function EntretienCard({ notification }) {
           <img
             src={
               notification.entreprise_photo.startsWith("/media/")
-                ? `http://localhost:8001${notification.entreprise_photo}`
-                : `http://localhost:8001/media/${notification.entreprise_photo}`
+                ? `${API_URL}${notification.entreprise_photo}`
+                : `${API_URL}/media/${notification.entreprise_photo}`
             }
             alt={notification.entreprise_nom}
             className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover shadow"
