@@ -8,6 +8,6 @@ export default defineConfig({
   server: {
     host: true, // permet les connexions depuis l'extérieur
     port: 5173,
-    allowedHosts: ["freelance.local", "freelance.local:32157"],
+    allowedHosts: ["*"],
   },
 });

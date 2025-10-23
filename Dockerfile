@@ -1,20 +1,15 @@
-# Utiliser une image Node compatible Vite (>=20.19 ou 22.12)
-FROM node:22
-
-# Définir le répertoire de travail
+# Étape 1 — Build du projet React/Vite
+FROM node:22 AS builder
 WORKDIR /app
-
-# Copier package.json et package-lock.json (ou pnpm-lock.yaml / yarn.lock)
 COPY package*.json ./
-
-# Installer les dépendances
 RUN npm install
-
-# Copier tout le code frontend
 COPY . .
+RUN npm run build
 
-# Exposer le port de développement Vite
-EXPOSE 5173
-
-# Lancer Vite en mode dev et accepter les connexions externes
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+# Étape 2 — Serveur Nginx
+FROM nginx:stable-alpine
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
