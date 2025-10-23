@@ -8,4 +8,9 @@ export default defineConfig({
      tailwindcss(),
      react()
     ],
+    server: {
+    host: true, // permet les connexions depuis l'extérieur
+    port: 5173,
+    allowedHosts: ['freelance.local'], // ajoute ton host
+  }
 })
