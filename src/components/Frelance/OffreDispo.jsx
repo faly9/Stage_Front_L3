@@ -10,6 +10,8 @@ import { API_URL } from "../../config";
 export default function CardOffre({ offre, onPostuler }) {
   const [showDetails, setShowDetails] = useState(false);
   const [isPostuled, setIsPostuled] = useState(false);
+  console.log("🚀 CardOffre rendu avec offre:", API_URL)
+
 
   // 🔹 Vérifie si l'offre est déjà postulée au montage
   useEffect(() => {
@@ -41,9 +43,7 @@ export default function CardOffre({ offre, onPostuler }) {
       <div className="flex items-center gap-4 mb-4">
         <img
           src={
-            offre.entreprise_photo?.startsWith("/media/")
-              ? `${API_URL}${offre.entreprise_photo}`
-              : offre.entreprise_photo
+               `${API_URL}/media/${offre.entreprise_photo}`
           }
           alt={offre.entreprise_nom}
           className="w-12 h-12 rounded-full object-cover border border-[var(--border)]"
@@ -95,10 +95,9 @@ export default function CardOffre({ offre, onPostuler }) {
           onClick={handlePostuler}
           disabled={isPostuled}
           className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold transition
-            ${
-              isPostuled
-                ? "bg-gray-400 text-white cursor-not-allowed"
-                : "bg-[var(--accent)] text-[var(--text-on-accent)] hover:bg-[var(--accent-strong)]"
+            ${isPostuled
+              ? "bg-gray-400 text-white cursor-not-allowed"
+              : "bg-[var(--accent)] text-[var(--text-on-accent)] hover:bg-[var(--accent-strong)]"
             }`}
         >
           {isPostuled ? "Demande envoyée" : "Postuler"}
