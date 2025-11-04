@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { X, Save, Loader2, Edit3 } from "lucide-react"; // Icônes modernes
-import { API_URL } from "../../config";
+// import { API_URL } from "../../config";
+import { getConfig } from "../../config";
 
 const getCookie = (name) => {
   let cookieValue = null;
@@ -27,6 +28,7 @@ export default function EditMissionModal({ mission, isOpen, onClose, onUpdated }
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const { API_URL } = getConfig();
 
   useEffect(() => {
     if (mission) {

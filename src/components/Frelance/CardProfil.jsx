@@ -6,7 +6,8 @@
 import React from "react";
 import { Edit } from "lucide-react";
 import { motion } from "framer-motion";
-import { API_URL } from "../../config";
+// import { API_URL } from "../../config";
+import { getConfig } from "../../config";
 
 export default function PageProfil({ freelance, onEdit }) {
   // --- Extraction des champs du freelance ---
@@ -22,6 +23,8 @@ export default function PageProfil({ freelance, onEdit }) {
   const experiences = freelance.experience
     ? freelance.experience.split(",").map((e) => e.trim())
     : [];
+    const { API_URL } = getConfig();
+
 
   // --- Rendu des badges dynamiques ---
   const renderBadges = (items) =>

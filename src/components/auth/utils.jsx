@@ -1,9 +1,11 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { API_URL } from "../../config";
+// import { API_URL } from "../../config";
+import { getConfig } from "../../config";
 
 export default function ProtectedRoute({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const { API_URL } = getConfig();
 
   useEffect(() => {
     // Vérification côté backend si l'user est connecté

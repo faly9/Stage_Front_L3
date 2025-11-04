@@ -1,11 +1,22 @@
-const hostname = window.location.hostname;
+// config.js
 
-export const API_URL =
-  hostname === "localhost" || hostname === "127.0.0.1"  || hostname === "192.168.88.242"
-    ? import.meta.env.VITE_API_URL  // navigateur
-    : import.meta.env.VITE_API_DOCKER; // Docker interne
+let config = {
+  API_URL: "",
+  WEBSOCKET_API_URL: "",
+};
 
-export const WEBSOCKET_API_URL =
-  hostname === "localhost" || hostname === "127.0.0.1" || hostname === "192.168.88.242"
-    ? import.meta.env.VITE_WS_URL
-    : import.meta.env.VITE_WS_DOCKER;
+// Charger la configuration depuis config.json
+export const loadConfig = async () => {
+  try {
+    const response = await fetch("/config.json", { cache: "no-store" });
+    if (!response.ok) throw new Error("Fichier config.json introuvable");
+    const data = await response.json();
+    config = data;
+    console.log("✅ Configuration chargée :", config);
+  } catch (err) {
+    console.error("❌ Erreur de chargement du fichier config.json :", err);
+  }
+};
+
+// Accéder à la config depuis n’importe où
+export const getConfig = () => config;

@@ -7,7 +7,8 @@ import React, { useState } from "react";
 import { User, Briefcase, MessageCircle, LogOut, Menu, X } from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../config";
+// import { API_URL } from "../../config";
+import { getConfig } from "../../config";
 
 // --- Gestion du cookie CSRF ---
 const getCookie = (name) => {
@@ -33,6 +34,7 @@ export default function NavbarFreelance({
 }) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const { API_URL } = getConfig();
 
   const handleLogout = async () => {
     const csrftoken = getCookie("csrftoken");
@@ -97,17 +99,15 @@ export default function NavbarFreelance({
                 }}
                 className={`relative flex items-center gap-3 px-4 py-3 rounded-xl text-left font-medium 
                   transition-all duration-300 shadow-sm
-                  ${
-                    activeSection === sec.name
-                      ? "bg-[var(--accent)] text-[var(--text-on-accent)] scale-[1.02] shadow-md"
-                      : "text-[var(--text-primary)] hover:bg-[var(--accent-light)] hover:text-[var(--text-on-accent)]"
+                  ${activeSection === sec.name
+                    ? "bg-[var(--accent)] text-[var(--text-on-accent)] scale-[1.02] shadow-md"
+                    : "text-[var(--text-primary)] hover:bg-[var(--accent-light)] hover:text-[var(--text-on-accent)]"
                   }`}
               >
                 <div
-                  className={`p-2 rounded-lg color-[var(--text-primary)] ${
-                    activeSection === sec.name ? "bg-white/20" : ""
-                  }`}
-                  
+                  className={`p-2 rounded-lg color-[var(--text-primary)] ${activeSection === sec.name ? "bg-white/20" : ""
+                    }`}
+
                 >
                   {sec.icon}
                 </div>

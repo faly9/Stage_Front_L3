@@ -7,11 +7,13 @@ import EditProfileFreelance from "./EditProfil";
 import { toast } from "react-toastify";
 import EntretienCard from "./EntretienCard";
 import { Moon, Sun, Bell, Briefcase } from "lucide-react";
-import { API_URL, WEBSOCKET_API_URL } from "../../config";
+// import { API_URL, WEBSOCKET_API_URL } from "../../config";
+import { getConfig } from "../../config";
 
 export default function FreelanceDashboard() {
   const [entretienNotifications, setEntretienNotifications] = useState([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const { API_URL, WEBSOCKET_API_URL } = getConfig();
 
   // Charger le thème depuis localStorage
   useEffect(() => {
@@ -456,10 +458,10 @@ export default function FreelanceDashboard() {
               {activeSection === "Mon Profil"
                 ? "Mon Profil"
                 : activeSection === "Offres disponibles"
-                ? "Offres disponibles"
-                : activeSection === "Notifications"
-                ? "Notifications"
-                : ""}
+                  ? "Offres disponibles"
+                  : activeSection === "Notifications"
+                    ? "Notifications"
+                    : ""}
             </p>
             {/* Profil à droite */}
             <div className="p-2 rounded-3xl flex bg-var(--gradient-from) shadow-xl transition-colors duration-500">
@@ -472,7 +474,7 @@ export default function FreelanceDashboard() {
                   <div
                     key={freelance.id_freelance}
                     className="flex  justify-end lg:flex-row items-center gap-6 w-full"
-                    // className="flex items-center gap-10 justify-between bg-white dark:bg-gray-900 p-2  rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-transform duration-300"
+                  // className="flex items-center gap-10 justify-between bg-white dark:bg-gray-900 p-2  rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-transform duration-300"
                   >
                     {/* --- Profil --- */}
                     <div className="flex items-center w-52 gap-4">

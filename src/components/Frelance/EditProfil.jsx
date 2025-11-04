@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Edit } from "lucide-react";
-import { API_URL } from "../../config";
+// import { API_URL } from "../../config";
+import { getConfig } from "../../config";
 
 // 🔹 Récupère un cookie (ex: CSRF token)
 const getCookie = (name) => {
@@ -28,6 +29,8 @@ export default function EditProfileFreelance({ freelance, onSave, onCancel }) {
     photo: freelance?.photo || null,
     photoPreview: null,
   });
+  const { API_URL } = getConfig();
+
   console.log("api", API_URL)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

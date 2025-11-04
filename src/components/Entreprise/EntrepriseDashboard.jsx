@@ -8,8 +8,9 @@ import EditMissionModal from "./EditMission";
 import { toast } from "react-toastify";
 import CandidatureList from "./Candidature";
 import EntrepriseNotifications from "./EntrepriseNotifications";
-import { API_URL } from "../../config";
-import { WEBSOCKET_API_URL } from "../../config";
+// import { API_URL } from "../../config";
+// import { WEBSOCKET_API_URL } from "../../config";
+import { getConfig } from "../../config";
 
 // 🔹 fonction utilitaire pour lire le cookie CSRF
 const getCookie = (name) => {
@@ -36,6 +37,7 @@ function Mission({ isOpen, onClose, onAdded }) {
     competence: "",
     budget: "",
   });
+const { API_URL } = getConfig();
 
   const [errors, setErrors] = useState({});
 
@@ -260,6 +262,8 @@ export default function EntrepriseDashboard() {
     profile_image: null,
     profile_imageFile: null,
   });
+  const { API_URL, WEBSOCKET_API_URL } = getConfig();
+
   const [userinfo, setUserinfo] = useState({ email: "", role: "" });
   const [entreprise_id, setEntreprise_id] = useState(null);
   const [candidatures, setCandidatures] = useState([]);

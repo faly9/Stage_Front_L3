@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import StartCall from "./StartCall";
 import { toast } from "react-toastify";
-import { API_URL } from "../../config";
+// import { API_URL } from "../../config";
+import { getConfig } from "../../config";
 
 function getCookie(name) {
   let cookieValue = null;
@@ -36,6 +37,8 @@ export default function CandidatureList({
   const [timezoneEntreprise, setTimezoneEntreprise] = useState(
     Intl.DateTimeFormat().resolvedOptions().timeZone
   );
+  const { API_URL } = getConfig();
+
 
   useEffect(() => {
     fetch(`${API_URL}/ptl/candidatures/`, {

@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { API_URL } from "../../config";
+// import { API_URL } from "../../config";
+import { getConfig } from "../../config";
 
 export default function VerifyEmail() {
   const { uid, token } = useParams();
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
+  const { API_URL } = getConfig();
+
 
   useEffect(() => {
     fetch(`${API_URL}/auth/verify/${uid}/${token}/`)

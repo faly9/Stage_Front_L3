@@ -3,7 +3,10 @@ import { FaEnvelope, FaLock } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { API_URL } from "../../config";
+// import { API_URL } from "../../config";
+import { getConfig } from "../../config";
+
+
 
 function getCookie(name) {
   let cookieValue = null;
@@ -27,6 +30,9 @@ export default function Login() {
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState("");
   const [cursor, setCursor] = useState({ x: 0, y: 0 });
+  const { API_URL } = getConfig();
+
+  console.log("API_URL in Login component:", API_URL);
 
   const navigate = useNavigate();
 

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../config";
+// import { API_URL } from "../../config";
+import { getConfig } from "../../config";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -11,6 +12,8 @@ export default function Register() {
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const { API_URL } = getConfig();
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -5,12 +5,13 @@
 
 import { useState, useEffect } from "react";
 import { Briefcase, DollarSign, Star, Eye } from "lucide-react";
-import { API_URL } from "../../config";
+// import { API_URL } from "../../config";
+import { getConfig } from "../../config";
 
 export default function CardOffre({ offre, onPostuler }) {
   const [showDetails, setShowDetails] = useState(false);
   const [isPostuled, setIsPostuled] = useState(false);
-  console.log("🚀 CardOffre rendu avec offre:", API_URL)
+  const { API_URL } = getConfig();
 
 
   // 🔹 Vérifie si l'offre est déjà postulée au montage
@@ -43,7 +44,7 @@ export default function CardOffre({ offre, onPostuler }) {
       <div className="flex items-center gap-4 mb-4">
         <img
           src={
-               `${API_URL}/media/${offre.entreprise_photo}`
+            `${API_URL}/media/${offre.entreprise_photo}`
           }
           alt={offre.entreprise_nom}
           className="w-12 h-12 rounded-full object-cover border border-[var(--border)]"

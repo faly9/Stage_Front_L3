@@ -7,9 +7,12 @@
 import React from "react";
 import { Calendar, MessageCircle, Video, User } from "lucide-react";
 import JoinCall from "./JoinCall";
-import { API_URL } from "../../config";
+// import { API_URL } from "../../config";
+import { getConfig } from "../../config";
 
 export default function EntretienCard({ notification }) {
+  const { API_URL } = getConfig();
+
   if (!notification)
     return (
       <p className="text-[var(--text-secondary)] dark:text-[var(--text-secondary)] italic text-center">

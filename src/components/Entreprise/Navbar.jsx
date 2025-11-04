@@ -1,7 +1,7 @@
 import { Home, Brain, User, MessageCircle, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { API_URL } from "../../config";
+import { getConfig } from "../../config";
 
 const getCookie = (name) => {
   let cookieValue = null;
@@ -20,6 +20,7 @@ const getCookie = (name) => {
 
 export default function Navbar({ section, onSectionChange, candidatureCount }) {
   const navigate = useNavigate();
+  const { API_URL } = getConfig();
 
   const handleLogout = async () => {
     const csrftoken = getCookie("csrftoken");
