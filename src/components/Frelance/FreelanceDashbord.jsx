@@ -178,6 +178,7 @@ export default function FreelanceDashboard() {
       const message = JSON.parse(event.data);
       const mission = message.mission;
       const action = message.action;
+      console.log("📩 Message WS Missions :", message);
 
       switch (action) {
         case "created": {
@@ -476,7 +477,7 @@ export default function FreelanceDashboard() {
                     {/* --- Profil --- */}
                     <div className="flex items-center w-52 gap-4">
                       <img
-                        src={freelance.photo || "/images/profil.png"}
+                        src={`${API_URL}/media/${freelance.photo}` || "/images/profil.png"}
                         alt="Profil"
                         className="w-12 h-12 rounded-full border-2 border-violet-500 shadow-md object-cover hover:scale-105 transition-transform duration-300"
                       />

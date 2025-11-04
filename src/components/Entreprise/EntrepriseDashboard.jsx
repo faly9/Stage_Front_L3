@@ -344,6 +344,7 @@ export default function EntrepriseDashboard() {
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
 
+       
       // 🔹 incrémente le compteur (et sauvegarde dans localStorage)
       setCandidatureCount((count) => {
         const newCount = count + 1;
@@ -361,8 +362,8 @@ export default function EntrepriseDashboard() {
         );
         return exists
           ? prev.map((c) =>
-              c.id_candidature === data.id_candidature ? data : c
-            )
+            c.id_candidature === data.id_candidature ? data : c
+          )
           : [data, ...prev];
       });
 
@@ -469,6 +470,7 @@ export default function EntrepriseDashboard() {
 
       if (!res.ok) throw new Error("Erreur fetch profile");
       const data = await res.json();
+      console.log("Données entreprise récupérées :", data);
       setUser({
         id: data.id_entreprise,
         nom: data.nom,
@@ -480,6 +482,7 @@ export default function EntrepriseDashboard() {
       console.error(err);
     }
   };
+  console.log("user entreprise", user.profile_image);
 
   const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
 
@@ -509,6 +512,7 @@ export default function EntrepriseDashboard() {
       if (user.profile_imageFile) {
         formData.append("profile_image", user.profile_imageFile);
       }
+      console.log("Fichier image à envoyer:", user.profile_image);
 
       const res = await fetch(`${API_URL}/etr/entreprises/me/`, {
         method: "POST",
@@ -647,12 +651,12 @@ export default function EntrepriseDashboard() {
               {currentsection === "dashboard"
                 ? "Liste des Missions"
                 : currentsection === "ia"
-                ? "Proposition de l'IA"
-                : currentsection === "Candidat"
-                ? "Liste des candidats"
-                : currentsection === "message"
-                ? "Historiques"
-                : ""}
+                  ? "Proposition de l'IA"
+                  : currentsection === "Candidat"
+                    ? "Liste des candidats"
+                    : currentsection === "message"
+                      ? "Historiques"
+                      : ""}
             </p>
 
             {/* PROFIL + ICONES */}
@@ -664,7 +668,7 @@ export default function EntrepriseDashboard() {
                     <div className="flex items-center gap-4 relative group">
                       {user.profile_image ? (
                         <img
-                          src={user.profile_image}
+                          src={`${API_URL}/media/${user.profile_image}`}
                           onClick={toggleProfile}
                           alt="Profil"
                           className="w-12 h-12 rounded-full border-2 border-[var(--accent)] shadow-md object-cover transition-transform duration-300 hover:scale-105"
@@ -834,29 +838,36 @@ export default function EntrepriseDashboard() {
                           htmlFor="profileUpload"
                           className="cursor-pointer"
                         >
-                          {user.profile_image ? (
+                          {user.profile_imageFile ? (
+                            // 🔹 Preview local
                             <img
-                              src={user.profile_image}
+                              src={URL.createObjectURL(user.profile_imageFile)}
                               alt="Aperçu Profil"
                               className="w-28 h-28 rounded-full object-cover ring-4 ring-[var(--accent-light)] shadow-md group-hover:ring-[var(--accent)] transition-all duration-300"
                             />
-                          ) : (
-                            <div className="w-28 h-28 rounded-full bg-[var(--button-bg)] flex items-center justify-center border-2 border-dashed border-[var(--border)] group-hover:border-[var(--accent)] transition">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-12 w-12 text-[var(--text-secondary)]"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M5.121 17.804A9 9 0 1118.879 6.196 9 9 0 015.121 17.804zM15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                                />
-                              </svg>
-                            </div>
+                          ) : user.profile_image ? (
+                            // 🔹 Chemin relatif depuis l'API
+                            <img
+                              src={`${API_URL}/media/${user.profile_image}`}
+                              alt="Aperçu Profil"
+                              className="w-28 h-28 rounded-full object-cover ring-4 ring-[var(--accent-light)] shadow-md group-hover:ring-[var(--accent)] transition-all duration-300"
+                            />
+                          ) : (<div className="w-28 h-28 rounded-full bg-[var(--button-bg)] flex items-center justify-center border-2 border-dashed border-[var(--border)] group-hover:border-[var(--accent)] transition">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-12 w-12 text-[var(--text-secondary)]"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M5.121 17.804A9 9 0 1118.879 6.196 9 9 0 015.121 17.804zM15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                              />
+                            </svg>
+                          </div>
                           )}
                         </label>
 

@@ -28,10 +28,11 @@ export default function EditProfileFreelance({ freelance, onSave, onCancel }) {
     photo: freelance?.photo || null,
     photoPreview: null,
   });
-
+  console.log("api", API_URL)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  console.log("🚀 EditProfileFreelance rendu avec freelance:", freelance);
   // 🔹 Gère les changements de champs texte
   const handleChange = (e) =>
     setProfile({ ...profile, [e.target.name]: e.target.value });
@@ -65,21 +66,24 @@ export default function EditProfileFreelance({ freelance, onSave, onCancel }) {
       if (profile.photo instanceof File) {
         formData.append("photo", profile.photo);
       }
-
+      console.log("Fichier photo à envoyer:", profile.photo);
+      console.log("Est-ce un fichier ? ", profile.photo instanceof File);
+      // Attendu : true, et le log du fichier
       const isUpdate = !!profile.id_freelance;
       const url = isUpdate
-        ? `${API_URL}/frl/freelances/${profile.id_freelance}/`
-        : `${API_URL}/frl/freelances/`;
-
+      ? `${API_URL}/frl/freelances/${profile.id_freelance}/`
+      : `${API_URL}/frl/freelances/`;
+      
       const res = await fetch(url, {
-        method: isUpdate ? "PUT" : "POST",
+        method: isUpdate ? "PATCH" : "POST",
         credentials: "include",
         headers: {
           "X-CSRFToken": getCookie("csrftoken"),
         },
         body: formData,
       });
-
+      
+      console.log("Contenu FormData:", [...formData.entries()]);
       if (!res.ok) {
         const errData = await res.json();
         console.error("⚠️ Erreur API:", errData);
@@ -126,7 +130,13 @@ export default function EditProfileFreelance({ freelance, onSave, onCancel }) {
             <label htmlFor="profileUpload" className="cursor-pointer">
               {profile.photoPreview || profile.photo ? (
                 <img
-                  src={profile.photoPreview || profile.photo}
+                  src={
+                    profile.photoPreview // 1. Aperçu local (si un nouveau fichier est sélectionné)
+                      ? profile.photoPreview
+                      : typeof profile.photo === 'string' 
+                        ? `${API_URL}/media/${profile.photo}` // 2. URL du backend (si c'est une chaîne et un chemin relatif)
+                        : "/images/profil.png" // 3. Photo par défaut
+                  }
                   alt="Aperçu Profil"
                   className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-2 border-indigo-300 dark:border-indigo-500 shadow-lg group-hover:scale-105 transition-transform duration-200"
                 />
@@ -197,8 +207,8 @@ export default function EditProfileFreelance({ freelance, onSave, onCancel }) {
             {loading
               ? "Enregistrement..."
               : profile.id_freelance
-              ? "Mettre à jour"
-              : "Créer"}
+                ? "Mettre à jour"
+                : "Créer"}
           </button>
         </div>
       </div>

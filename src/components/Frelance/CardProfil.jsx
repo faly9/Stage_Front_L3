@@ -6,6 +6,7 @@
 import React from "react";
 import { Edit } from "lucide-react";
 import { motion } from "framer-motion";
+import { API_URL } from "../../config";
 
 export default function PageProfil({ freelance, onEdit }) {
   // --- Extraction des champs du freelance ---
@@ -85,7 +86,7 @@ export default function PageProfil({ freelance, onEdit }) {
         {/* --- Contenu principal du profil --- */}
         <div className="relative z-10 flex flex-col items-center text-center">
           <motion.img
-            src={freelance.photo || "/images/profil.png"}
+            src={`${API_URL}/media/${freelance.photo}` || "/images/profil.png"}
             alt="Profil"
             className="w-20 h-20 rounded-full object-cover border-4 border-[var(--accent-light)] shadow-md mb-4"
             whileHover={{ rotate: 3, scale: 1.05 }}
