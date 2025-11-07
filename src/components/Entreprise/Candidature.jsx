@@ -284,7 +284,7 @@ export default function CandidatureList({
                       </p>
                     )}
                     <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
-                      Choisir une date d’entretien :
+                      Choisir l'heure et la date d’entretien :
                     </label>
                     <input
                       type="datetime-local"
