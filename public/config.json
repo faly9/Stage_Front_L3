@@ -1,4 +1,4 @@
 {
-  "API_URL": "http://localhost:8000",
-  "WEBSOCKET_API_URL": "ws://localhost:8000"
+  "API_URL": "http://192.168.88.245:80",
+  "WEBSOCKET_API_URL": "ws://192.168.88.245:80"
 }

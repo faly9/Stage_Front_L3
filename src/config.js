@@ -1,5 +1,4 @@
 // config.js
-
 let config = {
   API_URL: "",
   WEBSOCKET_API_URL: "",
