@@ -305,7 +305,7 @@ export default function CandidatureList({
                   {/* --- Commentaire / Lien entretien --- */}
                   <div>
                     <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
-                      Lien ou commentaire :
+                      Lien ou commentaire pour Faly :
                     </label>
                     <textarea
                       value={draft.commentaire_entretien || ""}
