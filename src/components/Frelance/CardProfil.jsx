@@ -106,7 +106,7 @@ export default function PageProfil({ freelance, onEdit }) {
           {/* --- Compétences --- */}
           <section className="mb-6 w-full">
             <h3 className="text-lg font-semibold mb-2 text-[var(--accent-strong)] border-b pb-1">
-              Compétences pour faly
+              Compétences 
             </h3>
             <div className="flex flex-wrap justify-center">{renderBadges(competences)}</div>
           </section>
