@@ -37,7 +37,7 @@ function Mission({ isOpen, onClose, onAdded }) {
     competence: "",
     budget: "",
   });
-const { API_URL } = getConfig();
+const { API_URL , MEDIA_URL } = getConfig();
 
   const [errors, setErrors] = useState({});
 
@@ -262,7 +262,7 @@ export default function EntrepriseDashboard() {
     profile_image: null,
     profile_imageFile: null,
   });
-  const { API_URL, WEBSOCKET_API_URL } = getConfig();
+  const { API_URL, WEBSOCKET_API_URL , MEDIA_URL } = getConfig();
 
   const [userinfo, setUserinfo] = useState({ email: "", role: "" });
   const [entreprise_id, setEntreprise_id] = useState(null);
@@ -672,7 +672,7 @@ export default function EntrepriseDashboard() {
                     <div className="flex items-center gap-4 relative group">
                       {user.profile_image ? (
                         <img
-                          src={`${API_URL}/media/${user.profile_image}`}
+                          src={`${MEDIA_URL_URL}/${user.profile_image}`}
                           onClick={toggleProfile}
                           alt="Profil"
                           className="w-12 h-12 rounded-full border-2 border-[var(--accent)] shadow-md object-cover transition-transform duration-300 hover:scale-105"
@@ -852,7 +852,7 @@ export default function EntrepriseDashboard() {
                           ) : user.profile_image ? (
                             // 🔹 Chemin relatif depuis l'API
                             <img
-                              src={`${API_URL}/media/${user.profile_image}`}
+                              src={`${MEDIA_URL}/${user.profile_image}`}
                               alt="Aperçu Profil"
                               className="w-28 h-28 rounded-full object-cover ring-4 ring-[var(--accent-light)] shadow-md group-hover:ring-[var(--accent)] transition-all duration-300"
                             />

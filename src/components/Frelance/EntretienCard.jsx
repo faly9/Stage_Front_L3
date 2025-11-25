@@ -11,7 +11,7 @@ import JoinCall from "./JoinCall";
 import { getConfig } from "../../config";
 
 export default function EntretienCard({ notification }) {
-  const { API_URL } = getConfig();
+  const { MEDIA_URL } = getConfig();
 
   if (!notification)
     return (
@@ -61,9 +61,7 @@ export default function EntretienCard({ notification }) {
         {notification.entreprise_photo ? (
           <img
             src={
-              notification.entreprise_photo.startsWith("/media/")
-                ? `${API_URL}${notification.entreprise_photo}`
-                : `${API_URL}/media/${notification.entreprise_photo}`
+              `${MEDIA_URL}/${notification.entreprise_photo}`
             }
             alt={notification.entreprise_nom}
             className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover shadow"
@@ -140,11 +138,10 @@ export default function EntretienCard({ notification }) {
       {/* Statut */}
       <div className="flex justify-end">
         <span
-          className={`px-3 py-1 rounded-full text-sm font-semibold ${
-            notification.status === "confirmé"
+          className={`px-3 py-1 rounded-full text-sm font-semibold ${notification.status === "confirmé"
               ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
               : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-          }`}
+            }`}
         >
           {notification.status}
         </span>

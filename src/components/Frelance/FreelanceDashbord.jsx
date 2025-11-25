@@ -13,7 +13,7 @@ import { getConfig } from "../../config";
 export default function FreelanceDashboard() {
   const [entretienNotifications, setEntretienNotifications] = useState([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const { API_URL, WEBSOCKET_API_URL } = getConfig();
+  const { API_URL, WEBSOCKET_API_URL , MEDIA_URL } = getConfig();
 
   // Charger le thème depuis localStorage
   useEffect(() => {
@@ -479,7 +479,7 @@ export default function FreelanceDashboard() {
                     {/* --- Profil --- */}
                     <div className="flex items-center w-52 gap-4">
                       <img
-                        src={`${API_URL}/media/${freelance.photo}` || "/images/profil.png"}
+                        src={`${MEDIA_URL}/${freelance.photo}` || "/images/profil.png"}
                         alt="Profil"
                         className="w-12 h-12 rounded-full border-2 border-violet-500 shadow-md object-cover hover:scale-105 transition-transform duration-300"
                       />

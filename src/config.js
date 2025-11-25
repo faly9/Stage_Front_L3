@@ -2,6 +2,7 @@
 let config = {
   API_URL: "",
   WEBSOCKET_API_URL: "",
+  MEDIA_URL: ""
 };
 
 // Charger la configuration depuis config.json

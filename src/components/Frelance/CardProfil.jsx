@@ -23,7 +23,7 @@ export default function PageProfil({ freelance, onEdit }) {
   const experiences = freelance.experience
     ? freelance.experience.split(",").map((e) => e.trim())
     : [];
-    const { API_URL } = getConfig();
+    const { MEDIA_URL } = getConfig();
 
 
   // --- Rendu des badges dynamiques ---
@@ -89,7 +89,7 @@ export default function PageProfil({ freelance, onEdit }) {
         {/* --- Contenu principal du profil --- */}
         <div className="relative z-10 flex flex-col items-center text-center">
           <motion.img
-            src={`${API_URL}/media/${freelance.photo}` || "/images/profil.png"}
+            src={`${MEDIA_URL}/${freelance.photo}` || "/images/profil.png"}
             alt="Profil"
             className="w-20 h-20 rounded-full object-cover border-4 border-[var(--accent-light)] shadow-md mb-4"
             whileHover={{ rotate: 3, scale: 1.05 }}

@@ -29,7 +29,7 @@ export default function EditProfileFreelance({ freelance, onSave, onCancel }) {
     photo: freelance?.photo || null,
     photoPreview: null,
   });
-  const { API_URL } = getConfig();
+  const { API_URL , MEDIA_URL } = getConfig();
 
   console.log("api", API_URL)
   const [loading, setLoading] = useState(false);
@@ -137,7 +137,7 @@ export default function EditProfileFreelance({ freelance, onSave, onCancel }) {
                     profile.photoPreview // 1. Aperçu local (si un nouveau fichier est sélectionné)
                       ? profile.photoPreview
                       : typeof profile.photo === 'string' 
-                        ? `${API_URL}/media/${profile.photo}` // 2. URL du backend (si c'est une chaîne et un chemin relatif)
+                        ? `${MEDIA_URL}/${profile.photo}` // 2. URL du backend (si c'est une chaîne et un chemin relatif)
                         : "/images/profil.png" // 3. Photo par défaut
                   }
                   alt="Aperçu Profil"
