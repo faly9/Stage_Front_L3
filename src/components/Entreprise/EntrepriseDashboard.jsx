@@ -672,7 +672,7 @@ export default function EntrepriseDashboard() {
                     <div className="flex items-center gap-4 relative group">
                       {user.profile_image ? (
                         <img
-                          src={`${MEDIA_URL_URL}/${user.profile_image}`}
+                          src={`${MEDIA_URL}/${user.profile_image}`}
                           onClick={toggleProfile}
                           alt="Profil"
                           className="w-12 h-12 rounded-full border-2 border-[var(--accent)] shadow-md object-cover transition-transform duration-300 hover:scale-105"

@@ -11,7 +11,7 @@ import JoinCall from "./JoinCall";
 import { getConfig } from "../../config";
 
 export default function EntretienCard({ notification }) {
-  const { MEDIA_URL } = getConfig();
+  const { MEDIA_URL ,API_URL } = getConfig();
 
   if (!notification)
     return (
@@ -19,6 +19,7 @@ export default function EntretienCard({ notification }) {
         Aucune notification pour le moment.
       </p>
     );
+    console.log("api url",notification)
 
   const formatLocalDate = (dateString) => {
     if (!dateString) return "";
