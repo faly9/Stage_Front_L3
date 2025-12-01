@@ -66,17 +66,18 @@ export default function Login() {
       const data = await res.json();
       console.log("Login response data:", data);
       if (res.ok) {
-        toast.success("✅ Connexion réussie !", {
-          position: "top-center",
-          autoClose: 1000,
-          onClose: () => {
-            if (data.role === "Entreprise") {
-              navigate("/dashboard-entreprise");
-            } else {
-              navigate("/dashboard-freelance");
-            }
-          },
-        });
+        if (res.ok) {
+          toast.success("✅ Connexion réussie !", {
+            position: "top-center",
+            autoClose: 1000,
+          });
+
+          if (data.role === "Entreprise") {
+            navigate("/dashboard-entreprise");
+          } else {
+            navigate("/dashboard-freelance");
+          }
+        }
 
         setEmail("");
         setPassword("");
@@ -181,6 +182,7 @@ export default function Login() {
               <label
                 className="block font-medium"
                 style={{ color: "var(--text-primary)" }}
+                htmlFor="email"
               >
                 Email
               </label>
@@ -188,6 +190,7 @@ export default function Login() {
                 <FaEnvelope className="absolute left-3 top-3 text-gray-400" />
                 <input
                   type="email"
+                  id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition"
@@ -210,6 +213,7 @@ export default function Login() {
             <div className="w-full">
               <label
                 className="block font-medium"
+                htmlFor="password"
                 style={{ color: "var(--text-primary)" }}
               >
                 Mot de passe
@@ -218,6 +222,7 @@ export default function Login() {
                 <FaLock className="absolute left-3 top-3 text-gray-400" />
                 <input
                   type="password"
+                  id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition"

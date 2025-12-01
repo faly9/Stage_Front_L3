@@ -113,6 +113,7 @@ export default function Register() {
             {/* Email */}
             <div className="w-full">
               <label
+                htmlFor="email"
                 className="block font-medium"
                 style={{ color: "var(--text-primary)" }}
               >
@@ -125,6 +126,7 @@ export default function Register() {
                 />
                 <input
                   type="email"
+                  id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition"
@@ -145,10 +147,11 @@ export default function Register() {
 
             {/* Rôle */}
             <div className="w-full">
-              <label className="block font-medium" style={{ color: "var(--text-primary)" }}>
+              <label htmlFor="role" className="block font-medium" style={{ color: "var(--text-primary)" }}>
                 Choisissez votre rôle
               </label>
               <select
+                id="role"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition"
@@ -172,7 +175,7 @@ export default function Register() {
 
             {/* Mot de passe */}
             <div className="w-full">
-              <label className="block font-medium" style={{ color: "var(--text-primary)" }}>
+              <label htmlFor="password" className="block font-medium" style={{ color: "var(--text-primary)" }}>
                 Mot de passe
               </label>
               <div className="relative">
@@ -182,6 +185,7 @@ export default function Register() {
                 />
                 <input
                   type="password"
+                  id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition"
@@ -202,7 +206,7 @@ export default function Register() {
 
             {/* Confirmation */}
             <div className="w-full">
-              <label className="block font-medium" style={{ color: "var(--text-primary)" }}>
+              <label htmlFor="cpass" className="block font-medium" style={{ color: "var(--text-primary)" }}>
                 Confirmation du mot de passe
               </label>
               <div className="relative">
@@ -212,6 +216,7 @@ export default function Register() {
                 />
                 <input
                   type="password"
+                  id="cpass"
                   value={cpassword}
                   onChange={(e) => setCpassword(e.target.value)}
                   className="w-full pl-10 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition"
