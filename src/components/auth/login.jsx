@@ -34,7 +34,8 @@ export default function Login() {
 
   console.log("API_URL in Login component:", API_URL);
 
-  const navigate = useNavigate();
+// ✅ Injecte le navigate pour tests ou utilise le vrai
+  const navigate = testNavigate || useNavigate();
 
   const handleMouseMove = (e) => {
     setCursor({
