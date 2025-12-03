@@ -10,14 +10,11 @@ test("Login React + Django - Login réussi (mocked navigation)", async ({ page }
     });
   });
 
-  // 🔹 Mock window.navigate pour capturer la redirection
+  // 🔹 Injecter un spy pour useNavigate
   await page.addInitScript(() => {
-    window.__navigatedTo = null;
-    const originalNavigate = window.history.pushState;
-    window.history.pushState = function(state, title, url) {
-      window.__navigatedTo = url;
-      return originalNavigate.apply(this, arguments);
-    };
+    window.__navigateCalls = [];
+    const originalUseNavigate = Object.getOwnPropertyDescriptor(window, "useNavigate");
+    // Si tu ne peux pas accéder directement à useNavigate, tu peux vérifier via ton bundle ou sinon mock dans le composant.
   });
 
   // 1️⃣ Aller sur la page React
@@ -34,7 +31,7 @@ test("Login React + Django - Login réussi (mocked navigation)", async ({ page }
   await page.waitForSelector('text=Connexion réussie', { timeout: 10000 });
   await expect(page.locator("text=Connexion réussie")).toBeVisible();
 
-  // 🔹 Vérifier que la navigation aurait été déclenchée
-  const navigated = await page.evaluate(() => window.__navigatedTo);
-  expect(navigated).toContain("/dashboard-freelance");
+  // 🔹 Vérifier que navigate aurait été appelé côté React
+  const navigateCalls = await page.evaluate(() => window.__navigateCalls);
+  expect(navigateCalls).toContain("/dashboard-freelance");
 });
