@@ -10,9 +10,10 @@ export default defineConfig({
     port: 5173,
     allowedHosts: ["*"],
   },
-   test: {
-    globals: true,       // utiliser describe, it, expect globalement
-    environment: 'jsdom', // simule le DOM
-    setupFiles: './src/setupTests.js', // si nécessaire
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/tests/setupTests.js',
+    exclude: ['node_modules/**' , 'playwright-tests/**'], // <-- exclut les tests E2E
   },
 });
