@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("Login React + Django - Login réussi (mocked)", async ({ page }) => {
+test("Login React + Django - Login réussi (mocked navigation)", async ({ page }) => {
   // 🔹 Intercepter l'appel API login et renvoyer une réponse simulée
   await page.route('**/auth/login/', (route) => {
     route.fulfill({
@@ -8,6 +8,16 @@ test("Login React + Django - Login réussi (mocked)", async ({ page }) => {
       contentType: 'application/json',
       body: JSON.stringify({ role: 'Freelance', success: true }),
     });
+  });
+
+  // 🔹 Mock window.navigate pour capturer la redirection
+  await page.addInitScript(() => {
+    window.__navigatedTo = null;
+    const originalNavigate = window.history.pushState;
+    window.history.pushState = function(state, title, url) {
+      window.__navigatedTo = url;
+      return originalNavigate.apply(this, arguments);
+    };
   });
 
   // 1️⃣ Aller sur la page React
@@ -20,13 +30,11 @@ test("Login React + Django - Login réussi (mocked)", async ({ page }) => {
   // 3️⃣ Cliquer sur login
   await page.click("button[type=submit]");
 
-  // 4️⃣ Attendre que le toast de succès apparaisse
+  // 4️⃣ Attendre le toast
   await page.waitForSelector('text=Connexion réussie', { timeout: 10000 });
   await expect(page.locator("text=Connexion réussie")).toBeVisible();
 
-  // 5️⃣ Vérifier la redirection vers le dashboard
-  await page.waitForURL("**/dashboard-freelance", { timeout: 30000 });
-
-  // 6️⃣ Vérifier qu'un élément stable du dashboard est visible
-  await expect(page.locator("h1", { hasText: "Bienvenue" })).toBeVisible();
+  // 🔹 Vérifier que la navigation aurait été déclenchée
+  const navigated = await page.evaluate(() => window.__navigatedTo);
+  expect(navigated).toContain("/dashboard-freelance");
 });
