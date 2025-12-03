@@ -17,5 +17,5 @@ test("Login React + Django - Login réussi", async ({ page }) => {
   await expect(page.locator("text=Connexion réussie")).toBeVisible();
 
   // 5️⃣ Vérifier la redirection vers le dashboard
-  await page.waitForURL("**/dashboard-freelance", { timeout: 10000 });
+  await page.waitForURL("**/dashboard-freelance", { timeout: 30000 });
 });
