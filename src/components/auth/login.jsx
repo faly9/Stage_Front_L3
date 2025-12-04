@@ -159,7 +159,7 @@ export default function Login() {
             className="text-4xl font-bold mb-6 text-center"
             style={{ color: "var(--text-primary)" }}
           >
-            Connexion faly
+            Connexion 
           </h1>
 
           {message && (
