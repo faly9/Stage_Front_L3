@@ -95,7 +95,7 @@ export default function Register() {
             className="text-4xl font-bold mb-6 text-center animate-bounce"
             style={{ color: "var(--text-primary)" }}
           >
-            Inscription
+            Inscription ENI
           </h1>
 
           {message && (
