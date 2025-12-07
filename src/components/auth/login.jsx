@@ -6,8 +6,6 @@ import { toast } from "react-toastify";
 // import { API_URL } from "../../config";
 import { getConfig } from "../../config";
 
-
-
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== "") {
@@ -22,7 +20,6 @@ function getCookie(name) {
   }
   return cookieValue;
 }
-
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -159,7 +156,7 @@ export default function Login() {
             className="text-4xl font-bold mb-6 text-center"
             style={{ color: "var(--text-primary)" }}
           >
-            Connexion 
+            Connexion soutenance
           </h1>
 
           {message && (
