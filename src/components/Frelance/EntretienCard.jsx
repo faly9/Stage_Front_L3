@@ -132,7 +132,7 @@ export default function EntretienCard({ notification }) {
         </p>
       ) : (
         <p className="text-sm italic" style={{ color: "var(--text-secondary)" }}>
-          Le nom de la salle sera communiqué au moment de l’entretien.
+          Le nom de la salle sera communiqué ici au moment de l’entretien.
         </p>
       )}
 
